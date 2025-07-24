@@ -3,80 +3,86 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Finder</title>
+    <title>NPS Nearby Restaurant Finder</title>
     <style>
-        * {margin: 0;padding: 0; box-sizing: border-box;}
-        body {font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;}
-        .container {background: white; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); padding: 40px;
-            width: 90%; max-width: 500px; text-align: center;}
-
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Georgia', serif; background: #8B7355; min-height: 100vh; display: flex; align-items: center; justify-content: center;}
+        .container {background: #F5F5DC; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); padding: 40px;
+            width: 90%; max-width: 500px; text-align: center; border: 3px solid #2F4F2F;}
         .screen {display: none;}
         .screen.active {display: block;}
 
-        h1 {color: #333; margin-bottom: 30px; font-size: 2rem;}
-        h2 {color: #555; margin-bottom: 25px;font-size: 1.5rem;}
-        .form-group { margin-bottom: 25px; text-align: left;}
-        label {display: block; margin-bottom: 8px; font-weight: bold; color: #333;}
+        h1 {color: #2F4F2F; margin-bottom: 30px; font-size: 2rem; font-weight: bold;}
+        h2 {color: #8B4513; margin-bottom: 25px; font-size: 1.5rem; }
 
-        input[type="text"], select {width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease;}
-        input[type="text"]:focus, select:focus {outline: none; border-color: #667eea;}
+        .form-group {margin-bottom: 25px; text-align: left;}
+        label {display: block; margin-bottom: 8px; font-weight: bold; color: #2F4F2F;}
+        input[type="text"], select {width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px;
+            font-size: 16px; transition: border-color 0.3s ease;}
+        input[type="text"]:focus, select:focus {outline: none; border-color: #2F4F2F;}
 
         .checkbox-group {display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;}
-        .checkbox-item {display: flex; align-items: center; padding: 8px; background: #f8f9fa; border-radius: 6px; transition: background-color 0.3s ease;}
-        .checkbox-item:hover {background: #e9ecef;}
-        .checkbox-item input[type="checkbox"] {margin-right: 8px; width: auto;}
+        .checkbox-item {display: flex; align-items: center; padding: 8px; background: #DDBF94; border-radius: 6px;
+            transition: background-color 0.3s ease; border: 1px solid #8B7355;}
+        .checkbox-item:hover {background: #D2B48C;}
+        .checkbox-item.all-option {background: #2F4F2F; color: white; font-weight: bold;}
+        .checkbox-item.all-option:hover {background: #228B22;}
+        .checkbox-item input[type="checkbox"] { margin-right: 8px; width: auto;}
 
         .price-group {display: flex; justify-content: space-around; margin-top: 10px;}
-        .price-item {display: flex; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 6px; transition: background-color 0.3s ease;}
+        .price-item {display: flex; align-items: center; padding: 10px; background: #f8f9fa;
+            border-radius: 6px; transition: background-color 0.3s ease;}
         .price-item:hover {background: #e9ecef;}
         .price-item input[type="checkbox"] {margin-right: 5px; width: auto;}
 
-        .btn {background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px;
-            font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.3s ease; margin: 10px;}
+        .btn {background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px;
+            border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.3s ease; margin: 10px;}
         .btn:hover {transform: translateY(-2px);}
         .btn:disabled {background: #ccc; cursor: not-allowed; transform: none;}
         .btn-secondary {background: #6c757d;}
 
         .progress-bar {width: 100%; height: 4px; background: #e9ecef; border-radius: 2px; margin-bottom: 30px; overflow: hidden;}
-        .progress-fill {height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: width 0.3s ease; border-radius: 2px;}
+        .progress-fill {height: 100%; background: #2F4F2F; transition: width 0.3s ease; border-radius: 2px;}
 
         .results-grid {display: grid; gap: 15px; text-align: left;}
-
-        .restaurant-card {background: #f8f9fa; padding: 20px; border-radius: 10px;border-left: 4px solid #667eea;}
-        .restaurant-name { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 5px;}
-        .restaurant-rating {color: #ffa500; margin-bottom: 5px;}
-        .restaurant-info {color: #666; font-size: 0.9rem;}
+        .restaurant-card {background: #DDBF94; padding: 20px; border-radius: 10px; border-left: 4px solid #2F4F2F; border: 1px solid #8B7355;}
+        .restaurant-name {font-size: 1.2rem; font-weight: bold; color: #2F4F2F; margin-bottom: 5px;}
+        .restaurant-rating {color: #8B4513; margin-bottom: 5px;}
+        .restaurant-info {color: #654321; font-size: 0.9rem;}
 
         @media (max-width: 600px) {
             .container {padding: 20px; margin: 20px;}
             .checkbox-group {grid-template-columns: 1fr;}
-            .price-group {flex-direction: column;gap: 10px;}
+            .price-group {flex-direction: column; gap: 10px;}
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- progress bar -->
+        <!-- the progress bar -->
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
         </div>
-        <!-- 1: location -->
+        <!-- screen 1: location -->
         <div class="screen active" id="screen1">
-            <h1>Restaurants in the Area</h1>
+            <h1>Find Restaurants</h1>
             <h2>Where are you looking?</h2>
             <div class="form-group">
                 <label for="location">Enter location (city, address, landmark):</label>
-                <input type="text" id="location" placeholder="e.g., Seattle, WA or Zion National Park">
+                <input type="text" id="location" placeholder="e.g., Seattle, WA or Space Needle">
             </div>
             <button class="btn" onclick="goToScreen2()">Next</button>
         </div>
-        <!-- 2: prefs -->
+        <!-- screen 2: preferences -->
         <div class="screen" id="screen2">
-            <h2>What food are you in the mood for?</h2>
+            <h2>What are you in the mood for?</h2>
             <div class="form-group">
                 <label>Cuisine Types (select any that interest you):</label>
                 <div class="checkbox-group">
+                    <div class="checkbox-item all-option">
+                        <input type="checkbox" id="cuisineAll" value="all">
+                        <label for="cuisineAll">All Cuisines</label>
+                    </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="italian" value="italian">
                         <label for="italian">Italian</label>
@@ -101,26 +107,34 @@
                         <input type="checkbox" id="vegetarian" value="vegetarian">
                         <label for="vegetarian">Vegetarian</label>
                     </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="fastfood" value="fastfood">
+                        <label for="fastfood">Fast Food</label>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
                 <label>Price Range:</label>
                 <div class="price-group">
+                    <div class="price-item all-option">
+                        <input type="checkbox" id="priceAll" value="all">
+                        <label for="priceAll">All Prices</label>
+                    </div>
                     <div class="price-item">
                         <input type="checkbox" id="price1" value="1">
                         <label for="price1">$</label>
                     </div>
                     <div class="price-item">
                         <input type="checkbox" id="price2" value="2">
-                        <label for="price2">$$</label>
+                        <label for="price2">$</label>
                     </div>
                     <div class="price-item">
                         <input type="checkbox" id="price3" value="3">
-                        <label for="price3">$$$</label>
+                        <label for="price3">$$</label>
                     </div>
                     <div class="price-item">
                         <input type="checkbox" id="price4" value="4">
-                        <label for="price4">$$$$</label>
+                        <label for="price4">$$</label>
                     </div>
                 </div>
             </div>
@@ -137,11 +151,11 @@
             <button class="btn btn-secondary" onclick="goToScreen1()">Back</button>
             <button class="btn" onclick="findRestaurants()">Find Restaurants</button>
         </div>
-        <!-- 3: results -->
+        <!-- screen 3: results -->
         <div class="screen" id="screen3">
             <h2>Restaurants near you</h2>
             <div id="results" class="results-grid">
-                <!-- show results here..... -->
+                <!-- RESULTS show here -->
             </div>
             <button class="btn btn-secondary" onclick="goToScreen2()">Change Preferences</button>
             <button class="btn" onclick="startOver()">New Search</button>
@@ -149,57 +163,76 @@
     </div>
     <script>
         let currentScreen = 1;
+        // handle the "all" checkboxes condition
+        document.getElementById('cuisineAll').addEventListener('change', function() {
+            const cuisineCheckboxes = document.querySelectorAll('#screen2 .checkbox-group input[type="checkbox"]:not(#cuisineAll)');
+            cuisineCheckboxes.forEach(cb => cb.checked = this.checked);});
+
+        document.getElementById('priceAll').addEventListener('change', function() {
+            const priceCheckboxes = document.querySelectorAll('.price-group input[type="checkbox"]:not(#priceAll)');
+            priceCheckboxes.forEach(cb => cb.checked = this.checked);});
+
         function updateProgressBar() {
             const progressFill = document.getElementById('progressFill');
             const progress = (currentScreen / 3) * 100;
-            progressFill.style.width = progress + '%';}
+            progressFill.style.width = progress + '%';
+        }
 
         function showScreen(screenNumber) {
-            // hide screens
-            document.querySelectorAll('.screen').forEach(screen => {screen.classList.remove('active');});
-            // show the target screen
+            // hide all the screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');});
+            
+            // target screen
             document.getElementById('screen' + screenNumber).classList.add('active');
             currentScreen = screenNumber;
-            updateProgressBar();}
+            updateProgressBar();
+        }
 
-        function goToScreen1() {showScreen(1);}
+        function goToScreen1() {
+            showScreen(1);
+        }
 
         function goToScreen2() {
             const location = document.getElementById('location').value.trim();
-            if (!location) {alert('Please enter a location first!'); return;}
-            showScreen(2);}
+            if (!location) {
+                alert('Please enter a location first!');
+                return;}
+            showScreen(2);
+        }
 
         function findRestaurants() {
-            // get the form data
+            // get form data
             const formData = collectFormData();
             console.log('Search criteria:', formData);
-            // mock results while testing . . . 
+            
+            // just show mock results rn....
             showMockResults();
-            showScreen(3);}
+            showScreen(3);
+        }
 
         function collectFormData() {
             const location = document.getElementById('location').value;
             
-            // get cuisine types
+            // cuisine types
             const cuisines = [];
             document.querySelectorAll('#screen2 input[type="checkbox"]:checked').forEach(checkbox => {
                 if (checkbox.value !== '1' && checkbox.value !== '2' && checkbox.value !== '3' && checkbox.value !== '4') {
-                    cuisines.push(checkbox.value);}
-            });
+                    cuisines.push(checkbox.value);}});
             
-            // get prices
+            // diff price levels
             const prices = [];
             document.querySelectorAll('.price-item input[type="checkbox"]:checked').forEach(checkbox => {
                 prices.push(parseInt(checkbox.value));});
             
             const time = document.getElementById('time').value;
-            
             return {location, cuisines, prices, time};
         }
 
         function showMockResults() {
             const resultsContainer = document.getElementById('results');
-            // MOCK DATA FOR TESTING!!
+            
+            // FAKE DATA
             const mockRestaurants = [
                 {
                     name: "Bella Vista Italian",
@@ -229,28 +262,24 @@
             mockRestaurants.forEach(restaurant => {
                 const card = document.createElement('div');
                 card.className = 'restaurant-card';
-                
                 const stars = '★'.repeat(Math.floor(restaurant.rating)) + '☆'.repeat(5 - Math.floor(restaurant.rating));
                 const priceSymbols = '$'.repeat(restaurant.priceLevel);
                 
                 card.innerHTML = `
                     <div class="restaurant-name">${restaurant.name}</div>
                     <div class="restaurant-rating">${stars} ${restaurant.rating}</div>
-                    <div class="restaurant-info">${restaurant.cuisine} • ${priceSymbols} • ${restaurant.address}</div>
-                `;
+                    <div class="restaurant-info">${restaurant.cuisine} • ${priceSymbols} • ${restaurant.address}</div>`;
                 
-                resultsContainer.appendChild(card);
-            });
+                resultsContainer.appendChild(card);});
         }
 
         function startOver() {
-            // clear the whole form
+            // clearing form
             document.getElementById('location').value = '';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.getElementById('time').value = '';
-            
-            showScreen(1);}
-
+            showScreen(1);
+        }
         // make progress bar
         updateProgressBar();
     </script>
