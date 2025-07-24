@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Finder</title>
+    <style>
+        * {margin: 0;padding: 0; box-sizing: border-box;}
+        body {font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;}
+        .container {background: white; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); padding: 40px;
+            width: 90%; max-width: 500px; text-align: center;}
+
+        .screen {display: none;}
+        .screen.active {display: block;}
+
+        h1 {color: #333; margin-bottom: 30px; font-size: 2rem;}
+        h2 {color: #555; margin-bottom: 25px;font-size: 1.5rem;}
+        .form-group { margin-bottom: 25px; text-align: left;}
+        label {display: block; margin-bottom: 8px; font-weight: bold; color: #333;}
+
+        input[type="text"], select {width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease;}
+        input[type="text"]:focus, select:focus {outline: none; border-color: #667eea;}
+
+        .checkbox-group {display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;}
+        .checkbox-item {display: flex; align-items: center; padding: 8px; background: #f8f9fa; border-radius: 6px; transition: background-color 0.3s ease;}
+        .checkbox-item:hover {background: #e9ecef;}
+        .checkbox-item input[type="checkbox"] {margin-right: 8px; width: auto;}
+
+        .price-group {display: flex; justify-content: space-around; margin-top: 10px;}
+        .price-item {display: flex; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 6px; transition: background-color 0.3s ease;}
+        .price-item:hover {background: #e9ecef;}
+        .price-item input[type="checkbox"] {margin-right: 5px; width: auto;}
+
+        .btn {background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px;
+            font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.3s ease; margin: 10px;}
+        .btn:hover {transform: translateY(-2px);}
+        .btn:disabled {background: #ccc; cursor: not-allowed; transform: none;}
+        .btn-secondary {background: #6c757d;}
+
+        .progress-bar {width: 100%; height: 4px; background: #e9ecef; border-radius: 2px; margin-bottom: 30px; overflow: hidden;}
+        .progress-fill {height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: width 0.3s ease; border-radius: 2px;}
+
+        .results-grid {display: grid; gap: 15px; text-align: left;}
+
+        .restaurant-card {background: #f8f9fa; padding: 20px; border-radius: 10px;border-left: 4px solid #667eea;}
+        .restaurant-name { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 5px;}
+        .restaurant-rating {color: #ffa500; margin-bottom: 5px;}
+        .restaurant-info {color: #666; font-size: 0.9rem;}
+
+        @media (max-width: 600px) {
+            .container {padding: 20px; margin: 20px;}
+            .checkbox-group {grid-template-columns: 1fr;}
+            .price-group {flex-direction: column;gap: 10px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- progress bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <!-- 1: location -->
+        <div class="screen active" id="screen1">
+            <h1>Restaurants in the Area</h1>
+            <h2>Where are you looking?</h2>
+            <div class="form-group">
+                <label for="location">Enter location (city, address, landmark):</label>
+                <input type="text" id="location" placeholder="e.g., Seattle, WA or Zion National Park">
+            </div>
+            <button class="btn" onclick="goToScreen2()">Next</button>
+        </div>
+        <!-- 2: prefs -->
+        <div class="screen" id="screen2">
+            <h2>What food are you in the mood for?</h2>
+            <div class="form-group">
+                <label>Cuisine Types (select any that interest you):</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="italian" value="italian">
+                        <label for="italian">Italian</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="mexican" value="mexican">
+                        <label for="mexican">Mexican</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="asian" value="asian">
+                        <label for="asian">Asian</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="american" value="american">
+                        <label for="american">American</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="seafood" value="seafood">
+                        <label for="seafood">Seafood</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vegetarian" value="vegetarian">
+                        <label for="vegetarian">Vegetarian</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Price Range:</label>
+                <div class="price-group">
+                    <div class="price-item">
+                        <input type="checkbox" id="price1" value="1">
+                        <label for="price1">$</label>
+                    </div>
+                    <div class="price-item">
+                        <input type="checkbox" id="price2" value="2">
+                        <label for="price2">$$</label>
+                    </div>
+                    <div class="price-item">
+                        <input type="checkbox" id="price3" value="3">
+                        <label for="price3">$$$</label>
+                    </div>
+                    <div class="price-item">
+                        <input type="checkbox" id="price4" value="4">
+                        <label for="price4">$$$$</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="time">What time are you planning to go?</label>
+                <select id="time">
+                    <option value="">Any time</option>
+                    <option value="breakfast">Breakfast (7AM-11AM)</option>
+                    <option value="lunch">Lunch (11AM-3PM)</option>
+                    <option value="dinner">Dinner (5PM-10PM)</option>
+                    <option value="late">Late Night (10PM+)</option>
+                </select>
+            </div>
+            <button class="btn btn-secondary" onclick="goToScreen1()">Back</button>
+            <button class="btn" onclick="findRestaurants()">Find Restaurants</button>
+        </div>
+        <!-- 3: results -->
+        <div class="screen" id="screen3">
+            <h2>Restaurants near you</h2>
+            <div id="results" class="results-grid">
+                <!-- show results here..... -->
+            </div>
+            <button class="btn btn-secondary" onclick="goToScreen2()">Change Preferences</button>
+            <button class="btn" onclick="startOver()">New Search</button>
+        </div>
+    </div>
+    <script>
+        let currentScreen = 1;
+        function updateProgressBar() {
+            const progressFill = document.getElementById('progressFill');
+            const progress = (currentScreen / 3) * 100;
+            progressFill.style.width = progress + '%';}
+
+        function showScreen(screenNumber) {
+            // hide screens
+            document.querySelectorAll('.screen').forEach(screen => {screen.classList.remove('active');});
+            // show the target screen
+            document.getElementById('screen' + screenNumber).classList.add('active');
+            currentScreen = screenNumber;
+            updateProgressBar();}
+
+        function goToScreen1() {showScreen(1);}
+
+        function goToScreen2() {
+            const location = document.getElementById('location').value.trim();
+            if (!location) {alert('Please enter a location first!'); return;}
+            showScreen(2);}
+
+        function findRestaurants() {
+            // get the form data
+            const formData = collectFormData();
+            console.log('Search criteria:', formData);
+            // mock results while testing . . . 
+            showMockResults();
+            showScreen(3);}
+
+        function collectFormData() {
+            const location = document.getElementById('location').value;
+            
+            // get cuisine types
+            const cuisines = [];
+            document.querySelectorAll('#screen2 input[type="checkbox"]:checked').forEach(checkbox => {
+                if (checkbox.value !== '1' && checkbox.value !== '2' && checkbox.value !== '3' && checkbox.value !== '4') {
+                    cuisines.push(checkbox.value);}
+            });
+            
+            // get prices
+            const prices = [];
+            document.querySelectorAll('.price-item input[type="checkbox"]:checked').forEach(checkbox => {
+                prices.push(parseInt(checkbox.value));});
+            
+            const time = document.getElementById('time').value;
+            
+            return {location, cuisines, prices, time};
+        }
+
+        function showMockResults() {
+            const resultsContainer = document.getElementById('results');
+            // MOCK DATA FOR TESTING!!
+            const mockRestaurants = [
+                {
+                    name: "Bella Vista Italian",
+                    rating: 4.5,
+                    priceLevel: 2,
+                    cuisine: "Italian",
+                    address: "123 Main St"
+                },
+                {
+                    name: "Taco Libre",
+                    rating: 4.2,
+                    priceLevel: 1,
+                    cuisine: "Mexican",
+                    address: "456 Oak Ave"
+                },
+                {
+                    name: "Sakura Sushi",
+                    rating: 4.7,
+                    priceLevel: 3,
+                    cuisine: "Japanese",
+                    address: "789 Pine St"
+                }
+            ];
+            
+            resultsContainer.innerHTML = '';
+            
+            mockRestaurants.forEach(restaurant => {
+                const card = document.createElement('div');
+                card.className = 'restaurant-card';
+                
+                const stars = '★'.repeat(Math.floor(restaurant.rating)) + '☆'.repeat(5 - Math.floor(restaurant.rating));
+                const priceSymbols = '$'.repeat(restaurant.priceLevel);
+                
+                card.innerHTML = `
+                    <div class="restaurant-name">${restaurant.name}</div>
+                    <div class="restaurant-rating">${stars} ${restaurant.rating}</div>
+                    <div class="restaurant-info">${restaurant.cuisine} • ${priceSymbols} • ${restaurant.address}</div>
+                `;
+                
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        function startOver() {
+            // clear the whole form
+            document.getElementById('location').value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('time').value = '';
+            
+            showScreen(1);}
+
+        // make progress bar
+        updateProgressBar();
+    </script>
+</body>
+</html>
