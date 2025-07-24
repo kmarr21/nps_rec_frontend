@@ -6,54 +6,59 @@
     <title>NPS Nearby Restaurant Finder</title>
     <style>
         * {margin: 0; padding: 0; box-sizing: border-box;}
-        body {font-family: 'Georgia', serif; background: #8B7355; min-height: 100vh; display: flex; align-items: center; justify-content: center;}
-        .container {background: #F5F5DC; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); padding: 40px;
-            width: 90%; max-width: 500px; text-align: center; border: 3px solid #2F4F2F;}
+        body {font-family: 'Arial', sans-serif; background-color: #f8f8f8; min-height: 100vh; display: flex;
+            align-items: center; justify-content: center; padding: 20px;}
+
+        .container {background: white; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.1); padding: 40px;
+            width: 100%; max-width: 500px; text-align: center; border: 2px solid #2F4F2F;}
         .screen {display: none;}
         .screen.active {display: block;}
 
         h1 {color: #2F4F2F; margin-bottom: 30px; font-size: 2rem; font-weight: bold;}
-        h2 {color: #8B4513; margin-bottom: 25px; font-size: 1.5rem; }
+        h2 {color: #333; margin-bottom: 25px; font-size: 1.4rem; font-weight: normal;}
+        .form-group {margin-bottom: 30px; text-align: left;}
 
-        .form-group {margin-bottom: 25px; text-align: left;}
-        label {display: block; margin-bottom: 8px; font-weight: bold; color: #2F4F2F;}
-        input[type="text"], select {width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px;
-            font-size: 16px; transition: border-color 0.3s ease;}
+        label {display: block; margin-bottom: 15px; font-weight: bold; color: #333; font-size: 1.1rem;}
+        input[type="text"], select {width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 6px;
+            font-size: 16px; background: white;}
         input[type="text"]:focus, select:focus {outline: none; border-color: #2F4F2F;}
 
-        .checkbox-group {display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;}
-        .checkbox-item {display: flex; align-items: center; padding: 8px; background: #DDBF94; border-radius: 6px;
-            transition: background-color 0.3s ease; border: 1px solid #8B7355;}
-        .checkbox-item:hover {background: #D2B48C;}
-        .checkbox-item.all-option {background: #2F4F2F; color: white; font-weight: bold;}
-        .checkbox-item.all-option:hover {background: #228B22;}
-        .checkbox-item input[type="checkbox"] { margin-right: 8px; width: auto;}
+        .checkbox-list {display: flex; flex-direction: column; gap: 8px; margin-top: 10px;}
+        .checkbox-item {display: flex; align-items: center; padding: 12px; background: white; border: 1px solid #ddd;
+            border-radius: 6px; transition: all 0.2s ease;}
+        .checkbox-item:hover {background: #f9f9f9; border-color: #2F4F2F;}
+        .checkbox-item.all-option {background: #f0f0f0; color: black; border-color: #ddd;}
+        .checkbox-item.all-option:hover {background: #e8e8e8; border-color: #2F4F2F;}
+        .checkbox-item input[type="checkbox"] {margin-right: 12px; width: 18px; height: 18px;}
+        .checkbox-item label {margin: 0; font-weight: normal; cursor: pointer; font-size: 1rem;}
 
-        .price-group {display: flex; justify-content: space-around; margin-top: 10px;}
-        .price-item {display: flex; align-items: center; padding: 10px; background: #f8f9fa;
-            border-radius: 6px; transition: background-color 0.3s ease;}
-        .price-item:hover {background: #e9ecef;}
-        .price-item input[type="checkbox"] {margin-right: 5px; width: auto;}
+        .price-list {display: flex; flex-direction: column; gap: 8px; margin-top: 10px;}
+        .price-item {display: flex; align-items: center; padding: 12px; background: white; border: 1px solid #ddd;
+            border-radius: 6px; transition: all 0.2s ease;}
+        .price-item:hover {background: #f9f9f9; border-color: #8B4513;}
+        .price-item.all-option {background: #f0f0f0; color: black; border-color: #ddd;}
+        .price-item.all-option:hover {background: #e8e8e8; border-color: #8B4513;}
+        .price-item input[type="checkbox"] {margin-right: 12px; width: 18px; height: 18px;}
+        .price-item label {margin: 0; font-weight: normal; cursor: pointer; font-size: 1rem;}
 
-        .btn {background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px;
-            border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.3s ease; margin: 10px;}
-        .btn:hover {transform: translateY(-2px);}
-        .btn:disabled {background: #ccc; cursor: not-allowed; transform: none;}
-        .btn-secondary {background: #6c757d;}
+        .btn {background: #2F4F2F; color: white; border: none; padding: 15px 30px; border-radius: 6px; font-size: 16px;
+            font-weight: bold; cursor: pointer; transition: background-color 0.2s ease; margin: 10px;}
+        .btn:hover {background: #1a3a1a;}
+        .btn:disabled {background: #ccc; cursor: not-allowed;}
+        .btn-secondary {background: #8B4513;}
+        .btn-secondary:hover {background: #5d2d0a;}
 
-        .progress-bar {width: 100%; height: 4px; background: #e9ecef; border-radius: 2px; margin-bottom: 30px; overflow: hidden;}
-        .progress-fill {height: 100%; background: #2F4F2F; transition: width 0.3s ease; border-radius: 2px;}
+        .progress-bar {width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-bottom: 30px; overflow: hidden;}
+        .progress-fill {height: 100%; background: #2F4F2F; transition: width 0.3s ease; border-radius: 3px;}
+        .results-grid {display: flex; flex-direction: column; gap: 15px; text-align: left;}
 
-        .results-grid {display: grid; gap: 15px; text-align: left;}
-        .restaurant-card {background: #DDBF94; padding: 20px; border-radius: 10px; border-left: 4px solid #2F4F2F; border: 1px solid #8B7355;}
-        .restaurant-name {font-size: 1.2rem; font-weight: bold; color: #2F4F2F; margin-bottom: 5px;}
-        .restaurant-rating {color: #8B4513; margin-bottom: 5px;}
-        .restaurant-info {color: #654321; font-size: 0.9rem;}
+        .restaurant-card {background: white; padding: 20px; border-radius: 6px; border: 1px solid #ddd; border-left: 4px solid #2F4F2F;}
+        .restaurant-name {font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 5px;}
+        .restaurant-rating { color: #8B4513; margin-bottom: 5px; font-weight: bold;}
+        .restaurant-info {color: #666; font-size: 0.9rem;}
 
         @media (max-width: 600px) {
-            .container {padding: 20px; margin: 20px;}
-            .checkbox-group {grid-template-columns: 1fr;}
-            .price-group {flex-direction: column; gap: 10px;}
+            .container {padding: 20px; margin: 10px;}
         }
     </style>
 </head>
@@ -65,7 +70,7 @@
         </div>
         <!-- screen 1: location -->
         <div class="screen active" id="screen1">
-            <h1>Find Restaurants</h1>
+            <h1>Find Restaurants Near You</h1>
             <h2>Where are you looking?</h2>
             <div class="form-group">
                 <label for="location">Enter location (city, address, landmark):</label>
@@ -78,7 +83,7 @@
             <h2>What are you in the mood for?</h2>
             <div class="form-group">
                 <label>Cuisine Types (select any that interest you):</label>
-                <div class="checkbox-group">
+                <div class="checkbox-list">
                     <div class="checkbox-item all-option">
                         <input type="checkbox" id="cuisineAll" value="all">
                         <label for="cuisineAll">All Cuisines</label>
@@ -115,26 +120,26 @@
             </div>
             <div class="form-group">
                 <label>Price Range:</label>
-                <div class="price-group">
+                <div class="price-list">
                     <div class="price-item all-option">
                         <input type="checkbox" id="priceAll" value="all">
                         <label for="priceAll">All Prices</label>
                     </div>
                     <div class="price-item">
                         <input type="checkbox" id="price1" value="1">
-                        <label for="price1">$</label>
+                        <label for="price1">$ (Budget)</label>
                     </div>
                     <div class="price-item">
                         <input type="checkbox" id="price2" value="2">
-                        <label for="price2">$</label>
+                        <label for="price2">$$ (Moderate)</label>
                     </div>
                     <div class="price-item">
                         <input type="checkbox" id="price3" value="3">
-                        <label for="price3">$$</label>
+                        <label for="price3">$$$ (Expensive)</label>
                     </div>
                     <div class="price-item">
                         <input type="checkbox" id="price4" value="4">
-                        <label for="price4">$$</label>
+                        <label for="price4">$$$$ (Very Expensive)</label>
                     </div>
                 </div>
             </div>
@@ -153,24 +158,27 @@
         </div>
         <!-- screen 3: results -->
         <div class="screen" id="screen3">
-            <h2>Restaurants near you</h2>
+            <h2>Restaurant options near you</h2>
             <div id="results" class="results-grid">
-                <!-- RESULTS show here -->
+                <!-- RESULTS TO BE SHOWN HERE -->
             </div>
             <button class="btn btn-secondary" onclick="goToScreen2()">Change Preferences</button>
             <button class="btn" onclick="startOver()">New Search</button>
         </div>
     </div>
+
     <script>
         let currentScreen = 1;
-        // handle the "all" checkboxes condition
+        // handle the "all" boxes
         document.getElementById('cuisineAll').addEventListener('change', function() {
-            const cuisineCheckboxes = document.querySelectorAll('#screen2 .checkbox-group input[type="checkbox"]:not(#cuisineAll)');
-            cuisineCheckboxes.forEach(cb => cb.checked = this.checked);});
+            const cuisineCheckboxes = document.querySelectorAll('.checkbox-list input[type="checkbox"]:not(#cuisineAll)');
+            cuisineCheckboxes.forEach(cb => cb.checked = this.checked);
+        });
 
         document.getElementById('priceAll').addEventListener('change', function() {
-            const priceCheckboxes = document.querySelectorAll('.price-group input[type="checkbox"]:not(#priceAll)');
-            priceCheckboxes.forEach(cb => cb.checked = this.checked);});
+            const priceCheckboxes = document.querySelectorAll('.price-list input[type="checkbox"]:not(#priceAll)');
+            priceCheckboxes.forEach(cb => cb.checked = this.checked);
+        });
 
         function updateProgressBar() {
             const progressFill = document.getElementById('progressFill');
@@ -205,25 +213,22 @@
             // get form data
             const formData = collectFormData();
             console.log('Search criteria:', formData);
-            
-            // just show mock results rn....
+            // show mock results
             showMockResults();
             showScreen(3);
         }
 
         function collectFormData() {
             const location = document.getElementById('location').value;
-            
             // cuisine types
             const cuisines = [];
-            document.querySelectorAll('#screen2 input[type="checkbox"]:checked').forEach(checkbox => {
-                if (checkbox.value !== '1' && checkbox.value !== '2' && checkbox.value !== '3' && checkbox.value !== '4') {
-                    cuisines.push(checkbox.value);}});
+            document.querySelectorAll('.checkbox-list input[type="checkbox"]:checked').forEach(checkbox => {
+                if (checkbox.value !== 'all') {cuisines.push(checkbox.value);}});
             
-            // diff price levels
+            // get price levels
             const prices = [];
-            document.querySelectorAll('.price-item input[type="checkbox"]:checked').forEach(checkbox => {
-                prices.push(parseInt(checkbox.value));});
+            document.querySelectorAll('.price-list input[type="checkbox"]:checked').forEach(checkbox => {
+                if (checkbox.value !== 'all') {prices.push(parseInt(checkbox.value));}});
             
             const time = document.getElementById('time').value;
             return {location, cuisines, prices, time};
@@ -231,8 +236,7 @@
 
         function showMockResults() {
             const resultsContainer = document.getElementById('results');
-            
-            // FAKE DATA
+            // FAKE TESTING DATA
             const mockRestaurants = [
                 {
                     name: "Bella Vista Italian",
@@ -258,7 +262,6 @@
             ];
             
             resultsContainer.innerHTML = '';
-            
             mockRestaurants.forEach(restaurant => {
                 const card = document.createElement('div');
                 card.className = 'restaurant-card';
@@ -274,7 +277,7 @@
         }
 
         function startOver() {
-            // clearing form
+            // clearing the form
             document.getElementById('location').value = '';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.getElementById('time').value = '';
