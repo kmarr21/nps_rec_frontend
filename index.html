@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPS Trip Planner: Plan Your National Park Adventure</title>
+    <title>NPS Trip Planner: Plan A National Park Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {margin: 0; padding: 0; box-sizing: border-box;}
-        body {font-family: 'Arial', sans-serif; line-height: 1.6; color: #333;}
-
+        body {font-family: 'Inter', sans-serif; line-height: 1.6; color: #333;}
         /* navigation */
         .navbar {background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; top: 0; width: 100%;
             z-index: 1000; padding: 1rem 0;}
@@ -19,18 +19,19 @@
         .nav-links a:hover {color: #2F4F2F;}
         .nav-links a.active {color: #2F4F2F; border-bottom: 2px solid #2F4F2F;}
 
-        /* hero section */
-        .hero {background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23228B22" width="1200" height="600"/><polygon fill="%23654321" points="0,600 300,400 600,500 900,300 1200,400 1200,600"/><polygon fill="%232F4F2F" points="0,600 200,450 500,520 800,350 1200,450 1200,600"/></svg>');
+        .hero {background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('images/glacier-banner.jpg');
             background-size: cover; background-position: center; height: 100vh; display: flex; align-items: center;
             justify-content: center; text-align: center; color: white;}
-        .hero-content h1 {font-size: 3.5rem; margin-bottom: 1.5rem; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
-        .hero-content p {font-size: 1.3rem; margin-bottom: 2.5rem; max-width: 600px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);}
+        .hero-content {max-width: 800px; margin: 0 auto; padding: 0 2rem;}
+        .hero-content h1 {font-size: 3.5rem; margin-bottom: 1.5rem; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            line-height: 1.1;}
+        .hero-content p {font-size: 1.3rem; margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); line-height: 1.5;}
         .cta-button {display: inline-block; background: #2F4F2F; color: white; padding: 1rem 2.5rem; text-decoration: none;
             border-radius: 50px; font-size: 1.1rem; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(47,79,47,0.3);}
         .cta-button:hover {background: #1a3a1a; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(47,79,47,0.4);}
 
-        /* features section */
+        /* features */
         .features {padding: 5rem 0; background: white;}
         .container {max-width: 1200px; margin: 0 auto; padding: 0 2rem;}
         .features h2 {text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #2F4F2F;}
@@ -45,18 +46,19 @@
         .feature-card p {color: #666; line-height: 1.6;}
 
         /* how it works */
-        .how-it-works {padding: 5rem 0; background: #f8f9fa;}
-        .how-it-works h2 {text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #2F4F2F;}
+        .how-it-works {padding: 5rem 0; background: #1a3a1a; color: white;}
+        .how-it-works h2 {text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: white;}
         .steps {display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;}
         .step {text-align: center; padding: 2rem;}
-        .step-number {display: inline-block; width: 60px; height: 60px; background: #2F4F2F; color: white;
+        .step-number {display: inline-block; width: 60px; height: 60px; background: #8B4513; color: white;
             border-radius: 50%; font-size: 1.5rem; font-weight: bold; line-height: 60px; margin-bottom: 1rem;}
-        .step h3 {font-size: 1.3rem; margin-bottom: 1rem; color: #333;}
-        .step p {color: #666;}
+        .step h3 {font-size: 1.3rem; margin-bottom: 1rem; color: white;}
+        .step p {color: #ccc;}
 
         /* current trip status */
-        .trip-status {background: #2F4F2F; color: white; padding: 3rem 0; text-align: center;}
-        .trip-status h2 {font-size: 2rem; margin-bottom: 1.5rem;}
+        .trip-status {background: #2F4F2F; color: white; padding: 4rem 0; text-align: center;}
+        .trip-status h2 {font-size: 2rem; margin-bottom: 1rem;}
+        .trip-status p {font-size: 1.1rem; margin-bottom: 2.5rem; color: #ccc;}
         .trip-actions {display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;}
         .btn {display: inline-block; padding: 0.8rem 2rem; border-radius: 25px; text-decoration: none; font-weight: bold;
             transition: all 0.3s ease;}
@@ -72,7 +74,7 @@
         /* responsive */
         @media (max-width: 768px) {
             .nav-container {padding: 0 1rem;}
-            .nav-links {display: none;} /* TODO: Add mobile menu */
+            .nav-links {display: none;} /* TODO: probs need to add mobile menu */
             .hero-content h1 {font-size: 2.5rem;}
             .hero-content p {font-size: 1.1rem;}
             .features-grid, .steps {grid-template-columns: 1fr;}
@@ -92,10 +94,9 @@
             </ul>
         </div>
     </nav>
-    <!-- hero section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Plan Your Perfect National Park Adventure</h1>
+            <h1>Plan Your National Park Adventure</h1>
             <p>Get personalized park recommendations based on weather, crowds, and your preferences. Build complete itineraries with lodging and dining: all in one place.</p>
             <a href="#" class="cta-button" onclick="startPlanning()">Start Planning Your Trip</a>
         </div>
@@ -113,7 +114,7 @@
                 <div class="feature-card">
                     <div class="feature-icon"></div>
                     <h3>Crowd Intelligence</h3>
-                    <p>Avoid the crowds or embrace them: we show you historical visitor patterns so you can plan according to your preferences.</p>
+                    <p>Avoid the crowds or embrace them - we show you historical visitor patterns so you can plan according to your preferences.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"></div>
@@ -123,12 +124,11 @@
                 <div class="feature-card">
                     <div class="feature-icon"></div>
                     <h3>No Account Required</h3>
-                    <p>Start planning immediately with browser-based storage. Export your itinerary when you're done.</p>
+                    <p>Start planning immediately with browser-based storage. Export your itinerary when you're done: simple and hassle-free.</p>
                 </div>
             </div>
         </div>
     </section>
-
     <!-- how it works -->
     <section class="how-it-works">
         <div class="container">
@@ -152,12 +152,11 @@
                 <div class="step">
                     <div class="step-number">4</div>
                     <h3>Export & Enjoy</h3>
-                    <p>Download your complete itinerary and head out on your perfectly planned adventure.</p>
+                    <p>Download your complete itinerary and head out on your adventure.</p>
                 </div>
             </div>
         </div>
     </section>
-
     <!-- current trip status -->
     <section class="trip-status" id="tripStatus">
         <div class="container">
@@ -170,14 +169,12 @@
             </div>
         </div>
     </section>
-
     <!-- footer -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 NPS Trip Planner. Plan smarter, travel better.</p>
         </div>
     </footer>
-
     <script>
         // check for existing trip in localStorage
         function checkExistingTrip() {
@@ -199,13 +196,12 @@
                 myTripLink.style.fontWeight = 'bold';
             } else {
                 myTripLink.textContent = 'My Trip (None)';
-                myTripLink.style.color = '#999';
-            }
+                myTripLink.style.color = '#999';}
         }
 
         function startPlanning() {
             // TODO: redirect to questionnaire page
-            alert('Questionnaire page coming soon! This will start the planning process.');
+            alert('Questionnaire page coming soon!');
         }
 
         function deleteCurrentTrip() {
@@ -214,7 +210,6 @@
                 checkExistingTrip();
                 alert('Trip deleted. You can start planning a new one!');}
         }
-
         // check trip status when page loads
         document.addEventListener('DOMContentLoaded', checkExistingTrip);
     </script>
