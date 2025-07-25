@@ -242,7 +242,7 @@
         <div class="screen" id="screen3">
             <h2>Restaurant options near you</h2>
             <div id="results" class="results-grid">
-                <!-- RESULTS TO BE SHOWN HERE -->
+                <!-- RESULTS will be shown here:> -->
             </div>
             <button class="btn btn-secondary" onclick="goToScreen2()">Change Preferences</button>
             <button class="btn" onclick="startOver()">New Search</button>
@@ -271,10 +271,8 @@
             
             if (input.length < 2) {
                 hideAutocomplete();
-                return;
-            }
-            
-            // debounce the API calls
+                return;}
+            //debounce API calls
             autocompleteTimeout = setTimeout(() => {getLocationSuggestions(input);}, 300);
         });
 
