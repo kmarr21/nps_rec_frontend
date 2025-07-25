@@ -16,12 +16,18 @@
 
         h1 {color: #2F4F2F; margin-bottom: 30px; font-size: 2rem; font-weight: bold;}
         h2 {color: #333; margin-bottom: 25px; font-size: 1.4rem; font-weight: normal;}
-        .form-group {margin-bottom: 30px; text-align: left;}
+        .form-group {margin-bottom: 30px; text-align: left; position: relative;}
 
         label {display: block; margin-bottom: 15px; font-weight: bold; color: #333; font-size: 1.1rem;}
         input[type="text"], select {width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 6px;
             font-size: 16px; background: white;}
         input[type="text"]:focus, select:focus {outline: none; border-color: #2F4F2F;}
+
+        .autocomplete-dropdown {position: absolute; top: 100%; left: 0; right: 0; background: white; border: 2px solid #ddd;
+            border-top: none; border-radius: 0 0 6px 6px; max-height: 200px; overflow-y: auto; z-index: 1000; display: none;}
+        .autocomplete-item {padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #eee;}
+        .autocomplete-item:hover {background: #f9f9f9;}
+        .autocomplete-item:last-child {border-bottom: none;}
 
         .checkbox-list {display: flex; flex-direction: column; gap: 8px; margin-top: 10px;}
         .checkbox-item {display: flex; align-items: center; padding: 12px; background: white; border: 1px solid #ddd;
@@ -54,8 +60,11 @@
 
         .restaurant-card {background: white; padding: 20px; border-radius: 6px; border: 1px solid #ddd; border-left: 4px solid #2F4F2F;}
         .restaurant-name {font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 5px;}
-        .restaurant-rating { color: #8B4513; margin-bottom: 5px; font-weight: bold;}
+        .restaurant-rating {color: #8B4513; margin-bottom: 5px; font-weight: bold;}
         .restaurant-info {color: #666; font-size: 0.9rem;}
+
+        .loading {text-align: center; padding: 20px; color: #666;}
+        .error {text-align: center; padding: 20px; color: #e74c3c; background: #fdf2f2; border-radius: 6px; margin: 20px 0;}
 
         @media (max-width: 600px) {
             .container {padding: 20px; margin: 10px;}
@@ -74,7 +83,8 @@
             <h2>Where are you looking?</h2>
             <div class="form-group">
                 <label for="location">Enter location (city, address, landmark):</label>
-                <input type="text" id="location" placeholder="e.g., Seattle, WA or Space Needle">
+                <input type="text" id="location" placeholder="e.g., Seattle, WA or Space Needle" autocomplete="off">
+                <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
             </div>
             <button class="btn" onclick="goToScreen2()">Next</button>
         </div>
@@ -89,32 +99,104 @@
                         <label for="cuisineAll">All Cuisines</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="italian" value="italian">
-                        <label for="italian">Italian</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="mexican" value="mexican">
-                        <label for="mexican">Mexican</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="asian" value="asian">
-                        <label for="asian">Asian</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="american" value="american">
+                        <input type="checkbox" id="american" value="american_restaurant">
                         <label for="american">American</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="seafood" value="seafood">
+                        <input type="checkbox" id="asian" value="asian_restaurant">
+                        <label for="asian">Asian</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="barbecue" value="barbecue_restaurant">
+                        <label for="barbecue">Barbecue</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="brazilian" value="brazilian_restaurant">
+                        <label for="brazilian">Brazilian</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="chinese" value="chinese_restaurant">
+                        <label for="chinese">Chinese</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="fastfood" value="fast_food_restaurant">
+                        <label for="fastfood">Fast Food</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="french" value="french_restaurant">
+                        <label for="french">French</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="greek" value="greek_restaurant">
+                        <label for="greek">Greek</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="indian" value="indian_restaurant">
+                        <label for="indian">Indian</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="italian" value="italian_restaurant">
+                        <label for="italian">Italian</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="japanese" value="japanese_restaurant">
+                        <label for="japanese">Japanese</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="korean" value="korean_restaurant">
+                        <label for="korean">Korean</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lebanese" value="lebanese_restaurant">
+                        <label for="lebanese">Lebanese</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="mediterranean" value="mediterranean_restaurant">
+                        <label for="mediterranean">Mediterranean</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="mexican" value="mexican_restaurant">
+                        <label for="mexican">Mexican</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="middleeastern" value="middle_eastern_restaurant">
+                        <label for="middleeastern">Middle Eastern</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="pizza" value="pizza_restaurant">
+                        <label for="pizza">Pizza</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="seafood" value="seafood_restaurant">
                         <label for="seafood">Seafood</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="vegetarian" value="vegetarian">
+                        <input type="checkbox" id="spanish" value="spanish_restaurant">
+                        <label for="spanish">Spanish</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="steakhouse" value="steak_house">
+                        <label for="steakhouse">Steakhouse</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="thai" value="thai_restaurant">
+                        <label for="thai">Thai</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="turkish" value="turkish_restaurant">
+                        <label for="turkish">Turkish</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vegan" value="vegan_restaurant">
+                        <label for="vegan">Vegan</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vegetarian" value="vegetarian_restaurant">
                         <label for="vegetarian">Vegetarian</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="fastfood" value="fastfood">
-                        <label for="fastfood">Fast Food</label>
+                        <input type="checkbox" id="vietnamese" value="vietnamese_restaurant">
+                        <label for="vietnamese">Vietnamese</label>
                     </div>
                 </div>
             </div>
@@ -166,9 +248,11 @@
             <button class="btn" onclick="startOver()">New Search</button>
         </div>
     </div>
-
     <script>
+        const BACKEND_URL = 'https://nps-rec-backend.onrender.com';
         let currentScreen = 1;
+        let autocompleteTimeout;
+
         // handle the "all" boxes
         document.getElementById('cuisineAll').addEventListener('change', function() {
             const cuisineCheckboxes = document.querySelectorAll('.checkbox-list input[type="checkbox"]:not(#cuisineAll)');
@@ -180,6 +264,67 @@
             priceCheckboxes.forEach(cb => cb.checked = this.checked);
         });
 
+        // autocomplete functionality
+        document.getElementById('location').addEventListener('input', function() {
+            const input = this.value.trim();
+            clearTimeout(autocompleteTimeout);
+            
+            if (input.length < 2) {
+                hideAutocomplete();
+                return;
+            }
+            
+            // debounce the API calls
+            autocompleteTimeout = setTimeout(() => {getLocationSuggestions(input);}, 300);
+        });
+
+        // hide autocomplete when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.form-group')) {hideAutocomplete();}
+        });
+
+        async function getLocationSuggestions(input) {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/autocomplete`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({input: input})});
+                
+                const data = await response.json();
+                showAutocompleteResults(data.predictions || []);
+            } catch (error) {
+                console.error('Autocomplete error:', error);
+                hideAutocomplete();
+            }
+        }
+
+        function showAutocompleteResults(predictions) {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            
+            if (predictions.length === 0) {
+                hideAutocomplete();
+                return;}
+
+            dropdown.innerHTML = '';
+            predictions.forEach(prediction => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.textContent = prediction.description;
+                item.onclick = () => selectLocation(prediction.description);
+                dropdown.appendChild(item);
+            });
+            dropdown.style.display = 'block';
+        }
+
+        function selectLocation(description) {
+            document.getElementById('location').value = description;
+            hideAutocomplete();
+        }
+
+        function hideAutocomplete() {
+            document.getElementById('autocompleteDropdown').style.display = 'none';
+        }
+
         function updateProgressBar() {
             const progressFill = document.getElementById('progressFill');
             const progress = (currentScreen / 3) * 100;
@@ -188,8 +333,7 @@
 
         function showScreen(screenNumber) {
             // hide all the screens
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');});
+            document.querySelectorAll('.screen').forEach(screen => {screen.classList.remove('active');});
             
             // target screen
             document.getElementById('screen' + screenNumber).classList.add('active');
@@ -205,84 +349,96 @@
             const location = document.getElementById('location').value.trim();
             if (!location) {
                 alert('Please enter a location first!');
-                return;}
+                return;
+            }
+            hideAutocomplete();
             showScreen(2);
         }
 
-        function findRestaurants() {
+        async function findRestaurants() {
             // get form data
             const formData = collectFormData();
             console.log('Search criteria:', formData);
-            // show mock results
-            showMockResults();
+            
+            // show loading and go to results screen
             showScreen(3);
+            showLoading();
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/search-restaurants`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {showRealResults(data);
+                } else {showError(data.error || 'Failed to find restaurants');}
+            } catch (error) {
+                console.error('Search error:', error);
+                showError('Network error - please try again');
+            }
         }
 
         function collectFormData() {
             const location = document.getElementById('location').value;
+            
             // cuisine types
             const cuisines = [];
             document.querySelectorAll('.checkbox-list input[type="checkbox"]:checked').forEach(checkbox => {
-                if (checkbox.value !== 'all') {cuisines.push(checkbox.value);}});
-            
+                if (checkbox.value !== 'all') {cuisines.push(checkbox.value);}
+            });
             // get price levels
             const prices = [];
             document.querySelectorAll('.price-list input[type="checkbox"]:checked').forEach(checkbox => {
-                if (checkbox.value !== 'all') {prices.push(parseInt(checkbox.value));}});
+                if (checkbox.value !== 'all') {prices.push(parseInt(checkbox.value));}
+            });
             
             const time = document.getElementById('time').value;
             return {location, cuisines, prices, time};
         }
 
-        function showMockResults() {
+        function showLoading() {
             const resultsContainer = document.getElementById('results');
-            // FAKE TESTING DATA
-            const mockRestaurants = [
-                {
-                    name: "Bella Vista Italian",
-                    rating: 4.5,
-                    priceLevel: 2,
-                    cuisine: "Italian",
-                    address: "123 Main St"
-                },
-                {
-                    name: "Taco Libre",
-                    rating: 4.2,
-                    priceLevel: 1,
-                    cuisine: "Mexican",
-                    address: "456 Oak Ave"
-                },
-                {
-                    name: "Sakura Sushi",
-                    rating: 4.7,
-                    priceLevel: 3,
-                    cuisine: "Japanese",
-                    address: "789 Pine St"
-                }
-            ];
+            resultsContainer.innerHTML = '<div class="loading">Finding restaurants near you...</div>';
+        }
+
+        function showRealResults(data) {
+            const resultsContainer = document.getElementById('results');
+            
+            if (!data.restaurants || data.restaurants.length === 0) {
+                resultsContainer.innerHTML = '<div class="error">No restaurants found matching your criteria. Try different filters or location.</div>';
+                return;}
             
             resultsContainer.innerHTML = '';
-            mockRestaurants.forEach(restaurant => {
+            
+            data.restaurants.forEach(restaurant => {
                 const card = document.createElement('div');
                 card.className = 'restaurant-card';
                 const stars = '★'.repeat(Math.floor(restaurant.rating)) + '☆'.repeat(5 - Math.floor(restaurant.rating));
-                const priceSymbols = '$'.repeat(restaurant.priceLevel);
-                
+                const priceSymbols = '$'.repeat(restaurant.price_level);
                 card.innerHTML = `
                     <div class="restaurant-name">${restaurant.name}</div>
                     <div class="restaurant-rating">${stars} ${restaurant.rating}</div>
-                    <div class="restaurant-info">${restaurant.cuisine} • ${priceSymbols} • ${restaurant.address}</div>`;
+                    <div class="restaurant-info">${priceSymbols} • ${restaurant.address}</div>`;
                 
-                resultsContainer.appendChild(card);});
+                resultsContainer.appendChild(card);
+            });
         }
+
+        function showError(message) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = `<div class="error">${message}</div>`;}
 
         function startOver() {
             // clearing the form
             document.getElementById('location').value = '';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.getElementById('time').value = '';
-            showScreen(1);
-        }
+            hideAutocomplete();
+            showScreen(1);}
+
         // make progress bar
         updateProgressBar();
     </script>
