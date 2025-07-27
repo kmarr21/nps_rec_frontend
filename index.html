@@ -18,6 +18,7 @@
         .nav-links a {text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s ease;}
         .nav-links a:hover {color: #2F4F2F;}
         .nav-links a.active {color: #2F4F2F; border-bottom: 2px solid #2F4F2F;}
+
         .hero {background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('images/glacier-banner.jpg');
             background-size: cover; background-position: center; height: 100vh; display: flex; align-items: center;
             justify-content: center; text-align: center; color: white;}
@@ -29,8 +30,9 @@
         .cta-button {display: inline-block; background: #2F4F2F; color: white; padding: 1rem 2.5rem; text-decoration: none;
             border-radius: 50px; font-size: 1.1rem; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(47,79,47,0.3);}
         .cta-button:hover {background: #1a3a1a; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(47,79,47,0.4);}
+        .cta-button:disabled {background: #ccc; cursor: not-allowed; transform: none; box-shadow: none;}
 
-        /* features */
+        /*features */
         .features {padding: 5rem 0; background: white;}
         .container {max-width: 1200px; margin: 0 auto; padding: 0 2rem;}
         .features h2 {text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #2F4F2F;}
@@ -60,17 +62,22 @@
         .trip-status p {font-size: 1.1rem; margin-bottom: 2.5rem; color: #ccc;}
         .trip-actions {display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;}
         .btn {display: inline-block; padding: 0.8rem 2rem; border-radius: 25px; text-decoration: none; font-weight: bold;
-            transition: all 0.3s ease;}
+            transition: all 0.3s ease; border: none; font-size: 1rem; cursor: pointer;}
         .btn-primary {background: #8B4513; color: white;}
         .btn-primary:hover {background: #654321; transform: translateY(-2px);}
         .btn-secondary {background: transparent; color: white; border: 2px solid white;}
         .btn-secondary:hover {background: white; color: #2F4F2F;}
+        .btn:disabled {background: #666; cursor: not-allowed; transform: none;}
+        .btn:disabled:hover {background: #666; color: white; transform: none;}
+
+        /* existing trip warning */
+        .existing-trip-warning {background: #fff3cd; border: 2px solid #ffc107; color: #856404; padding: 15px; margin: 15px 0; border-radius: 5px;}
 
         /* footer */
         .footer {background: #333; color: white; padding: 2rem 0; text-align: center;}
         .footer p {color: #ccc;}
 
-        /*responsive */
+        /* responsive */
         @media (max-width: 768px) {
             .nav-container {padding: 0 1rem;}
             .nav-links {display: none;} /* TODO: probs need to add mobile menu */
@@ -96,7 +103,10 @@
         <div class="hero-content">
             <h1>Plan Your National Park Adventure</h1>
             <p>Get personalized park recommendations based on weather, crowds, and your preferences. Build complete itineraries with lodging and dining, all in one place.</p>
-            <a href="questionnaire.html" class="cta-button">Start Planning Your Trip</a>
+            <a href="#" class="cta-button" id="mainCTA" onclick="handleStartPlanning()">Start Planning Your Trip</a>
+            <div class="existing-trip-warning" id="existingTripWarning" style="display: none;">
+                You already have a trip in progress. Please complete or delete it before starting a new one.
+            </div>
         </div>
     </section>
     <!-- features -->
@@ -161,9 +171,9 @@
             <h2 id="tripStatusTitle">Ready to Start Planning?</h2>
             <p id="tripStatusMessage">Create your personalized national park itinerary in just a few minutes.</p>
             <div class="trip-actions">
-                <a href="questionnaire.html" class="btn btn-primary">Start New Trip</a>
-                <a href="itinerary.html" class="btn btn-secondary" id="continueTrip" style="display: none;">Continue Current Trip</a>
-                <a href="#" class="btn btn-secondary" id="deleteTrip" style="display: none;" onclick="deleteCurrentTrip()">Delete Current Trip</a>
+                <button class="btn btn-primary" id="startNewTripBtn" onclick="handleStartPlanning()">Start New Trip</button>
+                <a href="itinerary.html" class="btn btn-secondary" id="viewTripBtn" style="display: none;">View My Trip</a>
+                <button class="btn btn-secondary" id="deleteTrip" style="display: none;" onclick="deleteCurrentTrip()">Delete Current Trip</button>
             </div>
         </div>
     </section>
@@ -174,30 +184,67 @@
         </div>
     </footer>
     <script>
-        // check for existing trip in localStorage
+        // check for existing trip in local storage
         function checkExistingTrip() {
             const currentTrip = localStorage.getItem('nps_current_trip');
             const tripStatus = document.getElementById('tripStatus');
             const statusTitle = document.getElementById('tripStatusTitle');
             const statusMessage = document.getElementById('tripStatusMessage');
-            const continueBtn = document.getElementById('continueTrip');
+            const viewTripBtn = document.getElementById('viewTripBtn');
             const deleteBtn = document.getElementById('deleteTrip');
             const myTripLink = document.getElementById('myTripLink');
+            const mainCTA = document.getElementById('mainCTA');
+            const startNewTripBtn = document.getElementById('startNewTripBtn');
+            const existingTripWarning = document.getElementById('existingTripWarning');
+            
             if (currentTrip) {
                 const trip = JSON.parse(currentTrip);
-                statusTitle.textContent = `Continue "${trip.name || 'Your Trip'}"`;
-                statusMessage.textContent = 'You have a trip in progress. Continue editing or start fresh.';
-                continueBtn.style.display = 'inline-block';
+                // update trip status section
+                statusTitle.textContent = `"${trip.name || 'Your Trip'}"`;
+                statusMessage.textContent = 'Your itinerary is ready! View your trip details or start planning a new adventure.';
+                viewTripBtn.style.display = 'inline-block';
                 deleteBtn.style.display = 'inline-block';
+                
+                // update nav
                 myTripLink.textContent = 'My Current Trip';
                 myTripLink.style.color = '#2F4F2F';
                 myTripLink.style.fontWeight = 'bold';
-                // link to itinerary page for existing trips
                 myTripLink.href = 'itinerary.html';
-            } else {
+                
+                // disable start new trip options and show warning
+                mainCTA.style.pointerEvents = 'none';
+                mainCTA.style.opacity = '0.6';
+                mainCTA.textContent = 'Complete Current Trip First';
+                startNewTripBtn.disabled = true;
+                startNewTripBtn.textContent = 'Complete Current Trip First';
+                existingTripWarning.style.display = 'block';
+            } else {// no existing trip
                 myTripLink.textContent = 'My Trip (None)';
                 myTripLink.style.color = '#999';
-                myTripLink.href = '#';}
+                myTripLink.href = '#';
+                myTripLink.onclick = function() {
+                    alert('No trip created yet. Start planning below!');
+                    return false;};
+                
+                //start new trip options
+                mainCTA.style.pointerEvents = 'auto';
+                mainCTA.style.opacity = '1';
+                mainCTA.textContent = 'Start Planning Your Trip';
+                startNewTripBtn.disabled = false;
+                startNewTripBtn.textContent = 'Start New Trip';
+                existingTripWarning.style.display = 'none';}
+        }
+
+        function handleStartPlanning() {
+            const currentTrip = localStorage.getItem('nps_current_trip');
+            if (currentTrip) {
+                alert('You already have a trip in progress. Please view your current trip or delete it before starting a new one.');
+                return;}
+            // clear leftover questionnaire or selection data
+            localStorage.removeItem('nps_questionnaire_data');
+            localStorage.removeItem('nps_park_selection');
+            // redirect to questionnaire
+            window.location.href = 'questionnaire.html';
         }
 
         function deleteCurrentTrip() {

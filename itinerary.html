@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Your Itinerary: NPS Trip Planner</title>
+    <title>Your Itinerary: NPS Trip Planner</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {margin: 0; padding: 0; box-sizing: border-box;}
@@ -31,7 +31,7 @@
         .header h1 {font-size: 2.5rem; color: #2F4F2F; margin-bottom: 1rem; font-weight: 700;}
         .header p {font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto;}
 
-        /* trip naming */
+        /*trip naming */
         .trip-form {background: white; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 30px;}
         .form-group {margin-bottom: 30px;}
         .form-group label {display: block; font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 10px;}
@@ -50,7 +50,7 @@
         .park-details p {color: #666; font-size: 0.9rem;}
         .trip-dates {color: #8B4513; font-weight: 600; margin-left: auto;}
 
-        /*trip overview display */
+        /* trip overview display */
         .trip-overview {background: white; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 30px;}
         .trip-title {font-size: 2rem; color: #2F4F2F; margin-bottom: 10px; font-weight: 700;}
         .trip-subtitle {color: #666; font-size: 1.1rem; margin-bottom: 30px;}
@@ -65,8 +65,9 @@
 
         /* action buttons */
         .action-section {text-align: center; padding: 20px 0;}
-        .btn {background: #2F4F2F; color: white; border: none; padding: 15px 40px; font-size: 1.1rem;
-            font-weight: bold; cursor: pointer; transition: all 0.3s ease; margin: 0 10px;}
+        .button-row {display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;}
+        .btn {background: #2F4F2F; color: white; border: none; padding: 15px 30px; font-size: 1.1rem;
+            font-weight: bold; cursor: pointer; transition: all 0.3s ease;}
         .btn:hover {background: #1a3a1a; transform: translateY(-2px);}
         .btn:disabled {background: #ccc; cursor: not-allowed; transform: none;}
         .btn-secondary {background: #8B4513;}
@@ -80,6 +81,7 @@
         .next-steps p {color: #666; margin-bottom: 20px; line-height: 1.6;}
         .disclaimer {background: #f8f9fa; padding: 20px; margin: 20px 0; border-left: 4px solid #2F4F2F; text-align: left;}
         .disclaimer strong {color: #2F4F2F;}
+
         /* success message */
         .success-message {background: #d4edda; border: 2px solid #c3e6cb; color: #155724; padding: 20px; margin-bottom: 30px; text-align: center; font-weight: 600;}
 
@@ -91,11 +93,12 @@
             .trip-form, .selected-parks, .trip-overview, .next-steps {padding: 25px;}
             .timeline-item {flex-direction: column; gap: 10px;}
             .timeline-date {min-width: auto; margin-bottom: 10px;}
-            .btn {margin: 5px; padding: 12px 30px;}}
+            .button-row {flex-direction: column; gap: 10px;}
+            .btn {width: 100%; max-width: 300px;}}
     </style>
 </head>
 <body>
-    <!-- navigation -->
+    <!-- nav -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">US National Park Trip Planner</div>
@@ -107,7 +110,7 @@
         </div>
     </nav>
     <div class="main-content">
-        <!-- step 1: create trip -->
+        <!-- create trip -->
         <div class="screen active" id="createTripScreen">
             <div class="header">
                 <h1>Create Your Trip</h1>
@@ -129,15 +132,14 @@
                 </div>
             </div>
             <div class="action-section">
-                <button class="btn btn-secondary" onclick="goBack()">← Back to Park Selection</button>
-                <button class="btn" id="createTripBtn" onclick="createTrip()" disabled>Create Trip →</button>
+                <div class="button-row">
+                    <button class="btn btn-secondary" onclick="goBack()">← Back to Park Selection</button>
+                    <button class="btn" id="createTripBtn" onclick="createTrip()" disabled>Create Trip →</button>
+                </div>
             </div>
         </div>
-        <!-- step 2: trip overview -->
+        <!-- trip overview -->
         <div class="screen" id="tripOverviewScreen">
-            <div class="success-message">
-                <strong>Trip Created Successfully!</strong> Your itinerary has been saved to your browser.
-            </div>
             <div class="trip-overview">
                 <div class="trip-title" id="overviewTripName">Your Trip Name</div>
                 <div class="trip-subtitle" id="overviewTripDates">Trip dates and duration</div>
@@ -145,7 +147,6 @@
                     <!-- timeline will be generated here -->
                 </div>
             </div>
-
             <div class="next-steps">
                 <h3>Ready for the Next Step?</h3>
                 <p>Your basic itinerary is complete! Next, you can find places to stay near your selected parks.</p>
@@ -154,19 +155,21 @@
                     You'll need to book accommodations, campsites, and make park reservations directly through official websites and services.
                 </div>
                 <div class="action-section">
-                    <button class="btn" onclick="continueToAccommodations()" disabled>Find Places to Stay (Coming Soon)</button>
-                    <button class="btn btn-secondary" onclick="goHome()">← Back to Home</button>
-                    <button class="btn btn-secondary" onclick="editTrip()">Edit Trip Details</button>
+                    <div class="button-row">
+                        <button class="btn" onclick="continueToAccommodations()" disabled>Find Places to Stay (Coming Soon)</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-secondary" onclick="goHome()">← Back to Home</button>
+                        <button class="btn btn-secondary" onclick="editTrip()">Edit Trip Details</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script>
         let PARKS_DATA = [];
         let parkSelectionData = {};
         let currentTrip = null;
-
         // load parks data
         async function loadParksData() {
             try {
@@ -179,16 +182,25 @@
         // initialize page
         document.addEventListener('DOMContentLoaded', function() {
             loadParksData();
-            loadSelectionData();
-            displaySelectedParks();
-            setupTripNameValidation();
-        });
+            checkExistingTrip();});
+
+        function checkExistingTrip() {
+            const existingTrip = localStorage.getItem('nps_current_trip');
+            
+            if (existingTrip) {// show existing trip overview
+                currentTrip = JSON.parse(existingTrip);
+                showTripOverview();
+            } else {// show create trip screen
+                loadSelectionData();
+                displaySelectedParks();
+                setupTripNameValidation();}
+        }
 
         function loadSelectionData() {
             const stored = localStorage.getItem('nps_park_selection');
-            if (stored) {parkSelectionData = JSON.parse(stored);
-            } else {
-                //back if no selection data
+            if (stored) {
+                parkSelectionData = JSON.parse(stored);
+            } else {// redirect back if no selection data and no existing trip
                 alert('No park selection found. Please start from the questionnaire.');
                 window.location.href = 'questionnaire.html';
                 return;}
@@ -209,7 +221,6 @@
 
                 const parkItem = document.createElement('div');
                 parkItem.className = 'park-item';
-                
                 const startDate = new Date(parkSelectionData.questionnaire.startDate).toLocaleDateString();
                 const endDate = new Date(parkSelectionData.questionnaire.endDate).toLocaleDateString();
                 
@@ -220,29 +231,26 @@
                         <p>${park.state} • ${park.description.substring(0, 80)}...</p>
                     </div>
                     <div class="trip-dates">${startDate} - ${endDate}</div>`;
-                
-                parksList.appendChild(parkItem);});
+                parksList.appendChild(parkItem);
+            });
         }
 
         function setupTripNameValidation() {
             const tripNameInput = document.getElementById('tripName');
             const createBtn = document.getElementById('createTripBtn');
-            
             tripNameInput.addEventListener('input', function() {
                 const isValid = this.value.trim().length > 0;
                 createBtn.disabled = !isValid;
                 
-                if (isValid) {
-                    createBtn.textContent = 'Create Trip →';
-                } else {createBtn.textContent = 'Enter Trip Name';}});
+                if (isValid) {createBtn.textContent = 'Create Trip →';} 
+                else {createBtn.textContent = 'Enter Trip Name';}});
         }
 
         function createTrip() {
             const tripName = document.getElementById('tripName').value.trim();
-            
-            if (!tripName) {
-                alert('Please enter a trip name.');
+            if (!tripName) {alert('Please enter a trip name.');
                 return;}
+
             // create trip object
             currentTrip = {
                 id: 'trip_' + Date.now(),
@@ -253,7 +261,7 @@
                 questionnaire: parkSelectionData.questionnaire,
                 status: 'planning'};
 
-            // save to localStorage
+            // save to local storage
             localStorage.setItem('nps_current_trip', JSON.stringify(currentTrip));
             // show overview screen
             showTripOverview();
@@ -267,12 +275,15 @@
 
         function populateTripOverview() {
             if (!currentTrip) return;
+
             document.getElementById('overviewTripName').textContent = currentTrip.name;
+            
             const startDate = new Date(currentTrip.questionnaire.startDate).toLocaleDateString();
             const endDate = new Date(currentTrip.questionnaire.endDate).toLocaleDateString();
             const duration = currentTrip.questionnaire.duration || 'Multiple days';
             
             document.getElementById('overviewTripDates').textContent = `${startDate} - ${endDate} • ${duration}`;
+
             // create timeline
             createTripTimeline();
         }
@@ -280,7 +291,6 @@
         function createTripTimeline() {
             const timeline = document.getElementById('tripTimeline');
             timeline.innerHTML = '';
-
             const startDate = new Date(currentTrip.questionnaire.startDate);
             const endDate = new Date(currentTrip.questionnaire.endDate);
             const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
@@ -295,14 +305,11 @@
             currentTrip.parks.forEach((parkId, index) => {
                 const park = PARKS_DATA.find(p => p.id === parkId);
                 if (!park) return;
-
                 const parkDays = daysPerPark + (index < extraDays ? 1 : 0);
                 const parkEndDate = new Date(currentParkDate);
                 parkEndDate.setDate(parkEndDate.getDate() + parkDays - 1);
-
                 const timelineItem = document.createElement('div');
                 timelineItem.className = 'timeline-item';
-                
                 // get weather for the season
                 const season = getSeason(currentParkDate);
                 const weather = park.weather[season];
@@ -320,8 +327,7 @@
                 
                 timeline.appendChild(timelineItem);
                 // move to next park start date
-                currentParkDate.setDate(parkEndDate.getDate() + 1);
-            });
+                currentParkDate.setDate(parkEndDate.getDate() + 1);});
         }
 
         function getSeason(date) {
@@ -337,7 +343,7 @@
         }
 
         function continueToAccommodations() {
-            alert('Accommodation finder coming soon!');
+            alert('Accommodation finder coming soon! This will help you find hotels and campsites near your parks.');
         }
 
         function goHome() {
@@ -347,14 +353,19 @@
         function editTrip() {
             document.getElementById('tripOverviewScreen').classList.remove('active');
             document.getElementById('createTripScreen').classList.add('active');
-            
-            // populate the form with current trip data
+            //fill form w/ current trip data
             if (currentTrip) {
                 document.getElementById('tripName').value = currentTrip.name;
                 setupTripNameValidation();
                 document.getElementById('createTripBtn').disabled = false;
                 document.getElementById('createTripBtn').textContent = 'Update Trip →';
-            }
+                // load park selection data (to display)
+                parkSelectionData = {
+                    parks: currentTrip.parks,
+                    travelStyle: currentTrip.travelStyle,
+                    questionnaire: currentTrip.questionnaire
+                };
+                displaySelectedParks();}
         }
     </script>
 </body>
