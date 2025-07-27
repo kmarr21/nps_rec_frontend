@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Parks: NPS Trip Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; background: #f8f9fa;}
+        /* nav (same as homepage in index.html) */
+        .navbar {background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; top: 0; width: 100%;
+            z-index: 1000; padding: 1rem 0;}
+        .nav-container {max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between;
+            align-items: center; padding: 0 2rem;}
+        .logo {font-size: 1.8rem; font-weight: bold; color: #2F4F2F;}
+        .nav-links {display: flex; list-style: none; gap: 2rem;}
+        .nav-links a {text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s ease;}
+        .nav-links a:hover {color: #2F4F2F;}
+
+        /*main content */
+        .main-content {margin-top: 100px; padding: 2rem; min-height: calc(100vh - 100px); display: flex;
+            align-items: center; justify-content: center;}
+        .questionnaire-container {background: white; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 3rem; max-width: 600px; width: 100%; border: 2px solid #2F4F2F;}
+
+        /* progress */
+        .progress-bar {width: 100%; height: 8px; background: #e9ecef; border-radius: 4px; margin-bottom: 2rem;}
+        .progress-fill {height: 100%; background: #2F4F2F; border-radius: 4px; transition: width 0.3s ease;}
+
+        /* form styling */
+        h1 {color: #2F4F2F; margin-bottom: 1rem; font-size: 2rem; text-align: center;}
+        .step-title {color: #666; margin-bottom: 2rem; text-align: center; font-size: 1.1rem;}
+
+        .form-step {display: none;}
+        .form-step.active {display: block;}
+
+        .form-group {margin-bottom: 2rem;}
+        .form-group label {display: block; margin-bottom: 0.8rem; font-weight: 600; color: #333;}
+        .form-group input, .form-group select {width: 100%; padding: 1rem; border: 2px solid #ddd; border-radius: 8px;
+            font-size: 1rem; transition: border-color 0.3s ease;}
+        .form-group input:focus, .form-group select:focus {outline: none; border-color: #2F4F2F;}
+
+        /* date inputs */
+        .date-row {display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;}
+        .date-info {background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem; color: #666;}
+
+        /* checkbox grid */
+        .checkbox-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;}
+        .checkbox-item {display: flex; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;
+            border: 2px solid transparent; transition: all 0.3s ease; cursor: pointer;}
+        .checkbox-item:hover {background: #e9ecef; border-color: #2F4F2F;}
+        .checkbox-item input {margin-right: 0.8rem; width: 20px; height: 20px;}
+        .checkbox-item.selected {background: #e8f5e8; border-color: #2F4F2F;}
+
+        /* radio options */
+        .radio-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;}
+        .radio-item {display: flex; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;
+            border: 2px solid transparent; transition: all 0.3s ease; cursor: pointer;}
+        .radio-item:hover {background: #e9ecef; border-color: #2F4F2F;}
+        .radio-item input {margin-right: 0.8rem; width: 20px; height: 20px;}
+        .radio-item.selected {background: #e8f5e8; border-color: #2F4F2F;}
+
+        /* buttons */
+        .button-group {display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;}
+        .btn {padding: 1rem 2rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease;}
+        .btn-primary {background: #2F4F2F; color: white;}
+        .btn-primary:hover {background: #1a3a1a; transform: translateY(-2px);}
+        .btn-secondary {background: #8B4513; color: white;}
+        .btn-secondary:hover {background: #654321; transform: translateY(-2px);}
+        .btn-outline {background: transparent; color: #2F4F2F; border: 2px solid #2F4F2F;}
+        .btn-outline:hover {background: #2F4F2F; color: white;}
+        .btn:disabled {background: #ccc; cursor: not-allowed; transform: none;}
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .questionnaire-container {margin: 1rem; padding: 2rem;}
+            .date-row {grid-template-columns: 1fr;}
+            .checkbox-grid, .radio-grid {grid-template-columns: 1fr;}
+            .button-group {flex-direction: column;}
+        }
+    </style>
+</head>
+<body>
+    <!-- navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">US National Park Trip Planner</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#" id="myTripLink">My Current Trip</a></li>
+                <li><a href="#">How It Works</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- main content -->
+    <div class="main-content">
+        <div class="questionnaire-container">
+            <!-- make the progress bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <h1>Plan Your National Park Adventure</h1>
+            <p class="step-title" id="stepTitle">Let's start with your travel dates</p>
+            <!-- dates -->
+            <div class="form-step active" id="step1">
+                <div class="form-group">
+                    <label>When would you like to visit?</label>
+                    <div class="date-row">
+                        <div>
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div>
+                            <label for="endDate">End Date</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+                    <div class="date-info" id="dateInfo" style="display: none;">
+                        <strong>Trip Duration:</strong> <span id="tripDuration"></span>
+                    </div>
+                </div>
+            </div>
+            <!-- activities -->
+            <div class="form-step" id="step2">
+                <div class="form-group">
+                    <label>What activities interest you? (select all that apply)</label>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item" onclick="toggleCheckbox('hiking')">
+                            <input type="checkbox" id="hiking" value="hiking">
+                            <label for="hiking">Hiking</label>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('photography')">
+                            <input type="checkbox" id="photography" value="photography">
+                            <label for="photography">Photography</label>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('wildlife-watching')">
+                            <input type="checkbox" id="wildlife-watching" value="wildlife watching">
+                            <label for="wildlife-watching">Wildlife Watching</label>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('camping')">
+                            <input type="checkbox" id="camping" value="camping">
+                            <label for="camping">Camping</label>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('rock-climbing')">
+                            <input type="checkbox" id="rock-climbing" value="rock climbing">
+                            <label for="rock-climbing">Rock Climbing</label>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('fishing')">
+                            <input type="checkbox" id="fishing" value="fishing">
+                            <label for="fishing">Fishing</label>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('stargazing')">
+                            <input type="checkbox" id="stargazing" value="stargazing">
+                            <label for="stargazing">Stargazing</label>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('scenic-drives')">
+                            <input type="checkbox" id="scenic-drives" value="scenic drives">
+                            <label for="scenic-drives">Scenic Drives</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- climate preferences -->
+            <div class="form-step" id="step3">
+                <div class="form-group">
+                    <label>What's your preferred climate for this trip?</label>
+                    <div class="radio-grid">
+                        <div class="radio-item" onclick="selectRadio('climate', 'hot')">
+                            <input type="radio" id="hot" name="climate" value="hot">
+                            <label for="hot">Hot & Sunny (80°F+)</label>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('climate', 'warm')">
+                            <input type="radio" id="warm" name="climate" value="warm">
+                            <label for="warm">Warm & Pleasant (65-80°F)</label>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('climate', 'mild')">
+                            <input type="radio" id="mild" name="climate" value="mild">
+                            <label for="mild">Mild & Comfortable (50-65°F)</label>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('climate', 'cool')">
+                            <input type="radio" id="cool" name="climate" value="cool">
+                            <label for="cool">Cool & Crisp (35-50°F)</label>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('climate', 'any')">
+                            <input type="radio" id="any" name="climate" value="any">
+                            <label for="any">No Preference</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--crowd tolerance -->
+            <div class="form-step" id="step4">
+                <div class="form-group">
+                    <label>How do you feel about crowds?</label>
+                    <div class="radio-grid">
+                        <div class="radio-item" onclick="selectRadio('crowds', 'avoid')">
+                            <input type="radio" id="avoid" name="crowds" value="avoid">
+                            <label for="avoid">Avoid crowds - I prefer solitude</label>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('crowds', 'some')">
+                            <input type="radio" id="some" name="crowds" value="some">
+                            <label for="some">Some people are fine</label>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('crowds', 'dont-mind')">
+                            <input type="radio" id="dont-mind" name="crowds" value="dont-mind">
+                            <label for="dont-mind">Don't mind busy areas</label>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('crowds', 'enjoy')">
+                            <input type="radio" id="enjoy" name="crowds" value="enjoy">
+                            <label for="enjoy">I enjoy the energy of popular spots</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- trip style -->
+            <div class="form-step" id="step5">
+                <div class="form-group">
+                    <label>What type of trip are you planning?</label>
+                    <div class="radio-grid">
+                        <div class="radio-item" onclick="selectRadio('tripStyle', 'single')">
+                            <input type="radio" id="single" name="tripStyle" value="single">
+                            <label for="single">Focus on one park deeply</label>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('tripStyle', 'multiple')">
+                            <input type="radio" id="multiple" name="tripStyle" value="multiple">
+                            <label for="multiple">Visit multiple parks in one trip</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- nav buttons -->
+            <div class="button-group">
+                <button class="btn btn-outline" id="prevBtn" onclick="prevStep()" style="display: none;">Previous</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next</button>
+                <button class="btn btn-secondary" id="submitBtn" onclick="submitQuestionnaire()" style="display: none;">Find My Parks</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+        // date handling
+        document.getElementById('startDate').addEventListener('change', updateDateInfo);
+        document.getElementById('endDate').addEventListener('change', updateDateInfo);
+
+        function updateDateInfo() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            if (startDate && endDate && endDate > startDate) {
+                const timeDiff = endDate.getTime() - startDate.getTime();
+                const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                document.getElementById('tripDuration').textContent = `${dayDiff} days`;
+                document.getElementById('dateInfo').style.display = 'block';
+            } else {document.getElementById('dateInfo').style.display = 'none';}
+        }
+
+        // checkbox and radio handling
+        function toggleCheckbox(id) {
+            const checkbox = document.getElementById(id);
+            const item = checkbox.parentElement;
+            checkbox.checked = !checkbox.checked;
+            if (checkbox.checked) {item.classList.add('selected');} 
+            else {item.classList.remove('selected');}
+        }
+
+        function selectRadio(name, value) {
+            //clear all selections for this group
+            document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                radio.checked = false;
+                radio.parentElement.classList.remove('selected');});
+            
+            // select clicked one
+            const radio = document.getElementById(value);
+            radio.checked = true;
+            radio.parentElement.classList.add('selected');
+        }
+
+        // step nav
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateStepTitle() {
+            const titles = ['',
+                'Let\'s start with your travel dates',
+                'What activities interest you?',
+                'What\'s your preferred climate?',
+                'How do you feel about crowds?',
+                'What type of trip are you planning?'
+            ];
+            document.getElementById('stepTitle').textContent = titles[currentStep];
+        }
+
+        function showStep(step) {
+            // hide steps
+            document.querySelectorAll('.form-step').forEach(stepEl => {stepEl.classList.remove('active');});
+            // show current step
+            document.getElementById(`step${step}`).classList.add('active');
+            // update buttons
+            document.getElementById('prevBtn').style.display = step > 1 ? 'inline-block' : 'none';
+            document.getElementById('nextBtn').style.display = step < totalSteps ? 'inline-block' : 'none';
+            document.getElementById('submitBtn').style.display = step === totalSteps ? 'inline-block' : 'none';
+            updateProgress();
+            updateStepTitle();
+        }
+
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    const startDate = document.getElementById('startDate').value;
+                    const endDate = document.getElementById('endDate').value;
+                    if (!startDate || !endDate) {
+                        alert('Please select both start and end dates');
+                        return false;}
+                    if (new Date(endDate) <= new Date(startDate)) {
+                        alert('End date must be after start date');
+                        return false;}
+                    return true;
+                case 2:
+                    const activities = document.querySelectorAll('#step2 input[type="checkbox"]:checked');
+                    if (activities.length === 0) {
+                        alert('Please select at least one activity');
+                        return false;}
+                    return true;
+                case 3:
+                    const climate = document.querySelector('input[name="climate"]:checked');
+                    if (!climate) {
+                        alert('Please select a climate preference');
+                        return false;}
+                    return true;
+                case 4:
+                    const crowds = document.querySelector('input[name="crowds"]:checked');
+                    if (!crowds) {
+                        alert('Please select your crowd preference');
+                        return false;}
+                    return true;
+                case 5:
+                    const tripStyle = document.querySelector('input[name="tripStyle"]:checked');
+                    if (!tripStyle) {
+                        alert('Please select a trip style');
+                        return false;}
+                    return true;
+                default:
+                    return true;}
+        }
+
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                currentStep++;
+                showStep(currentStep);}
+        }
+
+        function prevStep() {
+            currentStep--;
+            showStep(currentStep);
+        }
+
+        function submitQuestionnaire() {
+            if (validateStep(currentStep)) {
+                //get all form data
+                const formData = {
+                    startDate: document.getElementById('startDate').value,
+                    endDate: document.getElementById('endDate').value,
+                    activities: Array.from(document.querySelectorAll('#step2 input[type="checkbox"]:checked')).map(cb => cb.value),
+                    climate: document.querySelector('input[name="climate"]:checked').value,
+                    crowds: document.querySelector('input[name="crowds"]:checked').value,
+                    tripStyle: document.querySelector('input[name="tripStyle"]:checked').value};
+                
+                // store in local storage
+                localStorage.setItem('questionnaire_data', JSON.stringify(formData));
+                // redirect to park selection page
+                window.location.href = 'park-selection.html';
+            }
+        }
+        // initialize
+        updateProgress();
+        updateStepTitle();
+    </script>
+</body>
+</html>

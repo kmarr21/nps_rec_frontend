@@ -1,0 +1,130 @@
+{
+  "parks": [
+    {
+      "id": "fake-yellowstone",
+      "name": "Yellowstone National Park",
+      "state": "Wyoming",
+      "description": "Famous for geysers, hot springs, and abundant wildlife including bison, elk, and grizzly bears.",
+      "latitude": 44.4280,
+      "longitude": -110.5885,
+      "activities": ["hiking", "wildlife watching", "photography", "camping", "fishing"],
+      "weather": {
+        "winter": { "temp": 25, "precipitation": 2.1 },
+        "spring": { "temp": 45, "precipitation": 1.8 },
+        "summer": { "temp": 70, "precipitation": 1.2 },
+        "fall": { "temp": 48, "precipitation": 1.5 }
+      },
+      "crowdLevel": {
+        "winter": "low",
+        "spring": "moderate", 
+        "summer": "very-high",
+        "fall": "moderate"
+      }
+    },
+    {
+      "id": "fake-grand-canyon",
+      "name": "Grand Canyon National Park", 
+      "state": "Arizona",
+      "description": "One of the world's most spectacular natural wonders with breathtaking canyon views and hiking trails.",
+      "latitude": 36.1069,
+      "longitude": -112.1129,
+      "activities": ["hiking", "photography", "scenic drives", "stargazing", "mule rides"],
+      "weather": {
+        "winter": { "temp": 45, "precipitation": 1.0 },
+        "spring": { "temp": 65, "precipitation": 0.8 },
+        "summer": { "temp": 85, "precipitation": 0.9 },
+        "fall": { "temp": 68, "precipitation": 0.7 }
+      },
+      "crowdLevel": {
+        "winter": "low",
+        "spring": "high",
+        "summer": "very-high", 
+        "fall": "high"
+      }
+    },
+    {
+      "id": "fake-yosemite",
+      "name": "Yosemite National Park",
+      "state": "California", 
+      "description": "Known for towering waterfalls, giant sequoia groves, and iconic granite cliffs like El Capitan.",
+      "latitude": 37.8651,
+      "longitude": -119.5383,
+      "activities": ["hiking", "rock climbing", "photography", "camping", "swimming"],
+      "weather": {
+        "winter": { "temp": 48, "precipitation": 3.2 },
+        "spring": { "temp": 65, "precipitation": 2.8 },
+        "summer": { "temp": 78, "precipitation": 0.3 },
+        "fall": { "temp": 62, "precipitation": 1.1 }
+      },
+      "crowdLevel": {
+        "winter": "low",
+        "spring": "moderate",
+        "summer": "very-high",
+        "fall": "moderate"
+      }
+    },
+    {
+      "id": "fake-zion",
+      "name": "Zion National Park",
+      "state": "Utah",
+      "description": "Features massive sandstone cliffs, narrow slot canyons, and the famous Narrows hike through a river.",
+      "latitude": 37.2982,
+      "longitude": -113.0263,
+      "activities": ["hiking", "canyoneering", "photography", "rock climbing", "camping"],
+      "weather": {
+        "winter": { "temp": 52, "precipitation": 1.5 },
+        "spring": { "temp": 73, "precipitation": 1.2 },
+        "summer": { "temp": 95, "precipitation": 0.8 },
+        "fall": { "temp": 75, "precipitation": 1.0 }
+      },
+      "crowdLevel": {
+        "winter": "low",
+        "spring": "high",
+        "summer": "very-high",
+        "fall": "moderate"
+      }
+    },
+    {
+      "id": "fake-acadia",
+      "name": "Acadia National Park", 
+      "state": "Maine",
+      "description": "Rugged Atlantic coastline with rocky shores, pine forests, and excellent hiking and biking trails.",
+      "latitude": 44.4093,
+      "longitude": -68.2475,
+      "activities": ["hiking", "biking", "photography", "wildlife watching", "tidepooling"],
+      "weather": {
+        "winter": { "temp": 28, "precipitation": 3.8 },
+        "spring": { "temp": 55, "precipitation": 3.2 },
+        "summer": { "temp": 72, "precipitation": 2.8 },
+        "fall": { "temp": 56, "precipitation": 3.5 }
+      },
+      "crowdLevel": {
+        "winter": "very-low", 
+        "spring": "moderate",
+        "summer": "very-high",
+        "fall": "high"
+      }
+    },
+    {
+      "id": "fake-glacier",
+      "name": "Glacier National Park",
+      "state": "Montana", 
+      "description": "Pristine wilderness with glacial-carved peaks, alpine lakes, and diverse wildlife in a stunning mountain setting.",
+      "latitude": 48.7596,
+      "longitude": -113.7870,
+      "activities": ["hiking", "camping", "photography", "wildlife watching", "fishing"],
+      "weather": {
+        "winter": { "temp": 22, "precipitation": 4.1},
+        "spring": { "temp": 48, "precipitation": 3.5},
+        "summer": { "temp": 68, "precipitation": 2.2},
+        "fall": { "temp": 45, "precipitation": 2.8}
+      },
+      "crowdLevel": {
+        "winter": "very-low",
+        "spring": "low", 
+        "summer": "very-high",
+        "fall": "moderate"
+      }
+    }
+  ]
+}
