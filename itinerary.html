@@ -31,7 +31,7 @@
         .header h1 {font-size: 2.5rem; color: #2F4F2F; margin-bottom: 1rem; font-weight: 700;}
         .header p {font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto;}
 
-        /*trip naming */
+        /* trip naming */
         .trip-form {background: white; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 30px;}
         .form-group {margin-bottom: 30px;}
         .form-group label {display: block; font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 10px;}
@@ -50,7 +50,7 @@
         .park-details p {color: #666; font-size: 0.9rem;}
         .trip-dates {color: #8B4513; font-weight: 600; margin-left: auto;}
 
-        /* trip overview display */
+        /*trip overview display */
         .trip-overview {background: white; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 30px;}
         .trip-title {font-size: 2rem; color: #2F4F2F; margin-bottom: 10px; font-weight: 700;}
         .trip-subtitle {color: #666; font-size: 1.1rem; margin-bottom: 30px;}
@@ -117,7 +117,7 @@
                 <p>Give your adventure a name and review your selections</p>
             </div>
             <div class="cache-warning">
-                <strong>Important:</strong> Your trip saves to browser only: be sure to export when done!
+                <strong>Important:</strong> Your trip saves to browser only - be sure to export when done!
             </div>
             <div class="trip-form">
                 <div class="form-group">
@@ -160,7 +160,8 @@
                     </div>
                     <div class="button-row">
                         <button class="btn btn-secondary" onclick="goHome()">← Back to Home</button>
-                        <button class="btn btn-secondary" onclick="editTrip()">Edit Trip Details</button>
+                        <button class="btn btn-secondary" onclick="editTrip()">Edit Parks & Details</button>
+                        <button class="btn btn-danger" onclick="deleteTrip()">Delete Trip</button>
                     </div>
                 </div>
             </div>
@@ -170,6 +171,7 @@
         let PARKS_DATA = [];
         let parkSelectionData = {};
         let currentTrip = null;
+
         // load parks data
         async function loadParksData() {
             try {
@@ -182,25 +184,25 @@
         // initialize page
         document.addEventListener('DOMContentLoaded', function() {
             loadParksData();
-            checkExistingTrip();});
+            checkExistingTrip();
+        });
 
         function checkExistingTrip() {
             const existingTrip = localStorage.getItem('nps_current_trip');
-            
             if (existingTrip) {// show existing trip overview
                 currentTrip = JSON.parse(existingTrip);
                 showTripOverview();
             } else {// show create trip screen
                 loadSelectionData();
                 displaySelectedParks();
-                setupTripNameValidation();}
+                setupTripNameValidation();
+            }
         }
 
         function loadSelectionData() {
             const stored = localStorage.getItem('nps_park_selection');
-            if (stored) {
-                parkSelectionData = JSON.parse(stored);
-            } else {// redirect back if no selection data and no existing trip
+            if (stored) {parkSelectionData = JSON.parse(stored);} 
+            else {// redirect back if no selection data and no existing trip
                 alert('No park selection found. Please start from the questionnaire.');
                 window.location.href = 'questionnaire.html';
                 return;}
@@ -211,16 +213,17 @@
             
             if (!parkSelectionData.parks || parkSelectionData.parks.length === 0) {
                 parksList.innerHTML = '<p>No parks selected.</p>';
-                return;}
+                return;
+            }
 
             parksList.innerHTML = '';
             
             parkSelectionData.parks.forEach(parkId => {
                 const park = PARKS_DATA.find(p => p.id === parkId);
                 if (!park) return;
-
                 const parkItem = document.createElement('div');
                 parkItem.className = 'park-item';
+                
                 const startDate = new Date(parkSelectionData.questionnaire.startDate).toLocaleDateString();
                 const endDate = new Date(parkSelectionData.questionnaire.endDate).toLocaleDateString();
                 
@@ -231,23 +234,25 @@
                         <p>${park.state} • ${park.description.substring(0, 80)}...</p>
                     </div>
                     <div class="trip-dates">${startDate} - ${endDate}</div>`;
-                parksList.appendChild(parkItem);
-            });
+                parksList.appendChild(parkItem);});
         }
 
         function setupTripNameValidation() {
             const tripNameInput = document.getElementById('tripName');
             const createBtn = document.getElementById('createTripBtn');
+            
             tripNameInput.addEventListener('input', function() {
                 const isValid = this.value.trim().length > 0;
                 createBtn.disabled = !isValid;
                 
                 if (isValid) {createBtn.textContent = 'Create Trip →';} 
-                else {createBtn.textContent = 'Enter Trip Name';}});
+                else {createBtn.textContent = 'Enter Trip Name';}
+            });
         }
 
         function createTrip() {
             const tripName = document.getElementById('tripName').value.trim();
+            
             if (!tripName) {alert('Please enter a trip name.');
                 return;}
 
@@ -259,9 +264,10 @@
                 parks: parkSelectionData.parks,
                 travelStyle: parkSelectionData.travelStyle,
                 questionnaire: parkSelectionData.questionnaire,
-                status: 'planning'};
+                status: 'planning'
+            };
 
-            // save to local storage
+            // save to localStorage
             localStorage.setItem('nps_current_trip', JSON.stringify(currentTrip));
             // show overview screen
             showTripOverview();
@@ -270,12 +276,12 @@
         function showTripOverview() {
             document.getElementById('createTripScreen').classList.remove('active');
             document.getElementById('tripOverviewScreen').classList.add('active');
+            
             populateTripOverview();
         }
 
         function populateTripOverview() {
             if (!currentTrip) return;
-
             document.getElementById('overviewTripName').textContent = currentTrip.name;
             
             const startDate = new Date(currentTrip.questionnaire.startDate).toLocaleDateString();
@@ -283,7 +289,6 @@
             const duration = currentTrip.questionnaire.duration || 'Multiple days';
             
             document.getElementById('overviewTripDates').textContent = `${startDate} - ${endDate} • ${duration}`;
-
             // create timeline
             createTripTimeline();
         }
@@ -291,10 +296,10 @@
         function createTripTimeline() {
             const timeline = document.getElementById('tripTimeline');
             timeline.innerHTML = '';
+
             const startDate = new Date(currentTrip.questionnaire.startDate);
             const endDate = new Date(currentTrip.questionnaire.endDate);
             const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-            
             // determine days per park
             const parksCount = currentTrip.parks.length;
             const daysPerPark = Math.floor(totalDays / parksCount);
@@ -308,8 +313,10 @@
                 const parkDays = daysPerPark + (index < extraDays ? 1 : 0);
                 const parkEndDate = new Date(currentParkDate);
                 parkEndDate.setDate(parkEndDate.getDate() + parkDays - 1);
+
                 const timelineItem = document.createElement('div');
                 timelineItem.className = 'timeline-item';
+                
                 // get weather for the season
                 const season = getSeason(currentParkDate);
                 const weather = park.weather[season];
@@ -327,7 +334,8 @@
                 
                 timeline.appendChild(timelineItem);
                 // move to next park start date
-                currentParkDate.setDate(parkEndDate.getDate() + 1);});
+                currentParkDate.setDate(parkEndDate.getDate() + 1);
+            });
         }
 
         function getSeason(date) {
@@ -351,21 +359,47 @@
         }
 
         function editTrip() {
-            document.getElementById('tripOverviewScreen').classList.remove('active');
-            document.getElementById('createTripScreen').classList.add('active');
-            //fill form w/ current trip data
-            if (currentTrip) {
-                document.getElementById('tripName').value = currentTrip.name;
-                setupTripNameValidation();
-                document.getElementById('createTripBtn').disabled = false;
-                document.getElementById('createTripBtn').textContent = 'Update Trip →';
-                // load park selection data (to display)
-                parkSelectionData = {
+            // instead of just editing the name, let them go back to park selection
+            if (confirm('Do you want to modify your park selections and preferences? This will take you back to the park selection page.')) {
+                // save current trip name for later use
+                const currentTripName = currentTrip.name;
+                // restore questionnaire and park selection data to localStorage for editing
+                localStorage.setItem('nps_questionnaire_data', JSON.stringify(currentTrip.questionnaire));
+                localStorage.setItem('nps_park_selection', JSON.stringify({
                     parks: currentTrip.parks,
                     travelStyle: currentTrip.travelStyle,
                     questionnaire: currentTrip.questionnaire
-                };
-                displaySelectedParks();}
+                }));
+                // temp remove current trip so they can make changes
+                localStorage.removeItem('nps_current_trip');
+                // go back to park selection to make changes
+                window.location.href = 'park-selection.html';
+            } else {
+                // just edit the trip name locally
+                document.getElementById('tripOverviewScreen').classList.remove('active');
+                document.getElementById('createTripScreen').classList.add('active');
+                // fill form w/ current trip data
+                if (currentTrip) {
+                    document.getElementById('tripName').value = currentTrip.name;
+                    setupTripNameValidation();
+                    document.getElementById('createTripBtn').disabled = false;
+                    document.getElementById('createTripBtn').textContent = 'Update Trip Name →';
+                    //load park selection data (to display)
+                    parkSelectionData = {
+                        parks: currentTrip.parks,
+                        travelStyle: currentTrip.travelStyle,
+                        questionnaire: currentTrip.questionnaire};
+                    displaySelectedParks();}
+            }
+        }
+
+        function deleteTrip() {
+            if (confirm('Are you sure you want to delete your current trip? This cannot be undone.')) {
+                localStorage.removeItem('nps_current_trip');
+                localStorage.removeItem('nps_questionnaire_data');
+                localStorage.removeItem('nps_park_selection');
+                alert('Trip deleted successfully! Redirecting to homepage...');
+                window.location.href = 'index.html';}
         }
     </script>
 </body>
