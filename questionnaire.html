@@ -47,13 +47,29 @@
         .error-message {color: #dc3545; font-size: 0.9rem; margin-top: 5px; display: none;}
         .error-message.show {display: block;}
         
-        /* checkbox lists */
-        .checkbox-list {display: flex; flex-direction: column; gap: 8px; margin-top: 10px;}
-        .checkbox-item {display: flex; align-items: center; padding: 12px; background: white; border: 1px solid #ddd;
-            transition: all 0.2s ease; cursor: pointer;}
-        .checkbox-item:hover {background: #f9f9f9; border-color: #2F4F2F;}
-        .checkbox-item input[type="checkbox"] {margin-right: 12px; width: 18px; height: 18px;}
-        .checkbox-item label {margin: 0; font-weight: normal; cursor: pointer; font-size: 1rem;}
+        /* dropdown styles */
+        .dropdown-container {position: relative; margin-bottom: 15px;}
+        .custom-dropdown {width: 100%; padding: 15px; border: 2px solid #ddd; background: white; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; transition: border-color 0.3s ease;}
+        .custom-dropdown:hover, .custom-dropdown.active {border-color: #2F4F2F;}
+        .dropdown-arrow {transition: transform 0.3s ease;}
+        .dropdown-arrow.rotated {transform: rotate(180deg);}
+        .dropdown-list {position: absolute; top: 100%; left: 0; right: 0; background: white; border: 2px solid #2F4F2F;
+            border-top: none; max-height: 200px; overflow-y: auto; z-index: 100; display: none;}
+        .dropdown-list.show {display: block;}
+        .dropdown-item {padding: 12px 15px; cursor: pointer; transition: background 0.2s ease;}
+        .dropdown-item:hover {background: #f9f9f9;}
+        .dropdown-item.selected {background: #2F4F2F; color: white;}
+        
+        /* selected items */
+        .selected-items {margin-top: 15px;}
+        .selected-item {display: inline-block; background: #2F4F2F; color: white; padding: 8px 12px; margin: 5px 5px 5px 0;
+            font-size: 0.9rem; position: relative; padding-right: 30px;}
+        .remove-item {position: absolute; right: 8px; top: 50%; transform: translateY(-50%); cursor: pointer; font-weight: bold;}
+        .remove-item:hover {color: #ff6b6b;}
+        
+        /* helper text */
+        .helper-text {font-size: 0.9rem; color: #666; margin-top: 5px; font-style: italic;}
         
         /* buttons */
         .btn {background: #2F4F2F; color: white; border: none; padding: 15px 30px; font-size: 16px;
@@ -107,49 +123,49 @@
             </div>
             <!-- activities -->
             <div class="screen" id="screen2">
-                <h2>What activities interest you?</h2>
+                <h2>What activities interest you most?</h2>
                 <div class="form-group">
-                    <label>Select all that apply:</label>
-                    <div class="checkbox-list">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="hiking" value="hiking">
-                            <label for="hiking">Hiking</label>
+                    <label>Select your top 1-3 activities:</label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" id="activitiesDropdown" onclick="toggleActivitiesDropdown()">
+                            <span id="activitiesPlaceholder">Choose activities...</span>
+                            <span class="dropdown-arrow" id="activitiesArrow">▼</span>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="photography" value="photography">
-                            <label for="photography">Photography</label>
+                        <div class="dropdown-list" id="activitiesList">
+                            <!-- activities loaded here -->
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="wildlife" value="wildlife watching">
-                            <label for="wildlife">Wildlife Watching</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="scenic" value="scenic drives">
-                            <label for="scenic">Scenic Drives</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="camping" value="camping">
-                            <label for="camping">Camping</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="fishing" value="fishing">
-                            <label for="fishing">Fishing</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="climbing" value="rock climbing">
-                            <label for="climbing">Rock Climbing</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="stargazing" value="stargazing">
-                            <label for="stargazing">Stargazing</label>
-                        </div>
+                    </div>
+                    <div class="helper-text">*You must select at least one activity and can select up to three.</div>
+                    <div class="selected-items" id="selectedActivities">
+                        <!-- selected activities here -->
                     </div>
                 </div>
                 <button class="btn btn-secondary" onclick="goToScreen1()">← Back</button>
-                <button class="btn" onclick="goToScreen3()">Next</button>
+                <button class="btn" onclick="goToScreen3()" id="nextBtn2" disabled>Next</button>
+            </div>
+            <!-- topics -->
+            <div class="screen" id="screen3">
+                <h2>Any specific topics or themes?</h2>
+                <div class="form-group">
+                    <label>Select topics that interest you (optional):</label>
+                    <div class="dropdown-container">
+                        <div class="custom-dropdown" id="topicsDropdown" onclick="toggleTopicsDropdown()">
+                            <span id="topicsPlaceholder">Choose topics (optional)...</span>
+                            <span class="dropdown-arrow" id="topicsArrow">▼</span>
+                        </div>
+                        <div class="dropdown-list" id="topicsList">
+                            <!-- topics loaded here -->
+                        </div>
+                    </div>
+                    <div class="selected-items" id="selectedTopics">
+                        <!-- selected topics here -->
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="goToScreen2()">← Back</button>
+                <button class="btn" onclick="goToScreen4()">Next</button>
             </div>
             <!-- climate -->
-            <div class="screen" id="screen3">
+            <div class="screen" id="screen4">
                 <h2>What's your preferred climate?</h2>
                 <div class="form-group">
                     <label for="climate">Temperature preference:</label>
@@ -161,11 +177,11 @@
                         <option value="no preference">No Preference</option>
                     </select>
                 </div>
-                <button class="btn btn-secondary" onclick="goToScreen2()">← Back</button>
-                <button class="btn" onclick="goToScreen4()" id="nextBtn3" disabled>Next</button>
+                <button class="btn btn-secondary" onclick="goToScreen3()">← Back</button>
+                <button class="btn" onclick="goToScreen5()" id="nextBtn4" disabled>Next</button>
             </div>
             <!-- crowds -->
-            <div class="screen" id="screen4">
+            <div class="screen" id="screen5">
                 <h2>How do you feel about crowds?</h2>
                 <div class="form-group">
                     <label for="crowds">Crowd tolerance:</label>
@@ -176,21 +192,6 @@
                         <option value="want solitude">I want solitude and quiet</option>
                     </select>
                 </div>
-                <button class="btn btn-secondary" onclick="goToScreen3()">← Back</button>
-                <button class="btn" onclick="goToScreen5()" id="nextBtn4" disabled>Next</button>
-            </div>
-            <!-- activity level -->
-            <div class="screen" id="screen5">
-                <h2>What's your physical activity level?</h2>
-                <div class="form-group">
-                    <label for="activityLevel">Activity preference:</label>
-                    <select id="activityLevel">
-                        <option value="">Select level</option>
-                        <option value="easy/accessible">Easy/Accessible activities</option>
-                        <option value="moderate">Moderate physical activity</option>
-                        <option value="challenging">Challenging/Strenuous activities</option>
-                    </select>
-                </div>
                 <button class="btn btn-secondary" onclick="goToScreen4()">← Back</button>
                 <button class="btn" onclick="submitQuestionnaire()" id="submitBtn" disabled>Find My Parks →</button>
             </div>
@@ -199,16 +200,158 @@
     <script>
         let currentScreen = 1;
         const totalScreens = 5;
-        // initialize date inputs with today's date as min
+        // data storage
+        let activitiesData = [];
+        let topicsData = [];
+        let selectedActivitiesList = [];
+        let selectedTopicsList = [];
+        // initialize
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('startDate').min = today;
             document.getElementById('endDate').min = today;
             setupDateValidation();
             setupSelectValidation();
-            updateProgressBar();
-        });
+            loadActivitiesAndTopics();
+            updateProgressBar();});
 
+        // load activities & topics from json files
+        async function loadActivitiesAndTopics() {
+            try {// load activities
+                const activitiesResponse = await fetch('data/activities_adjusted.json');
+                activitiesData = await activitiesResponse.json();
+                activitiesData.sort();// alphabetical order!!
+                populateActivitiesDropdown();
+                // load topics
+                const topicsResponse = await fetch('data/topics_adjusted.json');
+                topicsData = await topicsResponse.json();
+                topicsData.sort(); // alphabetical order!!
+                populateTopicsDropdown();
+            } catch (error) {
+                console.error('Error loading activities/topics data:', error);
+                // fallback data
+                activitiesData = ['Hiking', 'Camping', 'Wildlife Watching', 'Photography'];
+                topicsData = ['Mountains', 'Forests', 'Wildlife'];
+                populateActivitiesDropdown();
+                populateTopicsDropdown();}
+        }
+
+        function populateActivitiesDropdown() {
+            const list = document.getElementById('activitiesList');
+            list.innerHTML = '';
+            activitiesData.forEach(activity => {
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.textContent = activity;
+                item.onclick = () => selectActivity(activity);
+                list.appendChild(item);});
+        }
+
+        function populateTopicsDropdown() {
+            const list = document.getElementById('topicsList');
+            list.innerHTML = '';
+            topicsData.forEach(topic => {
+                if (!selectedTopicsList.includes(topic)) {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.textContent = topic;
+                    item.onclick = () => selectTopic(topic);
+                    list.appendChild(item);}});
+        }
+
+        function toggleActivitiesDropdown() {
+            const dropdown = document.getElementById('activitiesDropdown');
+            const list = document.getElementById('activitiesList');
+            const arrow = document.getElementById('activitiesArrow');
+            const isOpen = list.classList.contains('show');
+            // close all dropdowns first
+            closeAllDropdowns();
+            if (!isOpen) {
+                dropdown.classList.add('active');
+                list.classList.add('show');
+                arrow.classList.add('rotated');}
+        }
+
+        function toggleTopicsDropdown() {
+            const dropdown = document.getElementById('topicsDropdown');
+            const list = document.getElementById('topicsList');
+            const arrow = document.getElementById('topicsArrow');
+            const isOpen = list.classList.contains('show');
+            // close all dropdowns first
+            closeAllDropdowns();
+            if (!isOpen) {
+                dropdown.classList.add('active');
+                list.classList.add('show');
+                arrow.classList.add('rotated');}
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.custom-dropdown').forEach(dd => dd.classList.remove('active'));
+            document.querySelectorAll('.dropdown-list').forEach(dl => dl.classList.remove('show'));
+            document.querySelectorAll('.dropdown-arrow').forEach(arrow => arrow.classList.remove('rotated'));
+        }
+
+        function selectActivity(activity) {
+            if (selectedActivitiesList.includes(activity)) return;
+            if (selectedActivitiesList.length >= 3) {
+                alert('You can select up to 3 activities only.');
+                return;}
+            selectedActivitiesList.push(activity);
+            updateSelectedActivitiesDisplay();
+            updateActivitiesButton();
+            closeAllDropdowns();
+        }
+
+        function selectTopic(topic) {
+            if (selectedTopicsList.includes(topic)) return;
+            selectedTopicsList.push(topic);
+            updateSelectedTopicsDisplay();
+            populateTopicsDropdown(); // refresh to hide selected item!
+            closeAllDropdowns();
+        }
+
+        function removeActivity(activity) {
+            selectedActivitiesList = selectedActivitiesList.filter(a => a !== activity);
+            updateSelectedActivitiesDisplay();
+            updateActivitiesButton();
+        }
+
+        function removeTopic(topic) {
+            selectedTopicsList = selectedTopicsList.filter(t => t !== topic);
+            updateSelectedTopicsDisplay();
+            populateTopicsDropdown(); // refresh to show the item again
+        }
+
+        function updateSelectedActivitiesDisplay() {
+            const container = document.getElementById('selectedActivities');
+            container.innerHTML = '';
+            selectedActivitiesList.forEach(activity => {
+                const item = document.createElement('div');
+                item.className = 'selected-item';
+                item.innerHTML = `${activity}<span class="remove-item" onclick="removeActivity('${activity}')">×</span>`;
+                container.appendChild(item);});
+        }
+
+        function updateSelectedTopicsDisplay() {
+            const container = document.getElementById('selectedTopics');
+            container.innerHTML = '';
+            selectedTopicsList.forEach(topic => {
+                const item = document.createElement('div');
+                item.className = 'selected-item';
+                item.innerHTML = `${topic}<span class="remove-item" onclick="removeTopic('${topic}')">×</span>`;
+                container.appendChild(item);});
+        }
+
+        function updateActivitiesButton() {
+            const nextBtn = document.getElementById('nextBtn2');
+            nextBtn.disabled = selectedActivitiesList.length === 0;
+        }
+
+        // close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-container')) {closeAllDropdowns();}});
+
+        // date validation functions (same as before)
         function setupDateValidation() {
             const startDateInput = document.getElementById('startDate');
             const endDateInput = document.getElementById('endDate');
@@ -225,35 +368,30 @@
             const endError = document.getElementById('endDateError');
             
             let isValid = true;
-            
-            // clear previous errors
+            // clear prev errors
             startDateInput.classList.remove('date-error');
             endDateInput.classList.remove('date-error');
             startError.classList.remove('show');
             endError.classList.remove('show');
-            
-            // check start date is in future
+            // check start date in future
             if (startDate) {
                 const today = new Date();
                 const selectedStart = new Date(startDate);
-                today.setHours(0, 0, 0, 0); //reset time for comparison!
-                
+                today.setHours(0, 0, 0, 0);
                 if (selectedStart <= today) {
                     startDateInput.classList.add('date-error');
                     startError.classList.add('show');
                     isValid = false;}
             }
-            
-            // validate end date is after start date
+            // check end date is AFTER start date
             if (startDate && endDate) {
                 const selectedStart = new Date(startDate);
                 const selectedEnd = new Date(endDate);
                 if (selectedEnd <= selectedStart) {
                     endDateInput.classList.add('date-error');
                     endError.classList.add('show');
-                    isValid = false;}
-            }
-            // update button state
+                    isValid = false;}}
+            
             updateNextButton();
             return isValid;
         }
@@ -272,14 +410,10 @@
             
             if (!startDate || !endDate) return false;
             
-            // check future date
             const today = new Date();
             const selectedStart = new Date(startDate);
             today.setHours(0, 0, 0, 0);
-            
             if (selectedStart <= today) return false;
-            
-            // check end after start
             const selectedEnd = new Date(endDate);
             if (selectedEnd <= selectedStart) return false;
             
@@ -287,12 +421,10 @@
         }
 
         function setupSelectValidation() {
-            // climate validation
-            document.getElementById('climate').addEventListener('change', function() {document.getElementById('nextBtn3').disabled = !this.value;});
-            // crowds validation
-            document.getElementById('crowds').addEventListener('change', function() {document.getElementById('nextBtn4').disabled = !this.value;});
-            // activity level validation
-            document.getElementById('activityLevel').addEventListener('change', function() {document.getElementById('submitBtn').disabled = !this.value;});
+            // climate val
+            document.getElementById('climate').addEventListener('change', function() {document.getElementById('nextBtn4').disabled = !this.value;});
+            // crowds val
+            document.getElementById('crowds').addEventListener('change', function() {document.getElementById('submitBtn').disabled = !this.value;});
         }
 
         function updateProgressBar() {
@@ -302,9 +434,7 @@
         }
 
         function showScreen(screenNumber) {
-            // hide all screens
             document.querySelectorAll('.screen').forEach(screen => {screen.classList.remove('active');});
-            // show target screen
             document.getElementById('screen' + screenNumber).classList.add('active');
             currentScreen = screenNumber;
             updateProgressBar();
@@ -316,31 +446,26 @@
 
         function goToScreen2() {
             if (validateDatesOnly() && document.getElementById('startDate').value && 
-                document.getElementById('endDate').value) {
-                showScreen(2);}
+                document.getElementById('endDate').value) {showScreen(2);}
         }
 
         function goToScreen3() {
-            showScreen(3);
+            if (selectedActivitiesList.length > 0) {showScreen(3);}
         }
 
         function goToScreen4() {
-            if (document.getElementById('climate').value) {showScreen(4);}
+            showScreen(4);
         }
 
         function goToScreen5() {
-            if (document.getElementById('crowds').value) {showScreen(5);}
+            if (document.getElementById('climate').value) {showScreen(5);}
         }
 
         function collectFormData() {
-            // get activities
-            const activities = [];
-            document.querySelectorAll('.checkbox-list input[type="checkbox"]:checked').forEach(checkbox => {activities.push(checkbox.value);});
             // calc duration from dates
             const startDate = new Date(document.getElementById('startDate').value);
             const endDate = new Date(document.getElementById('endDate').value);
             const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-            
             let durationText;
             if (totalDays <= 3) {durationText = '1-3 days';}
             else if (totalDays <= 7) {durationText = '4-7 days';}
@@ -350,31 +475,35 @@
             return {
                 startDate: document.getElementById('startDate').value,
                 endDate: document.getElementById('endDate').value,
-                duration: durationText, // calculated, not selected
-                activities: activities,
+                duration: durationText,
+                activities: selectedActivitiesList, // array of selected activities
+                topics: selectedTopicsList, // array of selected topics (can be empty)
                 climate: document.getElementById('climate').value,
                 crowds: document.getElementById('crowds').value,
-                activityLevel: document.getElementById('activityLevel').value,
                 completed: new Date().toISOString()};
         }
 
         function submitQuestionnaire() {
-            if (!document.getElementById('activityLevel').value) {
-                alert('Please select your activity level.');
+            if (!document.getElementById('crowds').value) {
+                alert('Please select your crowd preference.');
                 return;}
             
-            // final date validation
+            if (selectedActivitiesList.length === 0) {
+                alert('Please select at least one activity.');
+                return;}
+            
+            //final date check
             if (!validateDatesOnly()) {
                 alert('Please fix the date errors before continuing.');
                 return;}
             
             const formData = collectFormData();
             console.log('Questionnaire data:', formData);
+            
             // save to local storage
             localStorage.setItem('nps_questionnaire_data', JSON.stringify(formData));
             // redirect to park selection
-            window.location.href = 'park-selection.html';
-        }
+            window.location.href = 'park-selection.html';}
     </script>
 </body>
 </html>

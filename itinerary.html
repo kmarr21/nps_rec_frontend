@@ -31,7 +31,7 @@
         .header h1 {font-size: 2.5rem; color: #2F4F2F; margin-bottom: 1rem; font-weight: 700;}
         .header p {font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto;}
 
-        /* trip naming */
+        /* step 1: trip naming */
         .trip-form {background: white; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 30px;}
         .form-group {margin-bottom: 30px;}
         .form-group label {display: block; font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 10px;}
@@ -50,20 +50,53 @@
         .park-details p {color: #666; font-size: 0.9rem;}
         .trip-dates {color: #8B4513; font-weight: 600; margin-left: auto;}
 
+        /* day assignment section (for multi-park trips) */
+        .day-assignment {background: white; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 30px;}
+        .day-assignment h3 {font-size: 1.4rem; color: #2F4F2F; margin-bottom: 20px; font-weight: 600;}
+        .day-picker {margin-bottom: 30px;}
+        .day-picker h4 {color: #333; margin-bottom: 15px; font-weight: 600;}
+        .days-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-bottom: 20px;}
+        .day-button {padding: 12px; background: white; border: 2px solid #ddd; cursor: pointer; text-align: center;
+            font-weight: 600; transition: all 0.3s ease;}
+        .day-button:hover {border-color: #2F4F2F; background: #f9f9f9;}
+        .day-button.selected {background: #2F4F2F; color: white; border-color: #2F4F2F;}
+        .day-button.assigned-other {background: #8B4513; color: white; border-color: #8B4513;}
+        .day-button.disabled {background: #f5f5f5; color: #999; cursor: not-allowed;}
+
+        /* preferences display */
+        .preferences-display {background: white; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 30px;}
+        .preferences-display h3 {font-size: 1.4rem; color: #2F4F2F; margin-bottom: 20px; font-weight: 600;}
+        .preferences-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;}
+        .preference-group h4 {color: #333; margin-bottom: 10px; font-weight: 600;}
+        .preference-tags {display: flex; flex-wrap: wrap; gap: 5px;}
+        .preference-tag {background: #f0f0f0; padding: 4px 8px; font-size: 0.8rem; color: #333;}
+        .preference-value {color: #666; font-weight: 500;}
+
         /* trip overview display */
         .trip-overview {background: white; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 30px;}
         .trip-title {font-size: 2rem; color: #2F4F2F; margin-bottom: 10px; font-weight: 700;}
         .trip-subtitle {color: #666; font-size: 1.1rem; margin-bottom: 30px;}
         
         .trip-timeline {margin: 30px 0;}
-        .timeline-item {display: flex; align-items: flex-start; gap: 20px; margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #eee;}
-        .timeline-date {background: #2F4F2F; color: white; padding: 10px 15px; font-weight: 600; min-width: 120px; text-align: center;}
-        .timeline-content {flex: 1;}
-        .timeline-content h4 {color: #333; font-weight: 600; margin-bottom: 8px;}
-        .timeline-content p {color: #666;}
-        .weather-preview {background: #8B4513; color: white; padding: 5px 10px; font-size: 0.8rem; margin-top: 5px; display: inline-block;}
+        .timeline-item {margin-bottom: 30px; padding: 25px; background: #f9f9f9; border-left: 4px solid #2F4F2F;}
+        .timeline-header {display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;}
+        .timeline-date {background: #2F4F2F; color: white; padding: 8px 15px; font-weight: 600;}
+        .timeline-park {font-size: 1.3rem; font-weight: 600; color: #333;}
+        .timeline-content {margin-bottom: 20px;}
+        .timeline-content p {color: #666; margin-bottom: 10px;}
+        .weather-preview {background: #8B4513; color: white; padding: 5px 10px; font-size: 0.8rem; display: inline-block;}
 
-        /* action buttons  */
+        /* accommodation and dining sections */
+        .day-sections {display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;}
+        .section {background: white; padding: 20px; border: 2px dashed #ddd;}
+        .section h5 {color: #333; margin-bottom: 10px; font-weight: 600; font-size: 1rem;}
+        .section-placeholder {color: #999; font-style: italic; text-align: center; padding: 20px 0;}
+        .meals-grid {display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;}
+        .meal-slot {background: #f9f9f9; padding: 15px; text-align: center; border: 1px solid #eee;}
+        .meal-slot h6 {color: #333; margin-bottom: 5px; font-size: 0.9rem; font-weight: 600;}
+        .meal-placeholder {color: #999; font-size: 0.8rem; font-style: italic;}
+
+        /* action buttons */
         .action-section {text-align: center; padding: 20px 0;}
         .button-row {display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;}
         .btn {background: #2F4F2F; color: white; border: none; padding: 15px 30px; font-size: 1.1rem;
@@ -82,23 +115,22 @@
         .disclaimer {background: #f8f9fa; padding: 20px; margin: 20px 0; border-left: 4px solid #2F4F2F; text-align: left;}
         .disclaimer strong {color: #2F4F2F;}
 
-        /* success message */
-        .success-message {background: #d4edda; border: 2px solid #c3e6cb; color: #155724; padding: 20px; margin-bottom: 30px; text-align: center; font-weight: 600;}
-
         /* responsive */
         @media (max-width: 768px) {
             .nav-container {padding: 0 1rem;}
             .nav-links {display: none;}
             .main-content {padding: 100px 1rem 50px;}
-            .trip-form, .selected-parks, .trip-overview, .next-steps {padding: 25px;}
-            .timeline-item {flex-direction: column; gap: 10px;}
-            .timeline-date {min-width: auto; margin-bottom: 10px;}
+            .trip-form, .selected-parks, .trip-overview, .next-steps, .day-assignment, .preferences-display {padding: 25px;}
+            .timeline-header {flex-direction: column; gap: 10px; align-items: flex-start;}
+            .day-sections {grid-template-columns: 1fr;}
+            .meals-grid {grid-template-columns: 1fr;}
             .button-row {flex-direction: column; gap: 10px;}
-            .btn {width: 100%; max-width: 300px;}}
+            .btn {width: 100%; max-width: 300px;}
+            .preferences-grid {grid-template-columns: 1fr;}}
     </style>
 </head>
 <body>
-    <!-- nav -->
+    <!-- nav-->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">US National Park Trip Planner</div>
@@ -125,10 +157,39 @@
                     <input type="text" id="tripName" placeholder="e.g., Summer 2025 Western Parks Adventure" maxlength="100">
                 </div>
             </div>
+            <!-- display user prefs -->
+            <div class="preferences-display" id="preferencesDisplay">
+                <h3>Your Trip Preferences</h3>
+                <div class="preferences-grid">
+                    <div class="preference-group">
+                        <h4>Activities</h4>
+                        <div class="preference-tags" id="activitiesTags"></div>
+                    </div>
+                    <div class="preference-group">
+                        <h4>Topics</h4>
+                        <div class="preference-tags" id="topicsTags"></div>
+                    </div>
+                    <div class="preference-group">
+                        <h4>Climate</h4>
+                        <div class="preference-value" id="climateValue"></div>
+                    </div>
+                    <div class="preference-group">
+                        <h4>Crowds</h4>
+                        <div class="preference-value" id="crowdsValue"></div>
+                    </div>
+                </div>
+            </div>
             <div class="selected-parks">
                 <h3>Your Selected Parks</h3>
                 <div class="parks-list" id="parksList">
-                    <!-- parks to be loaded here -->
+                    <!-- parks loaded here -->
+                </div>
+            </div>
+            <!-- day assignment for multi-park trips -->
+            <div class="day-assignment" id="dayAssignment" style="display: none;">
+                <h3>Assign Days to Each Park</h3>
+                <div id="dayPickerContainer">
+                    <!-- day pickers to be generated here -->
                 </div>
             </div>
             <div class="action-section">
@@ -143,8 +204,30 @@
             <div class="trip-overview">
                 <div class="trip-title" id="overviewTripName">Your Trip Name</div>
                 <div class="trip-subtitle" id="overviewTripDates">Trip dates and duration</div>
+                <!-- display prefs in overview -->
+                <div class="preferences-display">
+                    <h3>Your Preferences</h3>
+                    <div class="preferences-grid">
+                        <div class="preference-group">
+                            <h4>Activities</h4>
+                            <div class="preference-tags" id="overviewActivities"></div>
+                        </div>
+                        <div class="preference-group">
+                            <h4>Topics</h4>
+                            <div class="preference-tags" id="overviewTopics"></div>
+                        </div>
+                        <div class="preference-group">
+                            <h4>Climate</h4>
+                            <div class="preference-value" id="overviewClimate"></div>
+                        </div>
+                        <div class="preference-group">
+                            <h4>Crowds</h4>
+                            <div class="preference-value" id="overviewCrowds"></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="trip-timeline" id="tripTimeline">
-                    <!-- timeline will be generated here -->
+                    <!-- enhanced timeline to be shown here -->
                 </div>
             </div>
             <div class="next-steps">
@@ -171,48 +254,68 @@
         let PARKS_DATA = [];
         let parkSelectionData = {};
         let currentTrip = null;
+        let dayAssignments = {}; //stores which days go to which park!
         // load parks data
         async function loadParksData() {
             try {
                 const response = await fetch('fake-parks-data.json');
                 const data = await response.json();
                 PARKS_DATA = data.parks;
-                console.log('Parks data loaded:', PARKS_DATA.length, 'parks');
-            } catch (error) {console.error('Error loading parks data:', error);}
+                console.log('Parks data loaded:', PARKS_DATA.length, 'parks');}
+            catch (error) {console.error('Error loading parks data:', error);}
         }
+
         // initialize page
         document.addEventListener('DOMContentLoaded', async function() {
             await loadParksData();
-            checkExistingTrip();
-        });
+            checkExistingTrip();});
 
         function checkExistingTrip() {
             const existingTrip = localStorage.getItem('nps_current_trip');
-            if (existingTrip) {// show existing trip overview
+            
+            if (existingTrip) {
                 currentTrip = JSON.parse(existingTrip);
                 console.log('Found existing trip:', currentTrip);
-                // make sure parks data is loaded first
-                if (PARKS_DATA.length === 0) {// wait for parks data, then show overview
-                    setTimeout(() => {showTripOverview();}, 200);
-                } else {showTripOverview();}
-            } else {// show create trip screen
+                if (PARKS_DATA.length === 0) {setTimeout(() => { showTripOverview(); }, 200);}
+                else {showTripOverview();}
+            } else {
                 console.log('No existing trip found, showing create screen');
                 loadSelectionData();
                 displaySelectedParks();
-                setupTripNameValidation();
-            }
+                displayPreferences();
+                setupDayAssignment();
+                setupTripNameValidation();}
         }
 
         function loadSelectionData() {
             const stored = localStorage.getItem('nps_park_selection');
             if (stored) {
                 parkSelectionData = JSON.parse(stored);
-                console.log('Loaded park selection data:', parkSelectionData);
-            } else {// redirect back if no selection data and no existing trip
+                console.log('Loaded park selection data:', parkSelectionData);}
+            else {
                 alert('No park selection found. Please start from the questionnaire.');
                 window.location.href = 'questionnaire.html';
-                return;
-            }
+                return;}
+        }
+
+        function displayPreferences() {
+            if (!parkSelectionData.questionnaire) return;
+            const prefs = parkSelectionData.questionnaire;
+            // activities
+            const activitiesTags = document.getElementById('activitiesTags');
+            if (prefs.activities && prefs.activities.length > 0) {
+                activitiesTags.innerHTML = prefs.activities.map(activity => `<span class="preference-tag">${activity}</span>`).join('');}
+            else {activitiesTags.innerHTML = '<span class="preference-value">None selected</span>';}
+            
+            // topics
+            const topicsTags = document.getElementById('topicsTags');
+            if (prefs.topics && prefs.topics.length > 0) {
+                topicsTags.innerHTML = prefs.topics.map(topic => `<span class="preference-tag">${topic}</span>`).join('');}
+            else {topicsTags.innerHTML = '<span class="preference-value">None selected</span>';}
+
+            // climate and crowds
+            document.getElementById('climateValue').textContent = prefs.climate || 'Not specified';
+            document.getElementById('crowdsValue').textContent = prefs.crowds || 'Not specified';
         }
 
         function displaySelectedParks() {
@@ -226,10 +329,8 @@
             parkSelectionData.parks.forEach(parkId => {
                 const park = PARKS_DATA.find(p => p.id === parkId);
                 if (!park) return;
-
                 const parkItem = document.createElement('div');
                 parkItem.className = 'park-item';
-                
                 const startDate = new Date(parkSelectionData.questionnaire.startDate).toLocaleDateString();
                 const endDate = new Date(parkSelectionData.questionnaire.endDate).toLocaleDateString();
                 
@@ -243,22 +344,89 @@
                 parksList.appendChild(parkItem);});
         }
 
+        function setupDayAssignment() {
+            if (!parkSelectionData.parks || parkSelectionData.parks.length < 2) {
+                // single park trip, so we don't need day assignment!! 
+                return;}
+            
+            // OTHERWISE: show day assignment section
+            document.getElementById('dayAssignment').style.display = 'block';
+            
+            const startDate = new Date(parkSelectionData.questionnaire.startDate);
+            const endDate = new Date(parkSelectionData.questionnaire.endDate);
+            const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            const container = document.getElementById('dayPickerContainer');
+            container.innerHTML = '';
+            
+            // create day picker for FIRST park
+            const firstPark = PARKS_DATA.find(p => p.id === parkSelectionData.parks[0]);
+            const firstPicker = createDayPicker(firstPark, startDate, totalDays, 0);
+            container.appendChild(firstPicker);
+            
+            // create day picker for SECOND park (only allowing 2 total!)
+            const secondPark = PARKS_DATA.find(p => p.id === parkSelectionData.parks[1]);
+            const secondPicker = createDayPicker(secondPark, startDate, totalDays, 1);
+            container.appendChild(secondPicker);
+        }
+
+        function createDayPicker(park, startDate, totalDays, parkIndex) {
+            const picker = document.createElement('div');
+            picker.className = 'day-picker';
+            const daysArray = [];
+            for (let i = 0; i < totalDays; i++) {
+                const date = new Date(startDate);
+                date.setDate(date.getDate() + i);
+                daysArray.push(date);}
+        
+            picker.innerHTML = `
+                <h4>Days at ${park.name}</h4>
+                <div class="days-grid" id="daysGrid${parkIndex}">
+                    ${daysArray.map((date, index) => 
+                        `<div class="day-button" data-day="${index}" data-park="${parkIndex}" onclick="toggleDay(${index}, ${parkIndex})">
+                            ${date.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}
+                        </div>`
+                    ).join('')}
+                </div>`;
+            return picker;
+        }
+
+        function toggleDay(dayIndex, parkIndex) {
+            const button = document.querySelector(`[data-day="${dayIndex}"][data-park="${parkIndex}"]`);
+            const otherParkIndex = parkIndex === 0 ? 1 : 0;
+            const otherButton = document.querySelector(`[data-day="${dayIndex}"][data-park="${otherParkIndex}"]`);
+            
+            if (button.classList.contains('selected')) {// deselect this day
+                button.classList.remove('selected');
+                otherButton.classList.remove('assigned-other');
+                delete dayAssignments[dayIndex];}
+            else {//select this day for this park
+                button.classList.add('selected');
+                otherButton.classList.add('assigned-other');
+                dayAssignments[dayIndex] = parkIndex;}
+            updateCreateButton();
+        }
+
+        function updateCreateButton() {
+            const createBtn = document.getElementById('createTripBtn');
+            const tripName = document.getElementById('tripName').value.trim();
+            let canCreate = tripName.length > 0;
+            
+            // if a multi-park trip, need at least one day assigned to each park!
+            if (parkSelectionData.parks && parkSelectionData.parks.length > 1) {
+                const park0Days = Object.values(dayAssignments).filter(p => p === 0).length;
+                const park1Days = Object.values(dayAssignments).filter(p => p === 1).length;
+                canCreate = canCreate && park0Days > 0 && park1Days > 0;}
+            
+            createBtn.disabled = !canCreate;
+        }
+
         function setupTripNameValidation() {
             const tripNameInput = document.getElementById('tripName');
-            const createBtn = document.getElementById('createTripBtn');
-            
-            tripNameInput.addEventListener('input', function() {
-                const isValid = this.value.trim().length > 0;
-                createBtn.disabled = !isValid;
-                
-                if (isValid) {createBtn.textContent = 'Create Trip →';}
-                else {createBtn.textContent = 'Enter Trip Name';}
-            });
+            tripNameInput.addEventListener('input', function() {updateCreateButton();});
         }
 
         function createTrip() {
             const tripName = document.getElementById('tripName').value.trim();
-            
             if (!tripName) {
                 alert('Please enter a trip name.');
                 return;}
@@ -271,22 +439,19 @@
                 parks: parkSelectionData.parks,
                 travelStyle: parkSelectionData.travelStyle,
                 questionnaire: parkSelectionData.questionnaire,
+                dayAssignments: dayAssignments, //store day assignments
                 status: 'planning'};
 
-            // save to local storage
             localStorage.setItem('nps_current_trip', JSON.stringify(currentTrip));
             console.log('Trip created and saved:', currentTrip);
-            // show overview screen
             showTripOverview();
         }
 
         function showTripOverview() {
             document.getElementById('createTripScreen').classList.remove('active');
             document.getElementById('tripOverviewScreen').classList.add('active');
-            // make sure parks data is loaded before populating
-            if (PARKS_DATA.length === 0) {// wait for parks data to load
-                setTimeout(() => {populateTripOverview();}, 100);
-            } else {populateTripOverview();}
+            if (PARKS_DATA.length === 0) {setTimeout(() => { populateTripOverview(); }, 100);}
+            else {populateTripOverview();}
         }
 
         function populateTripOverview() {
@@ -295,8 +460,6 @@
                 return;}
 
             console.log('Populating trip overview:', currentTrip);
-            console.log('Parks data available:', PARKS_DATA.length);
-
             document.getElementById('overviewTripName').textContent = currentTrip.name;
             
             const startDate = new Date(currentTrip.questionnaire.startDate).toLocaleDateString();
@@ -304,14 +467,28 @@
             const duration = currentTrip.questionnaire.duration || 'Multiple days';
             
             document.getElementById('overviewTripDates').textContent = `${startDate} - ${endDate} • ${duration}`;
-            // create timeline
-            createTripTimeline();
+
+            // display prefsin overview
+            const prefs = currentTrip.questionnaire;
+            
+            const overviewActivities = document.getElementById('overviewActivities');
+            if (prefs.activities && prefs.activities.length > 0) {
+                overviewActivities.innerHTML = prefs.activities.map(activity => `<span class="preference-tag">${activity}</span>`).join('');}
+            else {overviewActivities.innerHTML = '<span class="preference-value">None selected</span>';}
+            
+            const overviewTopics = document.getElementById('overviewTopics');
+            if (prefs.topics && prefs.topics.length > 0) {
+                overviewTopics.innerHTML = prefs.topics.map(topic => `<span class="preference-tag">${topic}</span>`).join('');}
+            else {overviewTopics.innerHTML = '<span class="preference-value">None selected</span>';}
+            
+            document.getElementById('overviewClimate').textContent = prefs.climate || 'Not specified';
+            document.getElementById('overviewCrowds').textContent = prefs.crowds || 'Not specified';
+            createEnhancedTimeline();
         }
 
-        function createTripTimeline() {
+        function createEnhancedTimeline() {
             const timeline = document.getElementById('tripTimeline');
             timeline.innerHTML = '';
-
             if (!currentTrip || !currentTrip.parks || currentTrip.parks.length === 0) {
                 timeline.innerHTML = '<p>No parks selected for this trip.</p>';
                 return;}
@@ -319,48 +496,100 @@
             const startDate = new Date(currentTrip.questionnaire.startDate);
             const endDate = new Date(currentTrip.questionnaire.endDate);
             const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-            
-            // determine days per park
-            const parksCount = currentTrip.parks.length;
-            const daysPerPark = Math.floor(totalDays / parksCount);
-            const extraDays = totalDays % parksCount;
 
-            let currentParkDate = new Date(startDate);
+            // create timeline based on day assignments // or auto-distribute?
+            const dayToPark = {};
             
-            currentTrip.parks.forEach((parkId, index) => {
-                const park = PARKS_DATA.find(p => p.id === parkId);
-                if (!park) {
-                    console.error('Park not found:', parkId);
-                    return;}
+            if (currentTrip.dayAssignments && Object.keys(currentTrip.dayAssignments).length > 0) {
+                // use manual assignments
+                for (let day = 0; day < totalDays; day++) {dayToPark[day] = currentTrip.dayAssignments[day] || 0;}}
+            else {
+                // auto-distribute days
+                const parksCount = currentTrip.parks.length;
+                const daysPerPark = Math.floor(totalDays / parksCount);
+                const extraDays = totalDays % parksCount;
+                let currentDay = 0;
+                currentTrip.parks.forEach((parkId, parkIndex) => {
+                    const parkDays = daysPerPark + (parkIndex < extraDays ? 1 : 0);
+                    for (let i = 0; i < parkDays; i++) {
+                        dayToPark[currentDay] = parkIndex;
+                        currentDay++;}});}
 
-                const parkDays = daysPerPark + (index < extraDays ? 1 : 0);
-                const parkEndDate = new Date(currentParkDate);
-                parkEndDate.setDate(parkEndDate.getDate() + parkDays - 1);
+            // group consecutive days by park!
+            const parkSegments = [];
+            let currentSegment = null;
+            
+            for (let day = 0; day < totalDays; day++) {
+                const parkIndex = dayToPark[day];
+                const currentParkDate = new Date(startDate);
+                currentParkDate.setDate(currentParkDate.getDate() + day);
+                
+                if (!currentSegment || currentSegment.parkIndex !== parkIndex) {
+                    if (currentSegment) {parkSegments.push(currentSegment);}
+                    currentSegment = {
+                        parkIndex: parkIndex,
+                        startDay: day,
+                        endDay: day,
+                        startDate: new Date(currentParkDate),
+                        endDate: new Date(currentParkDate),
+                        days: [day]};}
+                else {
+                    currentSegment.endDay = day;
+                    currentSegment.endDate = new Date(currentParkDate);
+                    currentSegment.days.push(day);}
+            }
+            
+            if (currentSegment) {parkSegments.push(currentSegment);}
+
+            // create timeline items for each segment
+            parkSegments.forEach(segment => {
+                const park = PARKS_DATA.find(p => p.id === currentTrip.parks[segment.parkIndex]);
+                if (!park) return;
 
                 const timelineItem = document.createElement('div');
                 timelineItem.className = 'timeline-item';
                 
-                // get weather for the season
-                const season = getSeason(currentParkDate);
+                const season = getSeason(segment.startDate);
                 const weather = park.weather[season];
                 
+                const dateRange = segment.startDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) + 
+                    (segment.days.length > 1 ? ' - ' + segment.endDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) : '');
+                
                 timelineItem.innerHTML = `
-                    <div class="timeline-date">
-                        ${currentParkDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})} - 
-                        ${parkEndDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}
+                    <div class="timeline-header">
+                        <div class="timeline-park">${park.name}</div>
+                        <div class="timeline-date">${dateRange} (${segment.days.length} day${segment.days.length > 1 ? 's' : ''})</div>
                     </div>
                     <div class="timeline-content">
-                        <h4>${park.name}</h4>
                         <p>${park.description}</p>
                         <div class="weather-preview">Expected: ${weather.temp}°F</div>
+                    </div>
+                    <div class="day-sections">
+                        <div class="section">
+                            <h5>🏨 Accommodation</h5>
+                            <div class="section-placeholder">Add places to stay (coming soon)</div>
+                        </div>
+                        <div class="section">
+                            <h5>🍽️ Dining</h5>
+                            <div class="meals-grid">
+                                ${segment.days.map(day => {
+                                    const dayDate = new Date(startDate);
+                                    dayDate.setDate(dayDate.getDate() + day);
+                                    return `
+                                        <div class="meal-slot">
+                                            <h6>${dayDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</h6>
+                                            <div class="meal-placeholder">Breakfast</div>
+                                            <div class="meal-placeholder">Lunch</div>
+                                            <div class="meal-placeholder">Dinner</div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
                     </div>`;
-                
                 timeline.appendChild(timelineItem);
-                // move to next park start date
-                currentParkDate.setDate(parkEndDate.getDate() + 1);
             });
-
-            console.log('Timeline created with', currentTrip.parks.length, 'parks');
+            console.log('Enhanced timeline created with', parkSegments.length, 'segments');
         }
 
         function getSeason(date) {
@@ -384,39 +613,43 @@
         }
 
         function editTrip() {
-            // instead of just editing the name, let them go back to park selection
             if (confirm('Do you want to modify your park selections and preferences? This will take you back to the park selection page.')) {
-                // save current trip name for later use
-                const currentTripName = currentTrip.name;
-                // restore questionnaire and park selection data to local storage for editing
                 localStorage.setItem('nps_questionnaire_data', JSON.stringify(currentTrip.questionnaire));
                 localStorage.setItem('nps_park_selection', JSON.stringify({
                     parks: currentTrip.parks,
                     travelStyle: currentTrip.travelStyle,
                     questionnaire: currentTrip.questionnaire}));
-                
-                // temporarily remove current trip so they can make changes
                 localStorage.removeItem('nps_current_trip');
-                
-                // go back to park selection to make changes
-                window.location.href = 'park-selection.html';
-            } else {
-                // just edit the trip name locally
+                window.location.href = 'park-selection.html';}
+            else {
                 document.getElementById('tripOverviewScreen').classList.remove('active');
                 document.getElementById('createTripScreen').classList.add('active');
-                //fill form with current trip data
                 if (currentTrip) {
                     document.getElementById('tripName').value = currentTrip.name;
                     setupTripNameValidation();
-                    document.getElementById('createTripBtn').disabled = false;
-                    document.getElementById('createTripBtn').textContent = 'Update Trip Name →';
-                    // load park selection data (to show)
+                    updateCreateButton();
+                    
                     parkSelectionData = {
                         parks: currentTrip.parks,
                         travelStyle: currentTrip.travelStyle,
                         questionnaire: currentTrip.questionnaire};
                     displaySelectedParks();
-                }
+                    displayPreferences();
+                    setupDayAssignment();
+                    
+                    // restore day assignments if they exist?
+                    if (currentTrip.dayAssignments) {
+                        dayAssignments = currentTrip.dayAssignments;
+                        // update to show existing assignments as they are
+                        setTimeout(() => {
+                            Object.keys(dayAssignments).forEach(day => {
+                                const parkIndex = dayAssignments[day];
+                                const button = document.querySelector(`[data-day="${day}"][data-park="${parkIndex}"]`);
+                                const otherParkIndex = parkIndex === 0 ? 1 : 0;
+                                const otherButton = document.querySelector(`[data-day="${day}"][data-park="${otherParkIndex}"]`);
+                                if (button) button.classList.add('selected');
+                                if (otherButton) otherButton.classList.add('assigned-other');});}, 100);
+                    }}
             }
         }
 
@@ -426,9 +659,7 @@
                 localStorage.removeItem('nps_questionnaire_data');
                 localStorage.removeItem('nps_park_selection');
                 alert('Trip deleted successfully! Redirecting to homepage...');
-                window.location.href = 'index.html';
-            }
-        }
+                window.location.href = 'index.html';}}
     </script>
 </body>
 </html>
