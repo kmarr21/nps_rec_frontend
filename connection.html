@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+<body>
+    <button>Click to submit</button>
+</body>
+
+<script>
+    //Sample data to be sent to backend
+    const sample_data = {
+        "startDate": "2025-08-15", "endDate": "2025-08-22",
+        "duration": "4-7 days", "activities": ["Hiking", "Swimming"],
+        "topics": ["Geology", "Elk"], "climate": "mild", "crowds": "moderate crowds",
+        "completed": "2025-08-03T18:30:45.123Z"
+    };
+
+    // Adds an event listener to the button that sends a GET request to the backend when clicked
+    document.querySelector('button').addEventListener('click', () => {
+        fetch('https://nps-rec-backend-apu6.onrender.com/api/submit-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sample_data),
+        })
+            .then(response => response.json())
+            .then(data => console.log('Success: ', data))
+            .catch(error => console.error('Error: ', error));
+    });
+</script>
+
+</html>
