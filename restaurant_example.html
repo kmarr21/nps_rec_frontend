@@ -1,76 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NPS Nearby Restaurant Finder</title>
     <style>
-        * {margin: 0; padding: 0; box-sizing: border-box;}
-        body {font-family: 'Arial', sans-serif; background-color: #f8f8f8; min-height: 100vh; display: flex;
-            align-items: center; justify-content: center; padding: 20px;}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        .container {background: white; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.1); padding: 40px;
-            width: 100%; max-width: 500px; text-align: center; border: 2px solid #2F4F2F;}
-        .screen {display: none;}
-        .screen.active {display: block;}
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-        h1 {color: #2F4F2F; margin-bottom: 30px; font-size: 2rem; font-weight: bold;}
-        h2 {color: #333; margin-bottom: 25px; font-size: 1.4rem; font-weight: normal;}
-        .form-group {margin-bottom: 30px; text-align: left; position: relative;}
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            border: 2px solid #2F4F2F;
+        }
 
-        label {display: block; margin-bottom: 15px; font-weight: bold; color: #333; font-size: 1.1rem;}
-        input[type="text"], select {width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 6px;
-            font-size: 16px; background: white;}
-        input[type="text"]:focus, select:focus {outline: none; border-color: #2F4F2F;}
+        .screen {
+            display: none;
+        }
 
-        .autocomplete-dropdown {position: absolute; top: 100%; left: 0; right: 0; background: white; border: 2px solid #ddd;
-            border-top: none; border-radius: 0 0 6px 6px; max-height: 200px; overflow-y: auto; z-index: 1000; display: none;}
-        .autocomplete-item {padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #eee;}
-        .autocomplete-item:hover {background: #f9f9f9;}
-        .autocomplete-item:last-child {border-bottom: none;}
+        .screen.active {
+            display: block;
+        }
 
-        .checkbox-list {display: flex; flex-direction: column; gap: 8px; margin-top: 10px;}
-        .checkbox-item {display: flex; align-items: center; padding: 12px; background: white; border: 1px solid #ddd;
-            border-radius: 6px; transition: all 0.2s ease;}
-        .checkbox-item:hover {background: #f9f9f9; border-color: #2F4F2F;}
-        .checkbox-item.all-option {background: #f0f0f0; color: black; border-color: #ddd;}
-        .checkbox-item.all-option:hover {background: #e8e8e8; border-color: #2F4F2F;}
-        .checkbox-item input[type="checkbox"] {margin-right: 12px; width: 18px; height: 18px;}
-        .checkbox-item label {margin: 0; font-weight: normal; cursor: pointer; font-size: 1rem;}
+        h1 {
+            color: #2F4F2F;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: bold;
+        }
 
-        .price-list {display: flex; flex-direction: column; gap: 8px; margin-top: 10px;}
-        .price-item {display: flex; align-items: center; padding: 12px; background: white; border: 1px solid #ddd;
-            border-radius: 6px; transition: all 0.2s ease;}
-        .price-item:hover {background: #f9f9f9; border-color: #8B4513;}
-        .price-item.all-option {background: #f0f0f0; color: black; border-color: #ddd;}
-        .price-item.all-option:hover {background: #e8e8e8; border-color: #8B4513;}
-        .price-item input[type="checkbox"] {margin-right: 12px; width: 18px; height: 18px;}
-        .price-item label {margin: 0; font-weight: normal; cursor: pointer; font-size: 1rem;}
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            font-weight: normal;
+        }
 
-        .btn {background: #2F4F2F; color: white; border: none; padding: 15px 30px; border-radius: 6px; font-size: 16px;
-            font-weight: bold; cursor: pointer; transition: background-color 0.2s ease; margin: 10px;}
-        .btn:hover {background: #1a3a1a;}
-        .btn:disabled {background: #ccc; cursor: not-allowed;}
-        .btn-secondary {background: #8B4513;}
-        .btn-secondary:hover {background: #5d2d0a;}
+        .form-group {
+            margin-bottom: 30px;
+            text-align: left;
+            position: relative;
+        }
 
-        .progress-bar {width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-bottom: 30px; overflow: hidden;}
-        .progress-fill {height: 100%; background: #2F4F2F; transition: width 0.3s ease; border-radius: 3px;}
-        .results-grid {display: flex; flex-direction: column; gap: 15px; text-align: left;}
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1rem;
+        }
 
-        .restaurant-card {background: white; padding: 20px; border-radius: 6px; border: 1px solid #ddd; border-left: 4px solid #2F4F2F;}
-        .restaurant-name {font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 5px;}
-        .restaurant-rating {color: #8B4513; margin-bottom: 5px; font-weight: bold;}
-        .restaurant-info {color: #666; font-size: 0.9rem;}
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background: white;
+        }
 
-        .loading {text-align: center; padding: 20px; color: #666;}
-        .error {text-align: center; padding: 20px; color: #e74c3c; background: #fdf2f2; border-radius: 6px; margin: 20px 0;}
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #2F4F2F;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .autocomplete-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .autocomplete-item:hover {
+            background: #f9f9f9;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background: #f9f9f9;
+            border-color: #2F4F2F;
+        }
+
+        .checkbox-item.all-option {
+            background: #f0f0f0;
+            color: black;
+            border-color: #ddd;
+        }
+
+        .checkbox-item.all-option:hover {
+            background: #e8e8e8;
+            border-color: #2F4F2F;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .price-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .price-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .price-item:hover {
+            background: #f9f9f9;
+            border-color: #8B4513;
+        }
+
+        .price-item.all-option {
+            background: #f0f0f0;
+            color: black;
+            border-color: #ddd;
+        }
+
+        .price-item.all-option:hover {
+            background: #e8e8e8;
+            border-color: #8B4513;
+        }
+
+        .price-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .price-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: #2F4F2F;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            background: #1a3a1a;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #8B4513;
+        }
+
+        .btn-secondary:hover {
+            background: #5d2d0a;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2F4F2F;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .results-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .restaurant-card {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            border-left: 4px solid #2F4F2F;
+        }
+
+        .restaurant-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .restaurant-rating {
+            color: #8B4513;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .restaurant-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #e74c3c;
+            background: #fdf2f2;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
 
         @media (max-width: 600px) {
-            .container {padding: 20px; margin: 10px;}
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- the progress bar -->
@@ -249,45 +487,47 @@
         </div>
     </div>
     <script>
-        const BACKEND_URL = 'https://nps-rec-backend.onrender.com';
+        const BACKEND_URL = 'https://nps-rec-backend-apu6.onrender.com';
         let currentScreen = 1;
         let autocompleteTimeout;
 
         // handle the "all" boxes
-        document.getElementById('cuisineAll').addEventListener('change', function() {
+        document.getElementById('cuisineAll').addEventListener('change', function () {
             const cuisineCheckboxes = document.querySelectorAll('.checkbox-list input[type="checkbox"]:not(#cuisineAll)');
             cuisineCheckboxes.forEach(cb => cb.checked = this.checked);
         });
 
-        document.getElementById('priceAll').addEventListener('change', function() {
+        document.getElementById('priceAll').addEventListener('change', function () {
             const priceCheckboxes = document.querySelectorAll('.price-list input[type="checkbox"]:not(#priceAll)');
             priceCheckboxes.forEach(cb => cb.checked = this.checked);
         });
 
         // autocomplete functionality
-        document.getElementById('location').addEventListener('input', function() {
+        document.getElementById('location').addEventListener('input', function () {
             const input = this.value.trim();
             clearTimeout(autocompleteTimeout);
-            
+
             if (input.length < 2) {
                 hideAutocomplete();
-                return;}
+                return;
+            }
             //debounce API calls
-            autocompleteTimeout = setTimeout(() => {getLocationSuggestions(input);}, 300);
+            autocompleteTimeout = setTimeout(() => { getLocationSuggestions(input); }, 300);
         });
 
         // hide autocomplete when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.form-group')) {hideAutocomplete();}
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.form-group')) { hideAutocomplete(); }
         });
 
         async function getLocationSuggestions(input) {
             try {
-                const response = await fetch(`${BACKEND_URL}/api/autocomplete`, {
+                const response = await fetch(`${BACKEND_URL}/api/restaurants/autocomplete`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({input: input})});
-                
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ input: input })
+                });
+
                 const data = await response.json();
                 showAutocompleteResults(data.predictions || []);
             } catch (error) {
@@ -298,10 +538,11 @@
 
         function showAutocompleteResults(predictions) {
             const dropdown = document.getElementById('autocompleteDropdown');
-            
+
             if (predictions.length === 0) {
                 hideAutocomplete();
-                return;}
+                return;
+            }
 
             dropdown.innerHTML = '';
             predictions.forEach(prediction => {
@@ -331,8 +572,8 @@
 
         function showScreen(screenNumber) {
             // hide all the screens
-            document.querySelectorAll('.screen').forEach(screen => {screen.classList.remove('active');});
-            
+            document.querySelectorAll('.screen').forEach(screen => { screen.classList.remove('active'); });
+
             // target screen
             document.getElementById('screen' + screenNumber).classList.add('active');
             currentScreen = screenNumber;
@@ -357,22 +598,23 @@
             // get form data
             const formData = collectFormData();
             console.log('Search criteria:', formData);
-            
+
             // show loading and go to results screen
             showScreen(3);
             showLoading();
-            
+
             try {
-                const response = await fetch(`${BACKEND_URL}/api/search-restaurants`, {
+                const response = await fetch(`${BACKEND_URL}/api/restaurants/search-restaurants`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
-                
+
                 const data = await response.json();
-                
-                if (response.ok) {showRealResults(data);
-                } else {showError(data.error || 'Failed to find restaurants');}
+
+                if (response.ok) {
+                    showRealResults(data);
+                } else { showError(data.error || 'Failed to find restaurants'); }
             } catch (error) {
                 console.error('Search error:', error);
                 showError('Network error - please try again');
@@ -381,20 +623,20 @@
 
         function collectFormData() {
             const location = document.getElementById('location').value;
-            
+
             // cuisine types
             const cuisines = [];
             document.querySelectorAll('.checkbox-list input[type="checkbox"]:checked').forEach(checkbox => {
-                if (checkbox.value !== 'all') {cuisines.push(checkbox.value);}
+                if (checkbox.value !== 'all') { cuisines.push(checkbox.value); }
             });
             // get price levels
             const prices = [];
             document.querySelectorAll('.price-list input[type="checkbox"]:checked').forEach(checkbox => {
-                if (checkbox.value !== 'all') {prices.push(parseInt(checkbox.value));}
+                if (checkbox.value !== 'all') { prices.push(parseInt(checkbox.value)); }
             });
-            
+
             const time = document.getElementById('time').value;
-            return {location, cuisines, prices, time};
+            return { location, cuisines, prices, time };
         }
 
         function showLoading() {
@@ -404,13 +646,14 @@
 
         function showRealResults(data) {
             const resultsContainer = document.getElementById('results');
-            
+
             if (!data.restaurants || data.restaurants.length === 0) {
                 resultsContainer.innerHTML = '<div class="error">No restaurants found matching your criteria. Try different filters or location.</div>';
-                return;}
-            
+                return;
+            }
+
             resultsContainer.innerHTML = '';
-            
+
             data.restaurants.forEach(restaurant => {
                 const card = document.createElement('div');
                 card.className = 'restaurant-card';
@@ -420,14 +663,15 @@
                     <div class="restaurant-name">${restaurant.name}</div>
                     <div class="restaurant-rating">${stars} ${restaurant.rating}</div>
                     <div class="restaurant-info">${priceSymbols} • ${restaurant.address}</div>`;
-                
+
                 resultsContainer.appendChild(card);
             });
         }
 
         function showError(message) {
             const resultsContainer = document.getElementById('results');
-            resultsContainer.innerHTML = `<div class="error">${message}</div>`;}
+            resultsContainer.innerHTML = `<div class="error">${message}</div>`;
+        }
 
         function startOver() {
             // clearing the form
@@ -435,10 +679,12 @@
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.getElementById('time').value = '';
             hideAutocomplete();
-            showScreen(1);}
+            showScreen(1);
+        }
 
         // make progress bar
         updateProgressBar();
     </script>
 </body>
+
 </html>
