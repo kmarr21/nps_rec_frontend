@@ -22,6 +22,7 @@
         .navbar.scrolled .nav-links a {color: #333;}
         .nav-links a:hover {color: white; border-bottom-color: #8B4513;}
         .nav-links a.active {color: white; border-bottom-color: white;}
+        .navbar.scrolled .nav-links a.active {color: #333; border-bottom-color: #333;}
 
         /* hero section */
         .hero {background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.3)), 
@@ -250,8 +251,7 @@
                 
                 // update navigation
                 myTripLink.textContent = 'My Current Trip';
-                myTripLink.style.color = '#8B4513';
-                myTripLink.style.fontWeight = 'bold';
+                myTripLink.classList.add('active');
                 myTripLink.href = 'itinerary.html';
                 
                 // disable start new trip options and show warning
