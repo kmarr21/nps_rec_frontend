@@ -80,13 +80,12 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;}
         .how-it-works h2 {text-align: center; font-size: 3rem; margin-bottom: 4rem; color: white; font-weight: 800; letter-spacing: -0.02em;}
         .steps {max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;}
-        .step {background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 3rem; position: relative; 
+        .step {background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 3rem; position: relative; 
             display: flex; align-items: center; gap: 3rem; border-radius: 0;}
-        .step-number {width: 100px; height: 100px; background: #2F4F2F; color: white; font-size: 2.5rem; font-weight: 900; 
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative;}
+        .step-number {font-size: 4rem; font-weight: 900; color: #2F4F2F; flex-shrink: 0; line-height: 1;}
         .step-content {flex: 1; text-align: left;}
-        .step h3 {font-size: 1.6rem; margin-bottom: 1rem; color: #1a3a1a; font-weight: 700;}
-        .step p {color: #2a5a2a; line-height: 1.6; font-size: 1.1rem;}
+        .step h3 {font-size: 1.6rem; margin-bottom: 1rem; color: #000; font-weight: 700;}
+        .step p {color: #000; line-height: 1.6; font-size: 1.1rem;}
 
         /* current trip status */
         .trip-status {background: rgba(0,0,0,0.8); color: white; padding: 6rem 0; text-align: center; position: relative;}
@@ -242,9 +241,9 @@
         // navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
-            if (window.scrollY > 100) {
-                navbar.classList.add('scrolled');}
-            else {navbar.classList.remove('scrolled');}});
+            if (window.scrollY > 100) {navbar.classList.add('scrolled');}
+            else {navbar.classList.remove('scrolled');}
+        });
 
         // smooth scroll for how it works link
         document.getElementById('howItWorksLink').addEventListener('click', function(e) {
@@ -273,7 +272,7 @@
                 viewTripBtn.style.display = 'inline-block';
                 deleteBtn.style.display = 'inline-block';
                 
-                // update navs: only underline if on itinerary page
+                // update navigation - only underline if on itinerary page
                 myTripLink.textContent = 'My Current Trip';
                 myTripLink.href = 'itinerary.html';
                 myTripLink.classList.remove('disabled');
@@ -285,15 +284,13 @@
                 startNewTripBtn.disabled = true;
                 startNewTripBtn.textContent = 'Complete Current Trip First';
                 existingTripWarning.style.display = 'block';}
-            else {
-                // no existing trip
+            else {// no existing trip
                 myTripLink.textContent = 'My Trip (None)';
                 myTripLink.classList.add('disabled');
                 myTripLink.href = '#';
                 myTripLink.onclick = function() {
                     alert('No trip created yet. Start planning below!');
                     return false;};
-                
                 // enable start new trip options
                 mainCTA.style.pointerEvents = 'auto';
                 mainCTA.style.opacity = '1';
