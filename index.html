@@ -8,7 +8,7 @@
     <style>
         * {margin: 0; padding: 0; box-sizing: border-box;}
         body {font-family: 'Inter', sans-serif; line-height: 1.6; color: #333;}
-        /* navs */
+        /* nav */
         .navbar {background: rgba(0,0,0,0.1); backdrop-filter: blur(10px); position: fixed; top: 0; width: 100%;
             z-index: 1000; padding: 1.5rem 0; transition: all 0.3s ease;}
         .navbar.scrolled {background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);}
@@ -18,10 +18,10 @@
         .navbar.scrolled .logo {color: #2F4F2F;}
         .nav-links {display: flex; list-style: none; gap: 3rem;}
         .nav-links a {text-decoration: none; color: white; font-weight: 500; font-size: 0.95rem; 
-            transition: all 0.3s ease; letter-spacing: 0.02em;}
+            transition: all 0.3s ease; letter-spacing: 0.02em; border-bottom: 2px solid transparent;}
         .navbar.scrolled .nav-links a {color: #333;}
-        .nav-links a:hover {color: #8B4513; transform: translateY(-2px);}
-        .nav-links a.active {color: #8B4513;}
+        .nav-links a:hover {color: white; border-bottom-color: #8B4513;}
+        .nav-links a.active {color: white; border-bottom-color: white;}
 
         /* hero section */
         .hero {background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.3)), 
@@ -29,16 +29,16 @@
             background-size: cover; background-position: center; background-attachment: fixed;
             height: 100vh; display: flex; align-items: center; justify-content: center; 
             text-align: center; color: white; position: relative; overflow: hidden;}
-        .hero-content {max-width: 600px; margin: 0 auto; padding: 4rem 3rem; position: relative; z-index: 2;
+        .hero-content {max-width: 500px; margin: 0 auto; padding: 3rem 2.5rem; position: relative; z-index: 2;
             background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);}
-        .hero-subtitle {font-size: 1rem; font-weight: 500; margin-bottom: 1.5rem; 
+        .hero-subtitle {font-size: 0.9rem; font-weight: 500; margin-bottom: 1rem; 
             color: rgba(255,255,255,0.9); letter-spacing: 0.1em; text-transform: uppercase;}
-        .hero-content h1 {font-size: clamp(2.5rem, 6vw, 4rem); margin-bottom: 2rem; font-weight: 900; 
+        .hero-content h1 {font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 1.5rem; font-weight: 900; 
             line-height: 1.1; letter-spacing: -0.02em; text-transform: uppercase;}
-        .hero-content p {font-size: 1.2rem; margin-bottom: 3rem; line-height: 1.5; 
+        .hero-content p {font-size: 1rem; margin-bottom: 2.5rem; line-height: 1.5; 
             font-weight: 400; color: rgba(255,255,255,0.9);}
         .cta-button {display: inline-block; background: transparent; 
-            color: white; padding: 1.2rem 3rem; text-decoration: none; font-size: 1.1rem; font-weight: 700; 
+            color: white; padding: 1rem 2.5rem; text-decoration: none; font-size: 1rem; font-weight: 700; 
             transition: all 0.4s ease; border: 2px solid white;
             letter-spacing: 0.02em; text-transform: uppercase;}
         .cta-button:hover {background: white; color: #000; transform: translateY(-2px);}
@@ -86,7 +86,7 @@
         .step p {color: rgba(255,255,255,0.8); line-height: 1.6;}
 
         /* current trip status */
-        .trip-status {background: linear-gradient(135deg, #2F4F2F 0%, #8B4513 100%); color: white; padding: 6rem 0; text-align: center; position: relative;}
+        .trip-status {background: rgba(0,0,0,0.8); color: white; padding: 6rem 0; text-align: center; position: relative;}
         .trip-status h2 {font-size: 2.5rem; margin-bottom: 1.5rem; font-weight: 800;}
         .trip-status p {font-size: 1.2rem; margin-bottom: 3rem; color: rgba(255,255,255,0.9); max-width: 600px; margin-left: auto; margin-right: auto;}
         .trip-actions {display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;}
@@ -96,7 +96,7 @@
             box-shadow: 0 8px 32px rgba(139,69,19,0.3);}
         .btn-primary:hover {transform: translateY(-3px); box-shadow: 0 12px 40px rgba(139,69,19,0.4);}
         .btn-secondary {background: transparent; color: white; border: 2px solid white;}
-        .btn-secondary:hover {background: white; color: #2F4F2F; transform: translateY(-3px);}
+        .btn-secondary:hover {background: white; color: #000; transform: translateY(-3px);}
         .btn:disabled {background: #666; cursor: not-allowed; transform: none; box-shadow: none;}
         .btn:disabled:hover {background: #666; color: white; transform: none;}
 
@@ -120,10 +120,10 @@
     </style>
 </head>
 <body>
-    <!-- navs -->
+    <!-- nav -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="logo">NATIONAL PARKS</div>
+            <div class="logo">US National Park Trip Planner</div>
             <ul class="nav-links">
                 <li><a href="#" class="active">Home</a></li>
                 <li><a href="#" id="myTripLink">My Current Trip</a></li>
@@ -157,7 +157,7 @@
                 <div class="feature-card">
                     <div class="feature-icon"></div>
                     <h3>Crowd Intelligence</h3>
-                    <p>Avoid the crowds or embrace them: we show you historical visitor patterns so you can plan according to your preferences.</p>
+                    <p>Avoid the crowds or embrace them—we show you historical visitor patterns so you can plan according to your preferences.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"></div>
@@ -218,14 +218,14 @@
             <p>&copy; 2025 NPS Trip Planner. Plan smarter, travel better.</p>
         </div>
     </footer>
-
     <script>
         // navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 100) {
                 navbar.classList.add('scrolled');}
-            else {navbar.classList.remove('scrolled');}});
+            else {navbar.classList.remove('scrolled');}
+        });
 
         // check for existing trip in localStorage
         function checkExistingTrip() {
@@ -247,25 +247,29 @@
                 statusMessage.textContent = 'Your itinerary is ready! View your trip details or start planning a new adventure.';
                 viewTripBtn.style.display = 'inline-block';
                 deleteBtn.style.display = 'inline-block';
-                // update nav
+                
+                // update navigation
                 myTripLink.textContent = 'My Current Trip';
                 myTripLink.style.color = '#8B4513';
                 myTripLink.style.fontWeight = 'bold';
                 myTripLink.href = 'itinerary.html';
+                
                 // disable start new trip options and show warning
                 mainCTA.style.pointerEvents = 'none';
                 mainCTA.style.opacity = '0.6';
                 mainCTA.textContent = 'Complete Current Trip First';
                 startNewTripBtn.disabled = true;
                 startNewTripBtn.textContent = 'Complete Current Trip First';
-                existingTripWarning.style.display = 'block';
-            } else {// no trip already started
+                existingTripWarning.style.display = 'block';}
+            else {
+                // no existing trip
                 myTripLink.textContent = 'My Trip (None)';
                 myTripLink.style.color = 'rgba(255,255,255,0.7)';
                 myTripLink.href = '#';
                 myTripLink.onclick = function() {
                     alert('No trip created yet. Start planning below!');
                     return false;};
+                
                 // enable start new trip options
                 mainCTA.style.pointerEvents = 'auto';
                 mainCTA.style.opacity = '1';
@@ -284,20 +288,20 @@
             // clear any leftover questionnaire /selection data
             localStorage.removeItem('nps_questionnaire_data');
             localStorage.removeItem('nps_park_selection');
-            // redirect to questionnaire
+            //redirect to questionnaire
             window.location.href = 'questionnaire.html';
         }
 
         function deleteCurrentTrip() {
             if (confirm('Are you sure you want to delete your current trip? This cannot be undone.')) {
                 localStorage.removeItem('nps_current_trip');
-                // also clear any related data
+                // also clear any related data:
                 localStorage.removeItem('nps_questionnaire_data');
                 localStorage.removeItem('nps_park_selection');
                 checkExistingTrip();
                 alert('Trip deleted. You can start planning a new one!');}
         }
-        //check trip status when page loads
+        // check trip status when page loads
         document.addEventListener('DOMContentLoaded', checkExistingTrip);
     </script>
 </body>
