@@ -767,7 +767,7 @@
             submitBtn.textContent = 'Finding Your Parks...';
 
             try {// send questionnaire data to backend for park recs
-                const response = await fetch(`${BACKEND_URL}/api/recommendations`, {
+                const response = await fetch(`${BACKEND_URL}/api/parks/recommendations`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', },
                     body: JSON.stringify(formData)
