@@ -163,11 +163,11 @@
         <div class="style-selector">
             <h3>How would you like to explore?</h3>
             <div class="style-options">
-                <div class="style-option" onclick="selectTravelStyle('single')" id="singleStyle">
+                <div class="style-option selected" onclick="selectTravelStyle('single')" id="singleStyle">
                     <h4>Single Park Deep Dive</h4>
                     <p>Spend all your time exploring one amazing park in detail</p>
                 </div>
-                <div class="style-option selected" onclick="selectTravelStyle('multiple')" id="multipleStyle">
+                <div class="style-option" onclick="selectTravelStyle('multiple')" id="multipleStyle">
                     <h4>Multiple Parks Tour</h4>
                     <p>Visit up to 2 parks and experience diverse landscapes</p>
                 </div>
@@ -195,7 +195,7 @@
     <script>
         let PARKS_DATA = [];
         let selectedParks = [];
-        let travelStyle = 'multiple';
+        let travelStyle = 'single';
         let questionnaireData = {};
         // load parks data from backend recs
         function loadParksData() {

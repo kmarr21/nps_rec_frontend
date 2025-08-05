@@ -60,7 +60,7 @@
             font-weight: 600; transition: all 0.3s ease;}
         .day-button:hover {border-color: #2F4F2F; background: #f9f9f9;}
         .day-button.selected {background: #2F4F2F; color: white; border-color: #2F4F2F;}
-        .day-button.assigned-other {background: #8B4513; color: white; border-color: #8B4513;}
+        .day-button.assigned-other {background: #ccc; color: #666; border-color: #999; cursor: not-allowed;}
         .day-button.disabled {background: #f5f5f5; color: #999; cursor: not-allowed;}
 
         /* preferences display */
@@ -398,14 +398,21 @@
             const otherParkIndex = parkIndex === 0 ? 1 : 0;
             const otherButton = document.querySelector(`[data-day="${dayIndex}"][data-park="${otherParkIndex}"]`);
             
-            if (button.classList.contains('selected')) {// deselect this day
+            if (button.classList.contains('selected')) {
+                // deselect this day - make it white
                 button.classList.remove('selected');
+                // other button becomes available (white) again
                 otherButton.classList.remove('assigned-other');
                 delete dayAssignments[dayIndex];}
-            else {// select this day for this park
+            else {
+                // select this day for this park
                 button.classList.add('selected');
+                // make other button gray (unavailable)
                 otherButton.classList.add('assigned-other');
-                dayAssignments[dayIndex] = parkIndex;}
+                otherButton.classList.remove('selected'); // ensure other isn't selected
+                // assign this day to this park
+                dayAssignments[dayIndex] = parkIndex;
+            }
             updateCreateButton();
         }
 
@@ -414,12 +421,13 @@
             const tripName = document.getElementById('tripName').value.trim();
             let canCreate = tripName.length > 0;
             
-            // if multi-park trip, need at least one day assigned to each park!!
+            // if multi-park trip, need at least one day assigned to each park
             if (parkSelectionData.parks && parkSelectionData.parks.length > 1) {
                 const park0Days = Object.values(dayAssignments).filter(p => p === 0).length;
                 const park1Days = Object.values(dayAssignments).filter(p => p === 1).length;
-                canCreate = canCreate && park0Days > 0 && park1Days > 0;}
-            
+                canCreate = canCreate && park0Days > 0 && park1Days > 0;
+            }
+            // single park trips don't need day assignments
             createBtn.disabled = !canCreate;
         }
 
