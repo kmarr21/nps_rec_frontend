@@ -95,7 +95,7 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="#" id="myTripLink">My Current Trip</a></li>
-                <li><a href="#">How It Works</a></li>
+                <li><a href="#" onclick="return handleHowItWorksClick(event)">How It Works</a></li>
             </ul>
         </div>
     </nav>
@@ -377,6 +377,7 @@
             endDateInput.classList.remove('date-error');
             startError.classList.remove('show');
             endError.classList.remove('show');
+            
             // check start date in future
             if (startDate) {
                 const today = new Date();
@@ -387,15 +388,25 @@
                     startError.classList.add('show');
                     isValid = false;}
             }
-            // check end date is AFTER start date
+            
+            // check end date is AFTER start date AND within 30 days
             if (startDate && endDate) {
                 const selectedStart = new Date(startDate);
                 const selectedEnd = new Date(endDate);
+                
                 if (selectedEnd <= selectedStart) {
                     endDateInput.classList.add('date-error');
+                    endError.textContent = 'End date must be after start date';
                     endError.classList.add('show');
-                    isValid = false;}}
-            
+                    isValid = false;}
+                else {// check trip length
+                    const tripLength = Math.ceil((selectedEnd - selectedStart) / (1000 * 60 * 60 * 24)) + 1;
+                    if (tripLength > 30) {
+                        endDateInput.classList.add('date-error');
+                        endError.textContent = 'Trip cannot be longer than 30 days';
+                        endError.classList.add('show');
+                        isValid = false;}}
+            }
             updateNextButton();
             return isValid;
         }
@@ -463,6 +474,19 @@
 
         function goToScreen5() {
             if (document.getElementById('climate').value) {showScreen(5);}
+        }
+
+        function handleHowItWorksClick(event) {
+            event.preventDefault();
+            // check if user is in middle of creating trip
+            const isInProgress = localStorage.getItem('nps_questionnaire_data') || localStorage.getItem('nps_park_selection') || 
+                                window.location.pathname.includes('itinerary.html');
+            if (isInProgress) {
+                const confirmed = confirm('You are currently planning a trip. If you leave this page without completing your trip, your progress may be lost. Do you want to continue to How It Works?');
+                if (!confirmed) {return false;}}
+            // nav to homepage How It Works section
+            window.location.href = 'index.html#how-it-works';
+            return false;
         }
 
         function collectFormData() {

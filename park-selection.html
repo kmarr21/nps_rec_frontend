@@ -126,7 +126,7 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="#" id="myTripLink">My Current Trip</a></li>
-                <li><a href="#">How It Works</a></li>
+                <li><a href="#" onclick="return handleHowItWorksClick(event)">How It Works</a></li>
             </ul>
         </div>
     </nav>
@@ -404,6 +404,19 @@
             updateParkDisplay();
             updateSelectionDisplay();
             updateContinueButton();
+        }
+
+        function handleHowItWorksClick(event) {
+            event.preventDefault();
+            // check if user is in middle of creating trip
+            const isInProgress = localStorage.getItem('nps_questionnaire_data') || localStorage.getItem('nps_park_selection') || 
+                                window.location.pathname.includes('itinerary.html');
+            if (isInProgress) {
+                const confirmed = confirm('You are currently planning a trip. If you leave this page without completing your trip, your progress may be lost. Do you want to continue to How It Works?');
+                if (!confirmed) {return false;}}
+            // nav to homepage How It Works section
+            window.location.href = 'index.html#how-it-works';
+            return false;
         }
 
         function updateParkDisplay() {

@@ -140,7 +140,7 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="#" class="active" id="myTripLink">My Current Trip</a></li>
-                <li><a href="#">How It Works</a></li>
+                <li><a href="#" onclick="return handleHowItWorksClick(event)">How It Works</a></li>
             </ul>
         </div>
     </nav>
@@ -512,8 +512,9 @@
                 return;}
 
             console.log('Populating trip overview:', currentTrip);
+            console.log('PARKS_DATA available:', PARKS_DATA.length, 'parks');
+            console.log('Trip parks:', currentTrip.parks);
             document.getElementById('overviewTripName').textContent = currentTrip.name;
-            
             const startDate = new Date(currentTrip.questionnaire.startDate).toLocaleDateString();
             const endDate = new Date(currentTrip.questionnaire.endDate).toLocaleDateString();
             const duration = currentTrip.questionnaire.duration || 'Multiple days';
@@ -529,12 +530,18 @@
             else {overviewActivities.innerHTML = '<span class="preference-value">None selected</span>';}
             
             const overviewTopics = document.getElementById('overviewTopics');
-            if (prefs.topics && prefs.topics.length > 0) {
-                overviewTopics.innerHTML = prefs.topics.map(topic => `<span class="preference-tag">${topic}</span>`).join('');}
+            if (prefs.topics && prefs.topics.length > 0) {overviewTopics.innerHTML = prefs.topics.map(topic => `<span class="preference-tag">${topic}</span>`).join('');}
             else {overviewTopics.innerHTML = '<span class="preference-value">None selected</span>';}
             
             document.getElementById('overviewClimate').textContent = prefs.climate || 'Not specified';
             document.getElementById('overviewCrowds').textContent = prefs.crowds || 'Not specified';
+            
+            // DEBUG: check if parks data exists before creating timeline
+            if (PARKS_DATA.length === 0) {
+                console.error('No PARKS_DATA available for timeline creation');
+                document.getElementById('tripTimeline').innerHTML = '<p style="color: red;">Error: Park data not loaded. Please go back and try again.</p>';
+                return;}
+            
             createEnhancedTimeline();
         }
 
@@ -659,6 +666,19 @@
 
         function goHome() {
             window.location.href = 'index.html';
+        }
+
+        function handleHowItWorksClick(event) {
+            event.preventDefault();
+            // check if user is in middle of creating trip
+            const isInProgress = localStorage.getItem('nps_questionnaire_data') || localStorage.getItem('nps_park_selection') || 
+                                window.location.pathname.includes('itinerary.html');
+            if (isInProgress) {
+                const confirmed = confirm('You are currently planning a trip. If you leave this page without completing your trip, your progress may be lost. Do you want to continue to How It Works?');
+                if (!confirmed) {return false;}}
+            // nav to homepage How It Works section
+            window.location.href = 'index.html#how-it-works';
+            return false;
         }
 
         function editTrip() {
