@@ -430,15 +430,45 @@
             const createBtn = document.getElementById('createTripBtn');
             const tripName = document.getElementById('tripName').value.trim();
             let canCreate = tripName.length > 0;
+            let warningMessage = '';
             
-            // if multi-park trip, need at least one day assigned to each park
+            // calc total days for the trip
+            const startDate = new Date(parkSelectionData.questionnaire.startDate);
+            const endDate = new Date(parkSelectionData.questionnaire.endDate);
+            const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            
             if (parkSelectionData.parks && parkSelectionData.parks.length > 1) {
+                // multi-park trip check
                 const park0Days = Object.values(dayAssignments).filter(p => p === 0).length;
                 const park1Days = Object.values(dayAssignments).filter(p => p === 1).length;
-                canCreate = canCreate && park0Days > 0 && park1Days > 0;
+                const assignedDays = Object.keys(dayAssignments).length;
+                const unassignedDays = totalDays - assignedDays;
+                // need at least one day assigned to each park!
+                if (park0Days === 0 || park1Days === 0) {
+                    canCreate = false;
+                    warningMessage = 'Please assign at least one day to each park.';}
+                // warn about unassigned days
+                else if (unassignedDays > 0) {
+                    canCreate = false;
+                    warningMessage = `Please assign all ${totalDays} days. ${unassignedDays} day${unassignedDays > 1 ? 's' : ''} still unassigned.`;}
             }
-            // single park trips don't need day assignments
+            // single park trips don't need day assignments (auto assigned)
             createBtn.disabled = !canCreate;
+            // Update or create warning message
+            let warningDiv = document.getElementById('dayAssignmentWarning');
+            if (!warningDiv) {
+                // create warning div
+                warningDiv = document.createElement('div');
+                warningDiv.id = 'dayAssignmentWarning';
+                warningDiv.style.cssText = 'background: #fff3cd; border: 2px solid #ffc107; padding: 10px; margin: 15px 0; color: #856404; font-weight: 500; text-align: center; display: none;';
+                // insert warning after the day assignment section
+                const dayAssignmentSection = document.getElementById('dayAssignment');
+                dayAssignmentSection.parentNode.insertBefore(warningDiv, dayAssignmentSection.nextSibling);
+            }
+            if (warningMessage) {
+                warningDiv.textContent = warningMessage;
+                warningDiv.style.display = 'block';}
+            else {warningDiv.style.display = 'none';}
         }
 
         function setupTripNameValidation() {
