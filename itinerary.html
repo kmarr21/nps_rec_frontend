@@ -294,6 +294,23 @@
                 setupTripNameValidation();}
         }
 
+        // helper function for week calcs
+        function getWeekOfYear(date) {
+            const start = new Date(date.getFullYear(), 0, 1);
+            const days = Math.floor((date - start) / (24 * 60 * 60 * 1000));
+            return Math.min(Math.floor(days / 7), 51); //cap at 51 (0-indexed, 52 weeks)
+        }
+
+        // helper function for month calc
+        function getMonthIndex(date) {
+            return date.getMonth(); //0-11
+        }
+
+        // helper function for visitation formatting
+        function formatVisitation(count) {
+            return Math.round(count / 1000) + 'k';
+        }
+
         function loadSelectionData() {
             const stored = localStorage.getItem('nps_park_selection');
             if (stored) {
