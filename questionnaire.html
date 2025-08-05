@@ -172,8 +172,8 @@
                     <select id="climate">
                         <option value="">Select preference</option>
                         <option value="hot/warm">Hot/Warm (75°F+)</option>
-                        <option value="mild">Mild (60-75°F)</option>
-                        <option value="cool/cold">Cool/Cold (Below 60°F)</option>
+                        <option value="mild">Mild (55-75°F)</option>
+                        <option value="cool/cold">Cool/Cold (Below 55°F)</option>
                         <option value="no preference">No Preference</option>
                     </select>
                 </div>
@@ -198,6 +198,10 @@
         </div>
     </div>
     <script>
+        // BACKEND URL LIVES HERE!! CHANGE ACCORDING TO OWN LINK AS NEEDED!! ************************************************
+        const BACKEND_URL = 'https://nps-rec-backend.onrender.com';
+        // ******************************************************************************************************************
+
         let currentScreen = 1;
         const totalScreens = 5;
         // data storage
@@ -483,7 +487,7 @@
                 completed: new Date().toISOString()};
         }
 
-        function submitQuestionnaire() {
+        async function submitQuestionnaire() {
             if (!document.getElementById('crowds').value) {
                 alert('Please select your crowd preference.');
                 return;}
@@ -500,10 +504,49 @@
             const formData = collectFormData();
             console.log('Questionnaire data:', formData);
             
-            // save to local storage
-            localStorage.setItem('nps_questionnaire_data', JSON.stringify(formData));
-            // redirect to park selection
-            window.location.href = 'park-selection.html';}
+            // show loading state here...
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Finding Your Parks...';
+            
+            try {// send questionnaire data to backend for park recs
+                const response = await fetch(`${BACKEND_URL}/api/recommendations`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json',},
+                    body: JSON.stringify(formData)});
+                
+                if (!response.ok) {throw new Error('Failed to get park recommendations');}
+                
+                const result = await response.json();
+                console.log('Received park recommendations from backend:', result);
+                
+                // save questionnaire data to local storage (IMPORTANT: LOOK AT THE NAME HERE!)
+                localStorage.setItem('nps_questionnaire_data', JSON.stringify(formData));
+                
+                // save rec'd parks data for park-selection.html to use
+                localStorage.setItem('nps_recommended_parks', JSON.stringify(result || []));
+                
+                // redirect to park selection with backend recs
+                window.location.href = 'park-selection.html';
+            } catch (error) {
+                console.error('Error getting park recommendations:', error);
+                // FALLBACK: continue with static parks if backend fails??
+                alert('Unable to get personalized recommendations. Showing popular parks instead.');
+                
+                // save questionnaire data anyway
+                localStorage.setItem('nps_questionnaire_data', JSON.stringify(formData));
+                
+                // clear any previous recs to use fallback
+                localStorage.removeItem('nps_recommended_parks');
+                
+                // redirect to park selection
+                window.location.href = 'park-selection.html';
+            } finally {// restore button states
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
     </script>
 </body>
 </html>
