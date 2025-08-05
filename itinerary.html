@@ -58,10 +58,13 @@
         .days-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-bottom: 20px;}
         .day-button {padding: 12px; background: white; border: 2px solid #ddd; cursor: pointer; text-align: center;
             font-weight: 600; transition: all 0.3s ease;}
+
         .day-button:hover {border-color: #2F4F2F; background: #f9f9f9;}
-        .day-button.selected {background: #2F4F2F; color: white; border-color: #2F4F2F;}
         .day-button.assigned-other {background: #ccc; color: #666; border-color: #999; cursor: not-allowed;}
         .day-button.disabled {background: #f5f5f5; color: #999; cursor: not-allowed;}
+        .day-button.selected[data-park="0"] {background: #2F4F2F; color: white; border-color: #2F4F2F;}
+        .day-button.selected[data-park="1"] {background: #8B4513; color: white; border-color: #8B4513;}
+        .day-button.assigned-other {background: #ccc; color: #666; border-color: #999; cursor: pointer;}
 
         /* preferences display */
         .preferences-display {background: white; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 30px;}
@@ -398,21 +401,28 @@
             const otherParkIndex = parkIndex === 0 ? 1 : 0;
             const otherButton = document.querySelector(`[data-day="${dayIndex}"][data-park="${otherParkIndex}"]`);
             
-            if (button.classList.contains('selected')) {
-                // deselect this day - make it white
+            // check if this day is currently assigned to ANY park
+            const currentlyAssignedTo = dayAssignments[dayIndex];
+            if (currentlyAssignedTo === parkIndex) {
+                // clicking on the currently selected park --> DESELECT it
                 button.classList.remove('selected');
-                // other button becomes available (white) again
                 otherButton.classList.remove('assigned-other');
                 delete dayAssignments[dayIndex];}
-            else {
-                // select this day for this park
-                button.classList.add('selected');
-                // make other button gray (unavailable)
+            else if (currentlyAssignedTo === otherParkIndex) {
+                // clicking on the gray button will SWAP the assignment
+                // + remove selection from other park
+                otherButton.classList.remove('selected');
                 otherButton.classList.add('assigned-other');
-                otherButton.classList.remove('selected'); // ensure other isn't selected
-                // assign this day to this park
-                dayAssignments[dayIndex] = parkIndex;
-            }
+                // add selection to this park
+                button.classList.remove('assigned-other');
+                button.classList.add('selected');
+                // update assignment
+                dayAssignments[dayIndex] = parkIndex;}
+            else {
+                // no park currently has this day --> SELECT this park
+                button.classList.add('selected');
+                otherButton.classList.add('assigned-other');
+                dayAssignments[dayIndex] = parkIndex;}
             updateCreateButton();
         }
 
