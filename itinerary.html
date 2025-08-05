@@ -257,12 +257,17 @@
         let dayAssignments = {}; //stores which days go to which park
         // load parks data
         async function loadParksData() {
-            try {
-                const response = await fetch('fake-parks-data.json');
-                const data = await response.json();
-                PARKS_DATA = data.parks;
-                console.log('Parks data loaded:', PARKS_DATA.length, 'parks');}
-            catch (error) {console.error('Error loading parks data:', error);}}
+            try {const recommendedParks = localStorage.getItem('nps_recommended_parks');
+                if (recommendedParks) {
+                    PARKS_DATA = JSON.parse(recommendedParks);
+                    console.log('Parks data loaded from backend:', PARKS_DATA.length, 'parks');}
+                else {
+                    console.log('No recommended parks found, using empty array');
+                    PARKS_DATA = [];}
+            } catch (error) {
+                console.error('Error loading parks data:', error);
+                PARKS_DATA = [];}
+        }
 
         // initialize page
         document.addEventListener('DOMContentLoaded', async function() {
@@ -324,10 +329,11 @@
                 return;}
 
             parksList.innerHTML = '';
-            
-            parkSelectionData.parks.forEach(parkId => {
-                const park = PARKS_DATA.find(p => p.id === parkId);
-                if (!park) return;
+            parkSelectionData.parks.forEach(parkCode => {// use parkCode instead of id!!
+                const park = PARKS_DATA.find(p => p.parkCode === parkCode);
+                if (!park) {
+                    console.log('Park not found for code:', parkCode);
+                    return;}
 
                 const parkItem = document.createElement('div');
                 parkItem.className = 'park-item';
@@ -336,18 +342,17 @@
                 const endDate = new Date(parkSelectionData.questionnaire.endDate).toLocaleDateString();
                 
                 parkItem.innerHTML = `
-                    <div class="park-icon">${park.name.charAt(0)}</div>
+                    <div class="park-icon">${park.fullName.charAt(0)}</div>
                     <div class="park-details">
-                        <h4>${park.name}</h4>
-                        <p>${park.state} • ${park.description.substring(0, 80)}...</p>
+                        <h4>${park.fullName}</h4>
+                        <p>${park.description.substring(0, 80)}...</p>
                     </div>
                     <div class="trip-dates">${startDate} - ${endDate}</div>`;
                 parksList.appendChild(parkItem);});
         }
 
         function setupDayAssignment() {
-            if (!parkSelectionData.parks || parkSelectionData.parks.length < 2) {
-                // single park trip==> so no day assignment needed
+            if (!parkSelectionData.parks || parkSelectionData.parks.length < 2) {// single park trip: no day assignment needed!
                 return;}
             
             // show day assignment section
@@ -359,13 +364,11 @@
             const container = document.getElementById('dayPickerContainer');
             container.innerHTML = '';
             
-            // create day picker for FIRST park
-            const firstPark = PARKS_DATA.find(p => p.id === parkSelectionData.parks[0]);
+            // use parkCode instead of id!!
+            const firstPark = PARKS_DATA.find(p => p.parkCode === parkSelectionData.parks[0]);
             const firstPicker = createDayPicker(firstPark, startDate, totalDays, 0);
             container.appendChild(firstPicker);
-            
-            // create day picker for SECOND park  
-            const secondPark = PARKS_DATA.find(p => p.id === parkSelectionData.parks[1]);
+            const secondPark = PARKS_DATA.find(p => p.parkCode === parkSelectionData.parks[1]);
             const secondPicker = createDayPicker(secondPark, startDate, totalDays, 1);
             container.appendChild(secondPicker);
         }
@@ -373,7 +376,6 @@
         function createDayPicker(park, startDate, totalDays, parkIndex) {
             const picker = document.createElement('div');
             picker.className = 'day-picker';
-            
             const daysArray = [];
             for (let i = 0; i < totalDays; i++) {
                 const date = new Date(startDate);
@@ -381,7 +383,7 @@
                 daysArray.push(date);}
             
             picker.innerHTML = `
-                <h4>Days at ${park.name}</h4>
+                <h4>Days at ${park.fullName}</h4>
                 <div class="days-grid" id="daysGrid${parkIndex}">
                     ${daysArray.map((date, index) => 
                         `<div class="day-button" data-day="${index}" data-park="${parkIndex}" onclick="toggleDay(${index}, ${parkIndex})">
@@ -499,24 +501,21 @@
             const startDate = new Date(currentTrip.questionnaire.startDate);
             const endDate = new Date(currentTrip.questionnaire.endDate);
             const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-            // create timeline based on day assignments OR auto distribute?
             const dayToPark = {};
             
             if (currentTrip.dayAssignments && Object.keys(currentTrip.dayAssignments).length > 0) {
-                // use manual 
                 for (let day = 0; day < totalDays; day++) {dayToPark[day] = currentTrip.dayAssignments[day] || 0;}}
-            else {// auto distribute...
+            else {
                 const parksCount = currentTrip.parks.length;
                 const daysPerPark = Math.floor(totalDays / parksCount);
                 const extraDays = totalDays % parksCount;
                 let currentDay = 0;
-                currentTrip.parks.forEach((parkId, parkIndex) => {
+                currentTrip.parks.forEach((parkCode, parkIndex) => {
                     const parkDays = daysPerPark + (parkIndex < extraDays ? 1 : 0);
                     for (let i = 0; i < parkDays; i++) {
                         dayToPark[currentDay] = parkIndex;
                         currentDay++;}});
             }
-
             // group consecutive days by park
             const parkSegments = [];
             let currentSegment = null;
@@ -544,24 +543,28 @@
 
             // create timeline items for each segment
             parkSegments.forEach(segment => {
-                const park = PARKS_DATA.find(p => p.id === currentTrip.parks[segment.parkIndex]);
+                // use parkCode instead of id!!
+                const park = PARKS_DATA.find(p => p.parkCode === currentTrip.parks[segment.parkIndex]);
                 if (!park) return;
 
                 const timelineItem = document.createElement('div');
                 timelineItem.className = 'timeline-item';
-                const season = getSeason(segment.startDate);
-                const weather = park.weather[season];
+                
+                // calc real weather data using 52 week ordering
+                const weekIndex = getWeekOfYear(segment.startDate);
+                const temperature = park.weather && park.weather.temperature ? 
+                    Math.round(park.weather.temperature[weekIndex] || 70) : 70;
                 const dateRange = segment.startDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) + 
                     (segment.days.length > 1 ? ' - ' + segment.endDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) : '');
                 
                 timelineItem.innerHTML = `
                     <div class="timeline-header">
-                        <div class="timeline-park">${park.name}</div>
+                        <div class="timeline-park">${park.fullName}</div>
                         <div class="timeline-date">${dateRange} (${segment.days.length} day${segment.days.length > 1 ? 's' : ''})</div>
                     </div>
                     <div class="timeline-content">
                         <p>${park.description}</p>
-                        <div class="weather-preview">Expected: ${weather.temp}°F</div>
+                        <div class="weather-preview">Expected: ${temperature}°F</div>
                     </div>
                     <div class="day-sections">
                         <div class="section">
@@ -581,7 +584,8 @@
                                             <div class="meal-placeholder">Lunch</div>
                                             <div class="meal-placeholder">Dinner</div>
                                         </div>
-                                    `;}).join('')}
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
                     </div>`;
