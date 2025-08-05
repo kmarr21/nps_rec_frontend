@@ -29,7 +29,7 @@
         .trip-dates {background: #2F4F2F; color: white; padding: 15px 30px; border-radius: 0; display: inline-block;
             margin-top: 20px; font-weight: 600;}
 
-        /* preferences display */
+        /* prefs display */
         .preferences-summary {background: white; padding: 30px; margin-bottom: 40px; box-shadow: 0 2px 15px rgba(0,0,0,0.1);}
         .preferences-summary h3 {font-size: 1.3rem; color: #333; margin-bottom: 20px; font-weight: 600;}
         .preferences-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;}
@@ -61,25 +61,34 @@
             background: #2F4F2F; color: white; width: 30px; height: 30px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; font-weight: bold; z-index: 2;}
 
-        .park-image {width: 100%; height: 200px; background: #ddd; display: flex; align-items: center; 
+        /* image carousel */
+        .park-image-container {width: 100%; height: 200px; position: relative; overflow: hidden;}
+        .park-image {width: 100%; height: 100%; object-fit: cover; display: none;}
+        .park-image.active {display: block;}
+        .park-image-placeholder {width: 100%; height: 100%; background: #ddd; display: flex; align-items: center; 
             justify-content: center; color: #666; font-weight: 600;}
+        .carousel-arrow {position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.7); 
+            color: white; border: none; width: 30px; height: 30px; cursor: pointer; font-size: 16px; 
+            display: flex; align-items: center; justify-content: center;}
+        .carousel-arrow:hover {background: rgba(0,0,0,0.9);}
+        .carousel-arrow.left {left: 10px;}
+        .carousel-arrow.right {right: 10px;}
+        .image-indicator {position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); 
+            color: white; background: rgba(0,0,0,0.7); padding: 2px 8px; font-size: 12px;}
+
         .park-content {padding: 25px;}
         .park-name {font-size: 1.4rem; font-weight: 700; color: #2F4F2F; margin-bottom: 8px;}
-        .park-state {color: #8B4513; font-weight: 600; margin-bottom: 15px;}
         .park-description {color: #666; margin-bottom: 20px; line-height: 1.5;}
         
         .park-details {display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;}
         .detail-section h4 {font-size: 0.9rem; color: #333; margin-bottom: 8px; font-weight: 600; text-transform: uppercase;}
         .weather-info {display: flex; align-items: center; gap: 8px; color: #666; font-size: 0.9rem;}
         .weather-temp {background: #8B4513; color: white; padding: 2px 8px; font-weight: 600;}
-        .crowd-level {padding: 2px 8px; font-weight: 600; font-size: 0.8rem;}
-        .crowd-low {background: #d4edda; color: #155724;}
-        .crowd-moderate {background: #fff3cd; color: #856404;}
-        .crowd-high {background: #f8d7da; color: #721c24;}
-        .crowd-very-high {background: #f5c6cb; color: #721c24;}
+        .visitation-info {color: #666; font-size: 0.9rem;}
+        .visitation-count {background: #2F4F2F; color: white; padding: 2px 8px; font-weight: 600;}
 
-        .activities-list {display: flex; flex-wrap: wrap; gap: 5px;}
-        .activity-tag {background: #f0f0f0; padding: 2px 8px; font-size: 0.8rem; color: #333;}
+        .topics-list {display: flex; flex-wrap: wrap; gap: 5px;}
+        .topic-tag {background: #f0f0f0; padding: 2px 8px; font-size: 0.8rem; color: #333;}
 
         /* action buttons */
         .action-section {text-align: center; padding: 40px 0;}
@@ -93,6 +102,9 @@
         .btn:disabled {background: #ccc; cursor: not-allowed; transform: none;}
         .btn-secondary {background: #8B4513;}
         .btn-secondary:hover {background: #5d2d0a;}
+
+        .loading-message {text-align: center; padding: 40px; color: #666; font-size: 1.2rem;}
+        .error-message {text-align: center; padding: 40px; color: #e74c3c; background: #fdf2f2; margin: 20px 0;}
 
         /* responsive */
         @media (max-width: 768px) {
@@ -183,19 +195,36 @@
     <script>
         let PARKS_DATA = [];
         let selectedParks = [];
-        let travelStyle = 'multiple'; //default!
+        let travelStyle = 'multiple';
         let questionnaireData = {};
-        // load parks data from json file
-        async function loadParksData() {
+        // load parks data from backend recs
+        function loadParksData() {
             try {
-                const response = await fetch('fake-parks-data.json');
-                const data = await response.json();
-                PARKS_DATA = data.parks;
-                renderParks();
+                const recommendedParks = localStorage.getItem('nps_recommended_parks');
+                if (recommendedParks) {
+                    PARKS_DATA = JSON.parse(recommendedParks);
+                    console.log('Loaded parks from backend:', PARKS_DATA.length, 'parks');
+                    renderParks();}
+                else {throw new Error('No park recommendations found');}
             } catch (error) {
                 console.error('Error loading parks data:', error);
-                document.getElementById('parksGrid').innerHTML = 
-                    '<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">Unable to load parks data. Please check that fake-parks-data.json exists.</div>';}
+                document.getElementById('parksGrid').innerHTML = '<div class="error-message">Unable to load park recommendations. Please go back and try again.</div>';
+            }
+        }
+
+        //helper funcs for date calcs
+        function getWeekOfYear(date) {
+            const start = new Date(date.getFullYear(), 0, 1);
+            const days = Math.floor((date - start) / (24 * 60 * 60 * 1000));
+            return Math.min(Math.floor(days / 7), 51); // cap at 51 (0-indexed, 52 weeks)
+        }
+
+        function getMonthIndex(date) {
+            return date.getMonth(); //0-11
+        }
+
+        function formatVisitation(count) {
+            return Math.round(count / 1000) + 'k';
         }
 
         // initialize page
@@ -204,20 +233,14 @@
             displayTripDates();
             displayPreferences();
             loadParksData();
-            updateContinueButton();});
+            updateContinueButton();
+        });
 
         function loadQuestionnaireData() {
             const stored = localStorage.getItem('nps_questionnaire_data');
             if (stored) {questionnaireData = JSON.parse(stored);}
-            else {// fallback if no questionnaire data
-                questionnaireData = {
-                    startDate: '2025-08-01',
-                    endDate: '2025-08-07',
-                    duration: '4-7 days',
-                    activities: [],
-                    topics: [],
-                    climate: 'no preference',
-                    crowds: 'moderate crowds'};}
+            else {questionnaireData = {startDate: '2025-08-01', endDate: '2025-08-07', duration: '4-7 days',
+                    activities: [], topics: [], climate: 'no preference', crowds: 'moderate crowds'};}
         }
 
         function displayTripDates() {
@@ -227,37 +250,31 @@
         }
 
         function displayPreferences() {
-            // activities
             const activitiesTags = document.getElementById('activitiesTags');
             if (questionnaireData.activities && questionnaireData.activities.length > 0) {
                 activitiesTags.innerHTML = questionnaireData.activities.map(activity => `<span class="preference-tag">${activity}</span>`).join('');}
             else {activitiesTags.innerHTML = '<span class="preference-value">None selected</span>';}
             
-            // topics
             const topicsTags = document.getElementById('topicsTags');
             if (questionnaireData.topics && questionnaireData.topics.length > 0) {
                 topicsTags.innerHTML = questionnaireData.topics.map(topic => `<span class="preference-tag">${topic}</span>`).join('');}
             else {topicsTags.innerHTML = '<span class="preference-value">None selected</span>';}
             
-            // climate and crowds
             document.getElementById('climateValue').textContent = questionnaireData.climate || 'Not specified';
             document.getElementById('crowdsValue').textContent = questionnaireData.crowds || 'Not specified';
         }
 
         function selectTravelStyle(style) {
             travelStyle = style;
-            // update ui
             document.getElementById('singleStyle').classList.remove('selected');
             document.getElementById('multipleStyle').classList.remove('selected');
             document.getElementById(style + 'Style').classList.add('selected');
             
-            // update title + reset selections
             if (style === 'single') {
                 document.getElementById('parksTitle').textContent = 'Select Your Park (Choose 1)';
-                selectedParks = [];
-            } else {document.getElementById('parksTitle').textContent = 'Select Your Parks (Choose up to 2)';}
+                selectedParks = [];}
+            else {document.getElementById('parksTitle').textContent = 'Select Your Parks (Choose up to 2)';}
             
-            // clear all selections
             document.querySelectorAll('.park-card').forEach(card => {card.classList.remove('selected');});
             updateSelectionDisplay();
             updateContinueButton();
@@ -265,81 +282,123 @@
 
         function renderParks() {
             const grid = document.getElementById('parksGrid');
-            // only render first 5 parks as "recommendations"
-            const recommendedParks = PARKS_DATA.slice(0, 5);
+            grid.innerHTML = '';
             
-            recommendedParks.forEach(park => {
+            if (!PARKS_DATA || PARKS_DATA.length === 0) {
+                grid.innerHTML = '<div class="error-message">No parks available to display.</div>';
+                return;}
+
+            const startDate = new Date(questionnaireData.startDate);
+            const weekIndex = getWeekOfYear(startDate);
+            const monthIndex = getMonthIndex(startDate);
+            
+            PARKS_DATA.forEach((park, index) => {
                 const card = document.createElement('div');
                 card.className = 'park-card';
-                card.onclick = () => toggleParkSelection(park.id);
+                card.onclick = () => toggleParkSelection(park.parkCode);
                 
-                // determine season for weather/crowd display
-                const season = getCurrentSeason();
-                const weather = park.weather[season];
-                const crowd = park.crowdLevel[season];
+                // get weather data for the specific week
+                const temperature = park.weather && park.weather.temperature ? 
+                    Math.round(park.weather.temperature[weekIndex] || 70) : 70;
+                const precipitation = park.weather && park.weather.precipitation ? 
+                    (park.weather.precipitation[weekIndex] || 0).toFixed(2) : '0.00';
+                
+                // get visitation data for specific month
+                const visitation = park.visitation && park.visitation[0] ? 
+                    park.visitation[0][monthIndex.toString()] || 0 : 0;
+                
+                // create image carousel
+                let imageCarousel = '';
+                if (park.images && park.images.length > 0) {
+                    const imageElements = park.images.map((img, imgIndex) => 
+                        `<img src="${img.url}" alt="${img.altText || park.fullName}" 
+                         class="park-image ${imgIndex === 0 ? 'active' : ''}" 
+                         style="max-width: 300px; max-height: 200px;" 
+                         onerror="this.style.display='none'">`).join('');
+                    
+                    imageCarousel = `
+                        <div class="park-image-container">
+                            ${imageElements}
+                            ${park.images.length > 1 ? `
+                                <button class="carousel-arrow left" onclick="changeImage(event, ${index}, -1)">‹</button>
+                                <button class="carousel-arrow right" onclick="changeImage(event, ${index}, 1)">›</button>
+                                <div class="image-indicator">1 / ${park.images.length}</div>` : ''}
+                        </div>`;
+                } else {
+                    imageCarousel = `
+                        <div class="park-image-container">
+                            <div class="park-image-placeholder">📷 ${park.fullName}</div>
+                        </div>`;
+                }
+                
+                // create topics list
+                const topicsList = park.topics && park.topics.length > 0 ? 
+                    park.topics.slice(0, 5).map(topic => `<span class="topic-tag">${topic.name}</span>`).join('') : '<span class="topic-tag">General Interest</span>';
                 
                 card.innerHTML = `
-                    <div class="park-image">📷 ${park.name} Image</div>
+                    ${imageCarousel}
                     <div class="park-content">
-                        <div class="park-name">${park.name}</div>
-                        <div class="park-state">${park.state}</div>
+                        <div class="park-name">${park.fullName}</div>
                         <div class="park-description">${park.description}</div>
-                        
                         <div class="park-details">
                             <div class="detail-section">
                                 <h4>Weather Forecast</h4>
                                 <div class="weather-info">
-                                    <span class="weather-temp">${weather.temp}°F</span>
-                                    <span>Perfect for ${getWeatherActivity(weather.temp)}</span>
+                                    <span class="weather-temp">${temperature}°F</span>
+                                    <span>${precipitation}" rain</span>
                                 </div>
                             </div>
                             <div class="detail-section">
-                                <h4>Crowd Level</h4>
-                                <span class="crowd-level crowd-${crowd.replace('-', '')}">${formatCrowdLevel(crowd)}</span>
+                                <h4>Expected Visitors</h4>
+                                <div class="visitation-info">
+                                    <span class="visitation-count">${formatVisitation(visitation)}</span>
+                                    <span>visitors/month</span>
+                                </div>
                             </div>
                         </div>
                         
                         <div class="detail-section">
-                            <h4>Popular Activities</h4>
-                            <div class="activities-list">
-                                ${park.activities.map(activity => 
-                                    `<span class="activity-tag">${activity}</span>`
-                                ).join('')}
+                            <h4>Park Topics</h4>
+                            <div class="topics-list">
+                                ${topicsList}
                             </div>
                         </div>
                     </div>`;
                 grid.appendChild(card);});
         }
 
-        function getCurrentSeason() {
-            const month = new Date(questionnaireData.startDate).getMonth();
-            if (month >= 2 && month <= 4) return 'spring';
-            if (month >= 5 && month <= 7) return 'summer';
-            if (month >= 8 && month <= 10) return 'fall';
-            return 'winter';
+        function changeImage(event, parkIndex, direction) {
+            event.stopPropagation();// prevent selection
+            const card = document.querySelectorAll('.park-card')[parkIndex];
+            const images = card.querySelectorAll('.park-image');
+            const indicator = card.querySelector('.image-indicator');
+            
+            // find current active image
+            let currentIndex = 0;
+            images.forEach((img, index) => {if (img.classList.contains('active')) {currentIndex = index;}});
+            
+            // calc new index
+            let newIndex = currentIndex + direction;
+            if (newIndex < 0) newIndex = images.length - 1;
+            if (newIndex >= images.length) newIndex = 0;
+            
+            // update active image
+            images[currentIndex].classList.remove('active');
+            images[newIndex].classList.add('active');
+            
+            // update indicator
+            if (indicator) {indicator.textContent = `${newIndex + 1} / ${images.length}`;}
         }
 
-        function getWeatherActivity(temp) {
-            if (temp < 40) return 'winter activities';
-            if (temp < 60) return 'hiking & sightseeing';
-            if (temp < 80) return 'all outdoor activities';
-            return 'early morning hikes';
-        }
-
-        function formatCrowdLevel(level) {
-            return level.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-        }
-
-        function toggleParkSelection(parkId) {
-            const isSelected = selectedParks.includes(parkId);
-            if (isSelected) {// remove from selection
-                selectedParks = selectedParks.filter(id => id !== parkId);
-            } else {// add to selection w/ limits
-                if (travelStyle === 'single') {
-                    selectedParks = [parkId]; //only one
-                } else {
-                    if (selectedParks.length < 2) {selectedParks.push(parkId);}
-                    else {alert('You can select up to 2 parks for a multiple parks tour.');
+        function toggleParkSelection(parkCode) {
+            const isSelected = selectedParks.includes(parkCode);
+            if (isSelected) {selectedParks = selectedParks.filter(code => code !== parkCode);}
+            else {
+                if (travelStyle === 'single') {selectedParks = [parkCode];}
+                else {
+                    if (selectedParks.length < 2) {selectedParks.push(parkCode);}
+                    else {
+                        alert('You can select up to 2 parks for a multiple parks tour.');
                         return;}}
             }
             updateParkDisplay();
@@ -349,10 +408,9 @@
 
         function updateParkDisplay() {
             document.querySelectorAll('.park-card').forEach((card, index) => {
-                const parkId = PARKS_DATA[index]?.id;
-                if (parkId && selectedParks.includes(parkId)) {card.classList.add('selected');}
-                else {card.classList.remove('selected');}
-            });
+                const parkCode = PARKS_DATA[index]?.parkCode;
+                if (parkCode && selectedParks.includes(parkCode)) {card.classList.add('selected');}
+                else {card.classList.remove('selected');}});
         }
 
         function updateSelectionDisplay() {
@@ -360,7 +418,7 @@
             const text = document.getElementById('selectedParksText');
             
             if (selectedParks.length > 0) {
-                const parkNames = selectedParks.map(id => PARKS_DATA.find(p => p.id === id)?.name || 'Unknown Park');
+                const parkNames = selectedParks.map(code => PARKS_DATA.find(p => p.parkCode === code)?.fullName || 'Unknown Park');
                 text.textContent = parkNames.join(', ');
                 summary.style.display = 'block';}
             else {summary.style.display = 'none';}
@@ -382,14 +440,13 @@
             if (selectedParks.length === 0) {
                 alert('Please select at least one park to continue.');
                 return;}
-            // save park selection data
+            
             const selectionData = {
                 parks: selectedParks,
                 travelStyle: travelStyle,
                 questionnaire: questionnaireData};
             
             localStorage.setItem('nps_park_selection', JSON.stringify(selectionData));
-            // redirect to itinerary page
             window.location.href = 'itinerary.html';
         }
     </script>
