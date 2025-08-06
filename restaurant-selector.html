@@ -354,9 +354,8 @@
                 console.log('Request URL:', `${BACKEND_URL}/api/restaurants/search-restaurants-near-park`);
                 const response = await fetch(`${BACKEND_URL}/api/restaurants/search-restaurants-near-park`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(requestBody)});
-
                 console.log('Backend response status:', response.status);
 
                 if (!response.ok) {
