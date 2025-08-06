@@ -137,11 +137,6 @@
                 </div>
             </div>
             <div class="filter-group">
-                <label>
-                    <input type="checkbox" id="openNowCheck"> Currently Open
-                </label>
-            </div>
-            <div class="filter-group">
                 <label>Cuisine Type</label>
                 <div class="cuisine-grid">
                     <div class="cuisine-item"><input type="checkbox" id="italian" value="italian"><label for="italian">Italian</label></div>
@@ -297,8 +292,7 @@
                         radius: filters.radius,
                         cuisines: filters.cuisines,
                         prices: filters.prices,
-                        rating: filters.rating,
-                        openNow: filters.openNow})
+                        rating: filters.rating})
                 });
                 if (!response.ok) {throw new Error(`HTTP ${response.status}: Failed to search restaurants`);}
                 const data = await response.json();
@@ -315,12 +309,11 @@
         function collectFilters() {
             const radius = parseInt(document.getElementById('radiusSelect').value);
             const rating = parseFloat(document.getElementById('ratingSelect').value);
-            const openNow = document.getElementById('openNowCheck').checked;
             const cuisines = [];
             document.querySelectorAll('.cuisine-grid input:checked').forEach(cb => {cuisines.push(cb.value);});
             const prices = [];
             document.querySelectorAll('.price-btn.selected').forEach(btn => {prices.push(parseInt(btn.dataset.price));});
-            return {radius, rating, openNow, cuisines, prices};
+            return {radius, rating, cuisines, prices};
         }
 
         function displayResults(data) {
@@ -455,7 +448,6 @@
         function clearFilters() {
             document.getElementById('radiusSelect').value = '50000';
             document.getElementById('ratingSelect').value = '4';
-            document.getElementById('openNowCheck').checked = false;
             document.querySelectorAll('.cuisine-grid input').forEach(cb => cb.checked = false);
             document.querySelectorAll('.price-btn').forEach(btn => btn.classList.add('selected'));
             searchRestaurants();
