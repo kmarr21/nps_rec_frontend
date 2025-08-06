@@ -194,8 +194,6 @@
             </div>
         </div>
     </div>
-    <!-- gm javascript API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap" async defer></script>
     <script>
         const BACKEND_URL = 'https://nps-rec-backend.onrender.com';
         let tripData = {};
@@ -208,7 +206,24 @@
         // initialize page
         document.addEventListener('DOMContentLoaded', function(){
             loadTripData();
-            setupEventListeners();});
+            setupEventListeners();
+            loadGoogleMapsAPI(); // load maps 
+        });
+
+        // load maps API w/ key from backend
+        async function loadGoogleMapsAPI() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/config/maps-key`);
+                const config = await response.json();
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${config.apiKey}&libraries=places&callback=initMap`;
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+            } catch (error) {
+                console.error('Error loading Google Maps API:', error);
+                document.getElementById('mapOverlay').textContent = 'Error loading maps';}
+        }
 
         function loadTripData() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -219,7 +234,6 @@
                 lat: parseFloat(urlParams.get('lat')),
                 lng: parseFloat(urlParams.get('lng')),
                 tripId: urlParams.get('tripId')};
-
             // update header
             document.getElementById('headerInfo').textContent = `${tripData.parkName} • Day ${tripData.day + 1}`;
         }
@@ -247,8 +261,7 @@
                 center: { lat: tripData.lat, lng: tripData.lng },
                 zoom: calculateZoomForRadius(parseInt(document.getElementById('radiusSelect').value)),
                 mapTypeId: 'roadmap',
-                styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'off'}]}]
-            });
+                styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'off'}]}]});
 
             // add park marker
             parkMarker = new google.maps.Marker({
