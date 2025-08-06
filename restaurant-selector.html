@@ -111,8 +111,8 @@
                 <label>Search Radius</label>
                 <select id="radiusSelect">
                     <option value="10000">10 km</option>
-                    <option value="25000">25 km</option>
-                    <option value="50000" selected>50 km (Recommended)</option>
+                    <option value="25000" selected>25 km (Recommended)</option>
+                    <option value="50000">50 km</option>
                     <option value="75000">75 km</option>
                     <option value="100000">100 km</option>
                 </select>
@@ -164,15 +164,15 @@
         <div class="map-results-container">
             <div class="map-container">
                 <div id="mapElement" style="width: 100%; height: 100%;"></div>
-                <div class="map-overlay" id="mapOverlay">Loading...</div>
+                <div class="map-overlay" id="mapOverlay">Loading Maps...</div>
             </div>
             <div class="results-container">
                 <div class="results-header">
                     <h3>Restaurants</h3>
-                    <div class="results-count" id="resultsCount">Searching...</div>
+                    <div class="results-count" id="resultsCount">Loading...</div>
                 </div>
                 <div class="results-list" id="resultsList">
-                    <div class="loading">Searching for restaurants...</div>
+                    <div class="loading">Loading restaurant finder...</div>
                 </div>
             </div>
         </div>
@@ -194,6 +194,7 @@
             </div>
         </div>
     </div>
+    
     <script>
         const BACKEND_URL = 'https://nps-rec-backend.onrender.com';
         let tripData = {};
@@ -203,29 +204,19 @@
         let map = null;
         let mapMarkers = [];
         let parkMarker = null;
-        // initialize page
+        
+        // Initialize page with extensive debugging
         document.addEventListener('DOMContentLoaded', function(){
+            console.log('=== RESTAURANT SELECTOR DEBUG START ===');
+            console.log('Page loaded, initializing...');
             loadTripData();
             setupEventListeners();
-            loadGoogleMapsAPI(); // load maps 
+            loadGoogleMapsAPI();
         });
 
-        // load maps API w/ key from backend
-        async function loadGoogleMapsAPI() {
-            try {
-                const response = await fetch(`${BACKEND_URL}/api/config/maps-key`);
-                const config = await response.json();
-                const script = document.createElement('script');
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${config.apiKey}&libraries=places&callback=initMap`;
-                script.async = true;
-                script.defer = true;
-                document.head.appendChild(script);
-            } catch (error) {
-                console.error('Error loading Google Maps API:', error);
-                document.getElementById('mapOverlay').textContent = 'Error loading maps';}
-        }
-
+        // Load trip data from URL parameters
         function loadTripData() {
+            console.log('Loading trip data from URL...');
             const urlParams = new URLSearchParams(window.location.search);
             tripData = {
                 day: parseInt(urlParams.get('day')),
@@ -233,49 +224,125 @@
                 parkName: urlParams.get('parkName'),
                 lat: parseFloat(urlParams.get('lat')),
                 lng: parseFloat(urlParams.get('lng')),
-                tripId: urlParams.get('tripId')};
-            // update header
+                tripId: urlParams.get('tripId')
+            };
+            
+            console.log('Loaded trip data:', tripData);
+            
+            // Validate essential data
+            if (!tripData.lat || !tripData.lng || !tripData.parkName) {
+                console.error('Missing essential trip data!', tripData);
+                document.getElementById('mapOverlay').textContent = 'Error: Missing location data';
+                return;
+            }
+
+            // Update header
             document.getElementById('headerInfo').textContent = `${tripData.parkName} • Day ${tripData.day + 1}`;
         }
 
-        function setupEventListeners() {
-            // price range buttons
-            document.querySelectorAll('.price-btn').forEach(btn => {btn.addEventListener('click', function() {this.classList.toggle('selected');});});
+        // Load Google Maps API dynamically with API key from backend
+        async function loadGoogleMapsAPI() {
+            console.log('Loading Google Maps API...');
+            try {
+                document.getElementById('mapOverlay').textContent = 'Loading Maps API...';
+                
+                const response = await fetch(`${BACKEND_URL}/api/config/maps-key`);
+                if (!response.ok) {
+                    throw new Error(`Failed to get API key: ${response.status}`);
+                }
+                
+                const config = await response.json();
+                console.log('Got API key config, loading Maps...');
+                
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${config.apiKey}&libraries=places&callback=initMap`;
+                script.async = true;
+                script.defer = true;
+                script.onerror = function() {
+                    console.error('Failed to load Google Maps script');
+                    document.getElementById('mapOverlay').textContent = 'Error loading Google Maps';
+                };
+                document.head.appendChild(script);
+                
+                console.log('Google Maps script added to page');
+            } catch (error) {
+                console.error('Error loading Google Maps API:', error);
+                document.getElementById('mapOverlay').textContent = 'Error loading Maps API';
+            }
+        }
 
-            // meal type select
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            
+            // Price range buttons
+            document.querySelectorAll('.price-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    console.log('Price filter changed:', this.dataset.price, this.classList.contains('selected'));
+                });
+            });
+
+            // Meal type selection
             document.querySelectorAll('.meal-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.meal-btn').forEach(b => b.classList.remove('selected'));
                     this.classList.add('selected');
                     selectedMealType = this.dataset.meal;
-                    document.getElementById('addRestaurantBtn').disabled = false;});});
+                    document.getElementById('addRestaurantBtn').disabled = false;
+                    console.log('Selected meal type:', selectedMealType);
+                });
+            });
         }
 
-        // initialize Google map
+        // Initialize Google Map - this is called by the Google Maps API
         function initMap() {
+            console.log('Initializing Google Map...');
+            
             if (!tripData.lat || !tripData.lng) {
-                setTimeout(initMap, 100); // wait for tripData to load!!
-                return;}
+                console.error('No coordinates available for map');
+                setTimeout(initMap, 100);
+                return;
+            }
 
-            map = new google.maps.Map(document.getElementById('mapElement'), {
-                center: { lat: tripData.lat, lng: tripData.lng },
-                zoom: calculateZoomForRadius(parseInt(document.getElementById('radiusSelect').value)),
-                mapTypeId: 'roadmap',
-                styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'off'}]}]});
+            console.log('Creating map with center:', { lat: tripData.lat, lng: tripData.lng });
 
-            // add park marker
-            parkMarker = new google.maps.Marker({
-                position: {lat: tripData.lat, lng: tripData.lng},
-                map: map,
-                title: tripData.parkName,
-                icon: {url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png', scaledSize: new google.maps.Size(32, 32)}
-            });
-            // initial search
-            searchRestaurants();
+            try {
+                map = new google.maps.Map(document.getElementById('mapElement'), {
+                    center: { lat: tripData.lat, lng: tripData.lng },
+                    zoom: calculateZoomForRadius(parseInt(document.getElementById('radiusSelect').value)),
+                    mapTypeId: 'roadmap',
+                    styles: [{
+                        featureType: 'poi',
+                        elementType: 'labels',
+                        stylers: [{ visibility: 'off' }]
+                    }]
+                });
+
+                // Add park marker
+                parkMarker = new google.maps.Marker({
+                    position: { lat: tripData.lat, lng: tripData.lng },
+                    map: map,
+                    title: tripData.parkName,
+                    icon: {
+                        url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                        scaledSize: new google.maps.Size(32, 32)
+                    }
+                });
+
+                console.log('Map and park marker created successfully');
+                document.getElementById('mapOverlay').textContent = 'Map loaded, searching...';
+                
+                // Start initial restaurant search
+                searchRestaurants();
+                
+            } catch (error) {
+                console.error('Error creating map:', error);
+                document.getElementById('mapOverlay').textContent = 'Error creating map';
+            }
         }
 
         function calculateZoomForRadius(radius) {
-            if (radius <= 10000) return 12;
+            if (radius <= 10000) return 11;
             else if (radius <= 25000) return 10;
             else if (radius <= 50000) return 9;
             else if (radius <= 75000) return 8;
@@ -283,165 +350,260 @@
         }
 
         async function searchRestaurants() {
+            console.log('=== RESTAURANT SEARCH DEBUG START ===');
+            
             const filters = collectFilters();
-            console.log('Searching with filters:', filters);
-            // update map zoom for new radius
-            if (map) {map.setZoom(calculateZoomForRadius(filters.radius));}
+            console.log('Collected filters:', filters);
+            console.log('Trip coordinates:', { lat: tripData.lat, lng: tripData.lng });
 
-            // clear existing markers
+            // Update map zoom
+            if (map) {
+                const newZoom = calculateZoomForRadius(filters.radius);
+                console.log('Updating map zoom to:', newZoom);
+                map.setZoom(newZoom);
+            }
+
+            // Clear existing markers and show loading
             clearMapMarkers();
-            // show loading
             document.getElementById('resultsList').innerHTML = '<div class="loading">Searching for restaurants...</div>';
             document.getElementById('resultsCount').textContent = 'Searching...';
-            document.getElementById('mapOverlay').textContent = 'Loading...';
+            document.getElementById('mapOverlay').textContent = 'Searching restaurants...';
 
             try {
+                const requestBody = {
+                    latitude: tripData.lat,
+                    longitude: tripData.lng,
+                    radius: filters.radius,
+                    cuisines: filters.cuisines,
+                    prices: filters.prices,
+                    rating: filters.rating
+                };
+                
+                console.log('Sending request to backend:', requestBody);
+                console.log('Request URL:', `${BACKEND_URL}/api/restaurants/search-restaurants-near-park`);
+
                 const response = await fetch(`${BACKEND_URL}/api/restaurants/search-restaurants-near-park`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        latitude: tripData.lat,
-                        longitude: tripData.lng,
-                        radius: filters.radius,
-                        cuisines: filters.cuisines,
-                        prices: filters.prices,
-                        rating: filters.rating})
+                    body: JSON.stringify(requestBody)
                 });
-                if (!response.ok) {throw new Error(`HTTP ${response.status}: Failed to search restaurants`);}
+
+                console.log('Backend response status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Backend error response:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
                 const data = await response.json();
-                currentRestaurants = data.restaurants;
+                console.log('Backend response data:', data);
+                console.log('Restaurants found:', data.restaurants?.length || 0);
+
+                currentRestaurants = data.restaurants || [];
                 displayResults(data);
                 updateMapMarkers(data);
+                
+                console.log('=== RESTAURANT SEARCH DEBUG END ===');
+
             } catch (error) {
                 console.error('Restaurant search error:', error);
-                document.getElementById('resultsList').innerHTML = '<div class="error">Error loading restaurants. Please try again.</div>';
+                document.getElementById('resultsList').innerHTML = `<div class="error">Error: ${error.message}</div>`;
                 document.getElementById('resultsCount').textContent = 'Error';
-                document.getElementById('mapOverlay').textContent = 'Error loading';}
+                document.getElementById('mapOverlay').textContent = 'Search error';
+            }
         }
 
         function collectFilters() {
             const radius = parseInt(document.getElementById('radiusSelect').value);
             const rating = parseFloat(document.getElementById('ratingSelect').value);
+            
             const cuisines = [];
-            document.querySelectorAll('.cuisine-grid input:checked').forEach(cb => {cuisines.push(cb.value);});
+            document.querySelectorAll('.cuisine-grid input:checked').forEach(cb => {
+                cuisines.push(cb.value);
+            });
+            
             const prices = [];
-            document.querySelectorAll('.price-btn.selected').forEach(btn => {prices.push(parseInt(btn.dataset.price));});
-            return {radius, rating, cuisines, prices};
+            document.querySelectorAll('.price-btn.selected').forEach(btn => {
+                prices.push(parseInt(btn.dataset.price));
+            });
+            
+            return { radius, rating, cuisines, prices };
         }
 
         function displayResults(data) {
+            console.log('Displaying results:', data.restaurants?.length || 0, 'restaurants');
+            
             const resultsList = document.getElementById('resultsList');
             const resultsCount = document.getElementById('resultsCount');
 
-            if (data.restaurants.length === 0) {
-                resultsList.innerHTML = '<div class="no-results">No restaurants found. Try adjusting your filters.</div>';
+            if (!data.restaurants || data.restaurants.length === 0) {
+                resultsList.innerHTML = '<div class="no-results">No restaurants found. Try adjusting your filters or increasing the search radius.</div>';
                 resultsCount.textContent = 'No restaurants found';
-                return;}
+                return;
+            }
 
             resultsCount.textContent = `${data.restaurants.length} restaurants found`;
 
-            const html = data.restaurants.map(restaurant => `
-                <div class="restaurant-card" onclick="highlightRestaurant('${restaurant.place_id}')" data-place-id="${restaurant.place_id}">
-                    <div class="restaurant-header">
-                        <div class="restaurant-name">${restaurant.name}</div>
-                        <div class="restaurant-rating">★ ${restaurant.rating}</div>
+            const html = data.restaurants.map(restaurant => {
+                console.log('Displaying restaurant:', restaurant.name, 'at', restaurant.location);
+                
+                return `
+                    <div class="restaurant-card" onclick="highlightRestaurant('${restaurant.place_id}')" data-place-id="${restaurant.place_id}">
+                        <div class="restaurant-header">
+                            <div class="restaurant-name">${restaurant.name}</div>
+                            <div class="restaurant-rating">★ ${restaurant.rating}</div>
+                        </div>
+                        <div class="restaurant-info">
+                            <span>${'$'.repeat(restaurant.price_level)}</span>
+                            <span>${restaurant.cuisine_types.slice(0, 2).join(', ') || 'Restaurant'}</span>
+                            ${restaurant.business_status !== 'OPERATIONAL' ? '<span style="color: #ff3b30;">Temporarily Closed</span>' : ''}
+                        </div>
+                        <div class="restaurant-address">${restaurant.address}</div>
                     </div>
-                    <div class="restaurant-info">
-                        <span>${'$'.repeat(restaurant.price_level)}</span>
-                        <span>${restaurant.cuisine_types.slice(0, 2).join(', ') || 'Restaurant'}</span>
-                        ${restaurant.business_status === 'OPERATIONAL' ? '' : '<span style="color: #ff3b30;">Temporarily Closed</span>'}
-                    </div>
-                    <div class="restaurant-address">${restaurant.address}</div>
-                </div>`).join('');
+                `;
+            }).join('');
+            
             resultsList.innerHTML = html;
         }
 
         function clearMapMarkers() {
+            console.log('Clearing', mapMarkers.length, 'existing map markers');
             mapMarkers.forEach(marker => marker.setMap(null));
             mapMarkers = [];
         }
 
         function updateMapMarkers(data) {
-            if (!map) return;
+            console.log('Updating map markers for', data.restaurants?.length || 0, 'restaurants');
+            
+            if (!map) {
+                console.log('No map available for markers');
+                return;
+            }
+
             const radius = parseInt(document.getElementById('radiusSelect').value);
             document.getElementById('mapOverlay').textContent = 
-                `${data.restaurants.length} restaurants within ${radius/1000}km`;
+                `${data.restaurants?.length || 0} restaurants within ${radius/1000}km`;
 
-            // add restaurant markers!!
-            data.restaurants.forEach(restaurant => {
-                if (restaurant.location) {
-                    const marker = new google.maps.Marker({
-                        position: { lat: restaurant.location.lat, lng: restaurant.location.lng },
-                        map: map,
-                        title: restaurant.name,
-                        icon: {url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png', scaledSize: new google.maps.Size(24, 24)}});
-                    // click marker to select restaurant
-                    marker.addListener('click', () => {selectRestaurant(restaurant.place_id);});
-                    mapMarkers.push(marker);}
-            });
+            // Add restaurant markers
+            if (data.restaurants && data.restaurants.length > 0) {
+                data.restaurants.forEach((restaurant, index) => {
+                    if (restaurant.location && restaurant.location.lat && restaurant.location.lng) {
+                        console.log(`Adding marker ${index + 1}:`, restaurant.name, restaurant.location);
+                        
+                        const marker = new google.maps.Marker({
+                            position: { lat: restaurant.location.lat, lng: restaurant.location.lng },
+                            map: map,
+                            title: restaurant.name,
+                            icon: {
+                                url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                                scaledSize: new google.maps.Size(24, 24)
+                            }
+                        });
 
-            // adjust map bounds to show all markers if needed
-            if (data.map_bounds) {
-                const bounds = new google.maps.LatLngBounds(
-                    new google.maps.LatLng(data.map_bounds.southwest.lat, data.map_bounds.southwest.lng),
-                    new google.maps.LatLng(data.map_bounds.northeast.lat, data.map_bounds.northeast.lng));
-                map.fitBounds(bounds);}
+                        // Click marker to select restaurant
+                        marker.addListener('click', () => {
+                            console.log('Marker clicked for:', restaurant.name);
+                            selectRestaurant(restaurant.place_id);
+                        });
+                        
+                        mapMarkers.push(marker);
+                    } else {
+                        console.warn('Restaurant missing location data:', restaurant.name);
+                    }
+                });
+
+                // Adjust map bounds if we have bounds data
+                if (data.map_bounds) {
+                    console.log('Fitting map to bounds:', data.map_bounds);
+                    const bounds = new google.maps.LatLngBounds(
+                        new google.maps.LatLng(data.map_bounds.southwest.lat, data.map_bounds.southwest.lng),
+                        new google.maps.LatLng(data.map_bounds.northeast.lat, data.map_bounds.northeast.lng)
+                    );
+                    map.fitBounds(bounds);
+                }
+            }
         }
 
         function highlightRestaurant(placeId) {
-            // remove old highlights
-            document.querySelectorAll('.restaurant-card').forEach(card => {card.classList.remove('selected');});
+            console.log('Highlighting restaurant with place_id:', placeId);
+            
+            // Remove old highlights
+            document.querySelectorAll('.restaurant-card').forEach(card => {
+                card.classList.remove('selected');
+            });
 
-            //highlight selected card
+            // Highlight selected card
             const selectedCard = document.querySelector(`[data-place-id="${placeId}"]`);
-            if (selectedCard) {selectedCard.classList.add('selected'); selectRestaurant(placeId);}
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                selectRestaurant(placeId);
+            }
         }
 
         function selectRestaurant(placeId) {
+            console.log('Selecting restaurant with place_id:', placeId);
+            
             selectedRestaurant = currentRestaurants.find(r => r.place_id === placeId);
             if (selectedRestaurant) {
+                console.log('Found restaurant:', selectedRestaurant.name);
                 document.getElementById('selectedRestaurantName').textContent = selectedRestaurant.name;
                 document.getElementById('mealModal').classList.add('show');
                 selectedMealType = null;
                 document.getElementById('addRestaurantBtn').disabled = true;
-                document.querySelectorAll('.meal-btn').forEach(btn => btn.classList.remove('selected'));}
+                document.querySelectorAll('.meal-btn').forEach(btn => btn.classList.remove('selected'));
+            } else {
+                console.error('Restaurant not found with place_id:', placeId);
+            }
         }
 
         function closeMealModal() {
+            console.log('Closing meal modal');
             document.getElementById('mealModal').classList.remove('show');
             selectedRestaurant = null;
             selectedMealType = null;
-            // remove card highlight
-            document.querySelectorAll('.restaurant-card').forEach(card => {card.classList.remove('selected');});
+            // Remove card highlight
+            document.querySelectorAll('.restaurant-card').forEach(card => {
+                card.classList.remove('selected');
+            });
         }
 
         function addRestaurantToTrip() {
-            if (!selectedRestaurant || !selectedMealType) return;
-            // get current trip data
+            console.log('Adding restaurant to trip:', selectedRestaurant?.name, 'as', selectedMealType);
+            
+            if (!selectedRestaurant || !selectedMealType) {
+                console.error('Missing restaurant or meal type');
+                return;
+            }
+
+            // Get current trip data
             const currentTrip = JSON.parse(localStorage.getItem('nps_current_trip'));
             if (!currentTrip) {
                 alert('Trip data not found. Please go back and try again.');
-                return;}
+                return;
+            }
 
-            // initialize restaurants object (if needed only)
-            if (!currentTrip.restaurants) {currentTrip.restaurants = {};}
+            // Initialize restaurants object
+            if (!currentTrip.restaurants) { currentTrip.restaurants = {}; }
 
             const dayKey = tripData.day.toString();
-            if (!currentTrip.restaurants[dayKey]) {currentTrip.restaurants[dayKey] = [];}
+            if (!currentTrip.restaurants[dayKey]) { currentTrip.restaurants[dayKey] = []; }
 
-            // check if already have 4 restaurants for this day
+            // Check limits
             if (currentTrip.restaurants[dayKey].length >= 4) {
                 alert('You can only add up to 4 restaurants per day.');
-                return;}
+                return;
+            }
 
-            // check if restaurant already added for this day
+            // Check duplicates
             const alreadyAdded = currentTrip.restaurants[dayKey].find(r => r.place_id === selectedRestaurant.place_id);
             if (alreadyAdded) {
                 alert('This restaurant is already added to this day.');
-                return;}
+                return;
+            }
 
-            // add restaurant to trip
-            currentTrip.restaurants[dayKey].push({
+            // Add restaurant to trip
+            const restaurantToAdd = {
                 place_id: selectedRestaurant.place_id,
                 name: selectedRestaurant.name,
                 rating: selectedRestaurant.rating,
@@ -449,17 +611,23 @@
                 address: selectedRestaurant.address,
                 meal_type: selectedMealType,
                 cuisine_types: selectedRestaurant.cuisine_types,
-                added: new Date().toISOString()});
+                added: new Date().toISOString()
+            };
+            
+            currentTrip.restaurants[dayKey].push(restaurantToAdd);
+            console.log('Added restaurant to trip:', restaurantToAdd);
 
-            // save updated trip
+            // Save updated trip
             localStorage.setItem('nps_current_trip', JSON.stringify(currentTrip));
-            // close modal and show success
+
+            // Close modal and show success
             closeMealModal();
             alert(`${selectedRestaurant.name} added to your ${selectedMealType} plans!`);
         }
 
         function clearFilters() {
-            document.getElementById('radiusSelect').value = '50000';
+            console.log('Clearing all filters');
+            document.getElementById('radiusSelect').value = '25000';
             document.getElementById('ratingSelect').value = '4';
             document.querySelectorAll('.cuisine-grid input').forEach(cb => cb.checked = false);
             document.querySelectorAll('.price-btn').forEach(btn => btn.classList.add('selected'));
@@ -467,6 +635,7 @@
         }
 
         function goBack() {
+            console.log('Navigating back to itinerary');
             window.location.href = 'itinerary.html';
         }
     </script>
