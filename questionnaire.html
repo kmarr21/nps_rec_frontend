@@ -1,114 +1,445 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plan Your Trip: NPS Trip Planner</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {margin: 0; padding: 0; box-sizing: border-box;}
-        body {font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; background: #f8f8f8; min-height: 100vh;}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f8f8;
+            min-height: 100vh;
+        }
+
         /* navs */
-        .navbar {background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; top: 0; width: 100%;
-            z-index: 1000; padding: 1rem 0;}
-        .nav-container {max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between;
-            align-items: center; padding: 0 2rem;}
-        .logo {font-size: 1.8rem; font-weight: bold; color: #2F4F2F;}
-        .nav-links {display: flex; list-style: none; gap: 2rem;}
-        .nav-links a {text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s ease;}
-        .nav-links a:hover {color: #2F4F2F;}
-        .nav-links a.active {color: #2F4F2F; border-bottom: 2px solid #2F4F2F;}
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2F4F2F;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #2F4F2F;
+        }
+
+        .nav-links a.active {
+            color: #2F4F2F;
+            border-bottom: 2px solid #2F4F2F;
+        }
 
         /* main container */
-        .container {max-width: 600px; margin: 0 auto; padding: 100px 20px 50px; min-height: 100vh; display: flex;
-            flex-direction: column; justify-content: center;}
-        .questionnaire-card {background: white; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center;}
-        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 100px 20px 50px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .questionnaire-card {
+            background: white;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
         /* progress bar */
-        .progress-bar {width: 100%; height: 6px; background: #eee; margin-bottom: 30px; overflow: hidden;}
-        .progress-fill {height: 100%; background: #2F4F2F; transition: width 0.3s ease;}
-        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #eee;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2F4F2F;
+            transition: width 0.3s ease;
+        }
+
         /* screens */
-        .screen {display: none;}
-        .screen.active {display: block;}
-        
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
         /* form elements */
-        h1 {color: #2F4F2F; margin-bottom: 30px; font-size: 2rem; font-weight: 700;}
-        h2 {color: #333; margin-bottom: 25px; font-size: 1.4rem; font-weight: 600;}
-        .form-group {margin-bottom: 30px; text-align: left;}
-        
-        label {display: block; margin-bottom: 15px; font-weight: 600; color: #333; font-size: 1.1rem;}
-        input[type="date"], select {width: 100%; padding: 15px; border: 2px solid #ddd; font-size: 16px; background: white;
-            transition: border-color 0.3s ease;}
-        input[type="date"]:focus, select:focus {outline: none; border-color: #2F4F2F;}
-        
+        h1 {
+            color: #2F4F2F;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            font-size: 16px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="date"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #2F4F2F;
+        }
+
         /* date validation styles */
-        .date-error {border-color: #dc3545 !important;}
-        .error-message {color: #dc3545; font-size: 0.9rem; margin-top: 5px; display: none;}
-        .error-message.show {display: block;}
-        
+        .date-error {
+            border-color: #dc3545 !important;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
         /* dropdown styles */
-        .dropdown-container {position: relative; margin-bottom: 15px;}
-        .custom-dropdown {width: 100%; padding: 15px; border: 2px solid #ddd; background: white; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center; transition: border-color 0.3s ease;}
-        .custom-dropdown:hover, .custom-dropdown.active {border-color: #2F4F2F;}
-        .dropdown-arrow {transition: transform 0.3s ease;}
-        .dropdown-arrow.rotated {transform: rotate(180deg);}
-        .dropdown-list {position: absolute; top: 100%; left: 0; right: 0; background: white; border: 2px solid #2F4F2F;
-            border-top: none; max-height: 200px; overflow-y: auto; z-index: 100; display: none;}
-        .dropdown-list.show {display: block;}
-        .dropdown-item {padding: 12px 15px; cursor: pointer; transition: background 0.2s ease;}
-        .dropdown-item:hover {background: #f9f9f9;}
-        .dropdown-item.selected {background: #2F4F2F; color: white;}
-        
+        .dropdown-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .custom-dropdown {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.3s ease;
+        }
+
+        .custom-dropdown:hover,
+        .custom-dropdown.active {
+            border-color: #2F4F2F;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-arrow.rotated {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #2F4F2F;
+            border-top: none;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .dropdown-list.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f9f9f9;
+        }
+
+        .dropdown-item.selected {
+            background: #2F4F2F;
+            color: white;
+        }
+
         /* selected items */
-        .selected-items {margin-top: 15px;}
-        .selected-item {display: inline-block; background: #2F4F2F; color: white; padding: 8px 12px; margin: 5px 5px 5px 0;
-            font-size: 0.9rem; position: relative; padding-right: 30px;}
-        .remove-item {position: absolute; right: 8px; top: 50%; transform: translateY(-50%); cursor: pointer; font-weight: bold;}
-        .remove-item:hover {color: #ff6b6b;}
-        
+        .selected-items {
+            margin-top: 15px;
+        }
+
+        .selected-item {
+            display: inline-block;
+            background: #2F4F2F;
+            color: white;
+            padding: 8px 12px;
+            margin: 5px 5px 5px 0;
+            font-size: 0.9rem;
+            position: relative;
+            padding-right: 30px;
+        }
+
+        .remove-item {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .remove-item:hover {
+            color: #ff6b6b;
+        }
+
         /* helper text */
-        .helper-text {font-size: 0.9rem; color: #666; margin-top: 5px; font-style: italic;}
-        
+        .helper-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
         /* buttons */
-        .btn {background: #2F4F2F; color: white; border: none; padding: 15px 30px; font-size: 16px;
-            font-weight: bold; cursor: pointer; transition: all 0.3s ease; margin: 10px;}
-        .btn:hover {background: #1a3a1a; transform: translateY(-2px);}
-        .btn:disabled {background: #ccc; cursor: not-allowed; transform: none;}
-        .btn-secondary {background: #8B4513;}
-        .btn-secondary:hover {background: #5d2d0a;}
+        .btn {
+            background: #2F4F2F;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            background: #1a3a1a;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #8B4513;
+        }
+
+        .btn-secondary:hover {
+            background: #5d2d0a;
+        }
 
         /* loading screen styling! */
-        .loading-overlay {position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 50%, #B0E0E6 100%);
-            display: none; z-index: 2000; align-items: center; justify-content: center; flex-direction: column;}
-        .loading-overlay.show {display: flex;}
-        .mountain-scene {position: relative; width: 400px; height: 200px; margin-bottom: 30px;}
-        .mountain {position: absolute; bottom: 0; opacity: 0.8; animation: fadeInOut 3s ease-in-out infinite;}
-        .mountain1 {width: 0; height: 0; border-left: 80px solid transparent; border-right: 80px solid transparent; border-bottom: 120px solid #8B9DC3;
-            left: 50px; animation-delay: 0s;}
-        .mountain2 {width: 0; height: 0; border-left: 100px solid transparent; border-right: 100px solid transparent; border-bottom: 140px solid #7A8AAE;
-            left: 120px; animation-delay: 0.5s;}
-        .mountain3 {width: 0;height: 0; border-left: 70px solid transparent; border-right: 70px solid transparent; border-bottom: 100px solid #9BAAC7;
-            left: 200px;animation-delay: 1s;}
-        .mountain4 {width: 0; height: 0; border-left: 60px solid transparent; border-right: 60px solid transparent; border-bottom: 80px solid #B0BDD1;
-            left: 280px; animation-delay: 1.5s;}
-        @keyframes fadeInOut {0%, 100% {opacity: 0.6;}
-            50% {opacity: 1;}}
-        .loading-text {color: white; font-size: 1.8rem; font-weight: 700; text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            animation: pulse 2s ease-in-out infinite; margin-bottom: 10px;}
-        .loading-subtext {color: rgba(255,255,255,0.9); font-size: 1.1rem; font-weight: 500; text-align: center; text-shadow: 0 1px 2px rgba(0,0,0,0.3);}
-        @keyframes pulse {0%, 100% {opacity: 0.8;}
-            50% {opacity: 1;}}
-        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 50%, #B0E0E6 100%);
+            display: none;
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .mountain-scene {
+            position: relative;
+            width: 400px;
+            height: 200px;
+            margin-bottom: 30px;
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 0;
+            opacity: 0.8;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+
+        .mountain1 {
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 120px solid #8B9DC3;
+            left: 50px;
+            animation-delay: 0s;
+        }
+
+        .mountain2 {
+            width: 0;
+            height: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 140px solid #7A8AAE;
+            left: 120px;
+            animation-delay: 0.5s;
+        }
+
+        .mountain3 {
+            width: 0;
+            height: 0;
+            border-left: 70px solid transparent;
+            border-right: 70px solid transparent;
+            border-bottom: 100px solid #9BAAC7;
+            left: 200px;
+            animation-delay: 1s;
+        }
+
+        .mountain4 {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 80px solid #B0BDD1;
+            left: 280px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
         /* responsive */
         @media (max-width: 768px) {
-            .nav-container {padding: 0 1rem;}
-            .nav-links {display: none;}
-            .container {padding: 100px 15px 50px;}
-            .questionnaire-card {padding: 25px;}}
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .container {
+                padding: 100px 15px 50px;
+            }
+
+            .questionnaire-card {
+                padding: 25px;
+            }
+        }
     </style>
 </head>
+
 <body>
     <!-- nav -->
     <nav class="navbar">
@@ -221,7 +552,7 @@
     </div>
     <script>
         // BACKEND URL LIVES HERE!! CHANGE ACCORDING TO OWN LINK AS NEEDED!! ************************************************
-        const BACKEND_URL = 'https://nps-rec-backend.onrender.com';
+        const BACKEND_URL = 'https://nps-rec-backend-apu6.onrender.com';
         // ******************************************************************************************************************
 
         let currentScreen = 1;
@@ -232,14 +563,15 @@
         let selectedActivitiesList = [];
         let selectedTopicsList = [];
         // initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('startDate').min = today;
             document.getElementById('endDate').min = today;
             setupDateValidation();
             setupSelectValidation();
             loadActivitiesAndTopics();
-            updateProgressBar();});
+            updateProgressBar();
+        });
 
         // load activities & topics from json files
         async function loadActivitiesAndTopics() {
@@ -259,7 +591,8 @@
                 activitiesData = ['Hiking', 'Camping', 'Wildlife Watching', 'Photography'];
                 topicsData = ['Mountains', 'Forests', 'Wildlife'];
                 populateActivitiesDropdown();
-                populateTopicsDropdown();}
+                populateTopicsDropdown();
+            }
         }
 
         function populateActivitiesDropdown() {
@@ -270,7 +603,8 @@
                 item.className = 'dropdown-item';
                 item.textContent = activity;
                 item.onclick = () => selectActivity(activity);
-                list.appendChild(item);});
+                list.appendChild(item);
+            });
         }
 
         function populateTopicsDropdown() {
@@ -282,7 +616,9 @@
                     item.className = 'dropdown-item';
                     item.textContent = topic;
                     item.onclick = () => selectTopic(topic);
-                    list.appendChild(item);}});
+                    list.appendChild(item);
+                }
+            });
         }
 
         function toggleActivitiesDropdown() {
@@ -295,7 +631,8 @@
             if (!isOpen) {
                 dropdown.classList.add('active');
                 list.classList.add('show');
-                arrow.classList.add('rotated');}
+                arrow.classList.add('rotated');
+            }
         }
 
         function toggleTopicsDropdown() {
@@ -308,7 +645,8 @@
             if (!isOpen) {
                 dropdown.classList.add('active');
                 list.classList.add('show');
-                arrow.classList.add('rotated');}
+                arrow.classList.add('rotated');
+            }
         }
 
         function closeAllDropdowns() {
@@ -321,7 +659,8 @@
             if (selectedActivitiesList.includes(activity)) return;
             if (selectedActivitiesList.length >= 3) {
                 alert('You can select up to 3 activities only.');
-                return;}
+                return;
+            }
             selectedActivitiesList.push(activity);
             updateSelectedActivitiesDisplay();
             updateActivitiesButton();
@@ -355,7 +694,8 @@
                 const item = document.createElement('div');
                 item.className = 'selected-item';
                 item.innerHTML = `${activity}<span class="remove-item" onclick="removeActivity('${activity}')">×</span>`;
-                container.appendChild(item);});
+                container.appendChild(item);
+            });
         }
 
         function updateSelectedTopicsDisplay() {
@@ -365,7 +705,8 @@
                 const item = document.createElement('div');
                 item.className = 'selected-item';
                 item.innerHTML = `${topic}<span class="remove-item" onclick="removeTopic('${topic}')">×</span>`;
-                container.appendChild(item);});
+                container.appendChild(item);
+            });
         }
 
         function updateActivitiesButton() {
@@ -374,8 +715,9 @@
         }
 
         // close dropdowns when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.dropdown-container')) {closeAllDropdowns();}});
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.dropdown-container')) { closeAllDropdowns(); }
+        });
 
         // date validation functions (same as before)
         function setupDateValidation() {
@@ -398,13 +740,14 @@
             endDateInput.classList.remove('date-error');
             startError.classList.remove('show');
             endError.classList.remove('show');
-            
+
             // check start date exists and is in future
             if (!startDate) {
                 startDateInput.classList.add('date-error');
                 startError.textContent = 'Please select a start date';
                 startError.classList.add('show');
-                isValid = false;}
+                isValid = false;
+            }
             else {
                 const today = new Date();
                 const selectedStart = new Date(startDate);
@@ -413,30 +756,35 @@
                     startDateInput.classList.add('date-error');
                     startError.textContent = 'Start date must be in the future';
                     startError.classList.add('show');
-                    isValid = false;}
+                    isValid = false;
+                }
             }
             // check end date exists and is valid
             if (!endDate) {
                 endDateInput.classList.add('date-error');
                 endError.textContent = 'Please select an end date';
                 endError.classList.add('show');
-                isValid = false;}
+                isValid = false;
+            }
             else if (startDate && endDate) {
                 const selectedStart = new Date(startDate);
                 const selectedEnd = new Date(endDate);
-                
+
                 if (selectedEnd <= selectedStart) {
                     endDateInput.classList.add('date-error');
                     endError.textContent = 'End date must be after start date';
                     endError.classList.add('show');
-                    isValid = false;}
+                    isValid = false;
+                }
                 else {//check trip length
                     const tripLength = Math.ceil((selectedEnd - selectedStart) / (1000 * 60 * 60 * 24)) + 1;
                     if (tripLength > 30) {
                         endDateInput.classList.add('date-error');
                         endError.textContent = 'Trip cannot be longer than 30 days';
                         endError.classList.add('show');
-                        isValid = false;}}
+                        isValid = false;
+                    }
+                }
             }
             updateNextButton();
             return isValid;
@@ -469,9 +817,9 @@
 
         function setupSelectValidation() {
             // climate val
-            document.getElementById('climate').addEventListener('change', function() {document.getElementById('nextBtn4').disabled = !this.value;});
+            document.getElementById('climate').addEventListener('change', function () { document.getElementById('nextBtn4').disabled = !this.value; });
             // crowds val
-            document.getElementById('crowds').addEventListener('change', function() {document.getElementById('submitBtn').disabled = !this.value;});
+            document.getElementById('crowds').addEventListener('change', function () { document.getElementById('submitBtn').disabled = !this.value; });
         }
 
         function updateProgressBar() {
@@ -481,7 +829,7 @@
         }
 
         function showScreen(screenNumber) {
-            document.querySelectorAll('.screen').forEach(screen => {screen.classList.remove('active');});
+            document.querySelectorAll('.screen').forEach(screen => { screen.classList.remove('active'); });
             document.getElementById('screen' + screenNumber).classList.add('active');
             currentScreen = screenNumber;
             updateProgressBar();
@@ -492,12 +840,12 @@
         }
 
         function goToScreen2() {
-            if (validateDatesOnly() && document.getElementById('startDate').value && 
-                document.getElementById('endDate').value) {showScreen(2);}
+            if (validateDatesOnly() && document.getElementById('startDate').value &&
+                document.getElementById('endDate').value) { showScreen(2); }
         }
 
         function goToScreen3() {
-            if (selectedActivitiesList.length > 0) {showScreen(3);}
+            if (selectedActivitiesList.length > 0) { showScreen(3); }
         }
 
         function goToScreen4() {
@@ -505,17 +853,18 @@
         }
 
         function goToScreen5() {
-            if (document.getElementById('climate').value) {showScreen(5);}
+            if (document.getElementById('climate').value) { showScreen(5); }
         }
 
         function handleHowItWorksClick(event) {
             event.preventDefault();
             // check if user is in middle of creating trip
-            const isInProgress = localStorage.getItem('nps_questionnaire_data') || localStorage.getItem('nps_park_selection') || 
-                                window.location.pathname.includes('itinerary.html');
+            const isInProgress = localStorage.getItem('nps_questionnaire_data') || localStorage.getItem('nps_park_selection') ||
+                window.location.pathname.includes('itinerary.html');
             if (isInProgress) {
                 const confirmed = confirm('You are currently planning a trip. If you leave this page without completing your trip, your progress may be lost. Do you want to continue to How It Works?');
-                if (!confirmed) {return false;}}
+                if (!confirmed) { return false; }
+            }
             // nav to homepage How It Works section
             window.location.href = 'index.html#how-it-works';
             return false;
@@ -527,11 +876,11 @@
             const endDate = new Date(document.getElementById('endDate').value);
             const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
             let durationText;
-            if (totalDays <= 3) {durationText = '1-3 days';}
-            else if (totalDays <= 7) {durationText = '4-7 days';}
-            else if (totalDays <= 14) {durationText = '1-2 weeks';}
-            else {durationText = 'Longer than 2 weeks';}
-            
+            if (totalDays <= 3) { durationText = '1-3 days'; }
+            else if (totalDays <= 7) { durationText = '4-7 days'; }
+            else if (totalDays <= 14) { durationText = '1-2 weeks'; }
+            else { durationText = 'Longer than 2 weeks'; }
+
             return {
                 startDate: document.getElementById('startDate').value,
                 endDate: document.getElementById('endDate').value,
@@ -540,29 +889,33 @@
                 topics: selectedTopicsList, // array of selected topics (can be empty)
                 climate: document.getElementById('climate').value,
                 crowds: document.getElementById('crowds').value,
-                completed: new Date().toISOString()};
+                completed: new Date().toISOString()
+            };
         }
-        
+
         async function submitQuestionnaire() {
             if (!document.getElementById('crowds').value) {
                 alert('Please select your crowd preference.');
-                return;}
-            
+                return;
+            }
+
             if (selectedActivitiesList.length === 0) {
                 alert('Please select at least one activity.');
-                return;}
-            
+                return;
+            }
+
             //final date check
             if (!validateDatesOnly()) {
                 alert('Please fix the date errors before continuing.');
-                return;}
-            
+                return;
+            }
+
             const formData = collectFormData();
             console.log('Questionnaire data:', formData);
-            
+
             // show mountain loading screen INSTEAD of button text change?
             document.getElementById('loadingOverlay').classList.add('show');
-            
+
             // keep original button logic as backup
             const submitBtn = document.getElementById('submitBtn');
             const originalText = submitBtn.textContent;
@@ -572,23 +925,24 @@
                 //send questionnaire data to backend for park recs
                 const response = await fetch(`${BACKEND_URL}/api/parks/recommendations`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(formData)});
-                
-                if (!response.ok) {throw new Error('Failed to get park recommendations');}
-                
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) { throw new Error('Failed to get park recommendations'); }
+
                 const result = await response.json();
                 console.log('Received park recommendations from backend:', result);
-                
+
                 // save questionnaire data to local storage (IMPORTANT: LOOK AT THE NAME HERE!)
                 localStorage.setItem('nps_questionnaire_data', JSON.stringify(formData));
-                
+
                 // save rec'd parks data for park-selection.html to use
                 localStorage.setItem('nps_recommended_parks', JSON.stringify(result || []));
-                
+
                 // Small delay to show success, then redirect
-                setTimeout(() => {window.location.href = 'park-selection.html';}, 500);
-                
+                setTimeout(() => { window.location.href = 'park-selection.html'; }, 500);
+
             } catch (error) {
                 console.error('Error getting park recommendations:', error);
                 // hide loading screen on error
@@ -604,7 +958,8 @@
             } finally {
                 // restore button states (in case of error)
                 submitBtn.disabled = false;
-                submitBtn.textContent = originalText;}
+                submitBtn.textContent = originalText;
+            }
         }
     </script>
     <div class="loading-overlay" id="loadingOverlay">
@@ -618,4 +973,5 @@
         <div class="loading-subtext">This may take a moment</div>
     </div>
 </body>
+
 </html>
