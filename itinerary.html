@@ -118,6 +118,31 @@
         .disclaimer {background: #f8f9fa; padding: 20px; margin: 20px 0; border-left: 4px solid #2F4F2F; text-align: left;}
         .disclaimer strong {color: #2F4F2F;}
 
+        /* added styling for restaurant picker, accomodations */
+        .day-detail-section {margin: 20px 0; padding: 20px; background: white; border: 1px solid #ddd; border-radius: 8px;}
+        .day-header {font-size: 1.2rem; color: #2F4F2F; margin-bottom: 15px; font-weight: 600; border-bottom: 2px solid #2F4F2F; padding-bottom: 5px;}
+        .accommodation-section, .dining-section {background: #f9f9f9; padding: 15px; border-radius: 6px;}
+        .accommodation-section h5, .dining-section h5 {color: #333; margin-bottom: 10px; font-weight: 600;}
+        .accommodation-selection {display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white;
+            border-radius: 4px; border: 1px solid #ddd;}
+        .btn-select {background: #2F4F2F; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 500; transition: background-color 0.3s ease;}
+        .btn-select:hover {background: #1a3a1a;}
+        .change-btn {background: #8B4513; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.9rem;}
+        .change-btn:hover {background: #5d2d0a;}
+        .restaurants-list {display: flex; flex-direction: column; gap: 8px;}
+        .restaurant-item {display: flex; align-items: center; gap: 10px; padding: 10px; background: white; border-radius: 4px; border: 1px solid #ddd;}
+        .meal-tag {padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 500; color: white; text-transform: capitalize;}
+        .meal-breakfast {background: #ff9500;}
+        .meal-lunch {background: #34c759;}
+        .meal-dinner {background: #007aff;}
+        .meal-other {background: #8e8e93;}
+
+        .restaurant-name {flex: 1; font-weight: 500; color: #333;}
+        .restaurant-rating {color: #ff9500; font-weight: 500;}
+        .remove-btn {background: #ff3b30; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-weight: bold;
+            font-size: 14px; display: flex; align-items: center; justify-content: center;}
+        .remove-btn:hover {background: #d70015;}
+
         /* responsive */
         @media (max-width: 768px) {
             .nav-container {padding: 0 1rem;}
@@ -129,7 +154,10 @@
             .meals-grid {grid-template-columns: 1fr;}
             .button-row {flex-direction: column; gap: 10px;}
             .btn {width: 100%; max-width: 300px;}
-            .preferences-grid {grid-template-columns: 1fr;}}
+            .preferences-grid {grid-template-columns: 1fr;}
+            .day-sections {grid-template-columns: 1fr; gap: 15px;}
+            .restaurant-item {flex-wrap: wrap; gap: 5px;}
+            .restaurant-name {flex-basis: 100%; order: -1;}}
     </style>
 </head>
 <body>
@@ -588,6 +616,7 @@
                         dayToPark[currentDay] = parkIndex;
                         currentDay++;}});
             }
+
             // group consecutive days by park
             const parkSegments = [];
             let currentSegment = null;
@@ -615,19 +644,38 @@
 
             // create timeline items for each segment
             parkSegments.forEach(segment => {
-                // use parkCode instead of id!!
                 const park = PARKS_DATA.find(p => p.parkCode === currentTrip.parks[segment.parkIndex]);
                 if (!park) return;
 
                 const timelineItem = document.createElement('div');
                 timelineItem.className = 'timeline-item';
                 
-                // calc real weather data using 52 week ordering
+                // calc real weather data using 52-week 
                 const weekIndex = getWeekOfYear(segment.startDate);
                 const temperature = park.weather && park.weather.temperature ? 
                     Math.round(park.weather.temperature[weekIndex] || 70) : 70;
+                
                 const dateRange = segment.startDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) + 
                     (segment.days.length > 1 ? ' - ' + segment.endDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) : '');
+                
+                // day-by-day breakdown for accomms + restaurants
+                const dayBreakdown = segment.days.map(day => {
+                    const dayDate = new Date(startDate);
+                    dayDate.setDate(dayDate.getDate() + day);
+                    const dayKey = day.toString();
+                    
+                    // get accomms for this day
+                    const accommodation = currentTrip.accommodations?.[dayKey] || null;
+                    // get restaurants for this day
+                    const restaurants = currentTrip.restaurants?.[dayKey] || [];
+                    
+                    return {
+                        dayIndex: day,
+                        date: dayDate,
+                        dateStr: dayDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}),
+                        accommodation: accommodation,
+                        restaurants: restaurants};
+                });
                 
                 timelineItem.innerHTML = `
                     <div class="timeline-header">
@@ -638,31 +686,85 @@
                         <p>${park.description}</p>
                         <div class="weather-preview">Expected: ${temperature}°F</div>
                     </div>
-                    <div class="day-sections">
-                        <div class="section">
-                            <h5>Accommodation</h5>
-                            <div class="section-placeholder">Add places to stay (coming soon)</div>
-                        </div>
-                        <div class="section">
-                            <h5>Dining</h5>
-                            <div class="meals-grid">
-                                ${segment.days.map(day => {
-                                    const dayDate = new Date(startDate);
-                                    dayDate.setDate(dayDate.getDate() + day);
-                                    return `
-                                        <div class="meal-slot">
-                                            <h6>${dayDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</h6>
-                                            <div class="meal-placeholder">Breakfast</div>
-                                            <div class="meal-placeholder">Lunch</div>
-                                            <div class="meal-placeholder">Dinner</div>
-                                        </div>
-                                    `;
-                                }).join('')}
+                    ${dayBreakdown.map(day => `
+                        <div class="day-detail-section" data-day="${day.dayIndex}">
+                            <h4 class="day-header">${day.dateStr}</h4>
+                            <div class="day-sections">
+                                <div class="section accommodation-section">
+                                    <h5>Accommodation</h5>
+                                    ${day.accommodation ? 
+                                        `<div class="accommodation-selection">
+                                            <strong>${day.accommodation.type}</strong>
+                                            <button class="change-btn" onclick="selectAccommodation(${day.dayIndex})">Change</button>
+                                        </div>` :
+                                        `<button class="btn-select" onclick="selectAccommodation(${day.dayIndex})">Select Accommodation</button>`}
+                                </div>
+                                <div class="section dining-section">
+                                    <h5>Dining (${day.restaurants.length}/4)</h5>
+                                    <div class="restaurants-list">
+                                        ${day.restaurants.map(restaurant => `
+                                            <div class="restaurant-item">
+                                                <span class="meal-tag meal-${restaurant.meal_type}">${restaurant.meal_type}</span>
+                                                <span class="restaurant-name">${restaurant.name}</span>
+                                                <span class="restaurant-rating">★${restaurant.rating}</span>
+                                                <button class="remove-btn" onclick="removeRestaurant(${day.dayIndex}, '${restaurant.place_id}')">×</button>
+                                            </div>`).join('')}
+                                        ${day.restaurants.length < 4 ? 
+                                            `<button class="btn-select" onclick="selectRestaurants(${day.dayIndex}, '${park.parkCode}', '${park.fullName}', ${park.latitude}, ${park.longitude})">Add Restaurant</button>` : ''}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>`;
-                timeline.appendChild(timelineItem);});
+                        </div>`).join('')}`;
+                timeline.appendChild(timelineItem);
+            });
             console.log('Enhanced timeline created with', parkSegments.length, 'segments');
+        }
+
+        // ADDING IN RESTAURANT FUNCTIONS
+        function selectAccommodation(dayIndex) {
+            const accommodationTypes = ['Hotel', 'Camping', 'RV', 'Skip'];
+            const selection = prompt(`Select accommodation for this day:\n1. Hotel\n2. Camping\n3. RV\n4. Skip\n\nEnter number (1-4):`);
+            
+            if (selection && selection >= 1 && selection <= 4) {
+                const type = accommodationTypes[selection - 1];
+                
+                // initialize accomms if it doesn't exist
+                if (!currentTrip.accommodations) {currentTrip.accommodations = {};}
+                if (type === 'Skip') {delete currentTrip.accommodations[dayIndex.toString()];}
+                else {currentTrip.accommodations[dayIndex.toString()] = {type: type, selected: new Date().toISOString()};}
+                
+                // save to local storage
+                localStorage.setItem('nps_current_trip', JSON.stringify(currentTrip));
+                // refresh timeline
+                createEnhancedTimeline();
+                if (type !== 'Skip') {alert(`${type} selected! Note: We'll be adding functionality to browse specific nearby accommodations in a future version, so stay tuned!`);}
+            }
+        }
+
+        function selectRestaurants(dayIndex, parkCode, parkName, latitude, longitude) {
+            // pass data to restaurant selector via url params
+            const params = new URLSearchParams({
+                day: dayIndex,
+                parkCode: parkCode,
+                parkName: parkName,
+                lat: latitude,
+                lng: longitude,
+                tripId: currentTrip.id});
+            window.location.href = `restaurant-selector.html?${params.toString()}`;
+        }
+
+        function removeRestaurant(dayIndex, placeId) {
+            if (!currentTrip.restaurants || !currentTrip.restaurants[dayIndex.toString()]) {return;}
+            
+            // remove restaurant from day
+            currentTrip.restaurants[dayIndex.toString()] = currentTrip.restaurants[dayIndex.toString()].filter(r => r.place_id !== placeId);
+            
+            // clean up empty days
+            if (currentTrip.restaurants[dayIndex.toString()].length === 0) {delete currentTrip.restaurants[dayIndex.toString()];}
+            // save to localstorage
+            localStorage.setItem('nps_current_trip', JSON.stringify(currentTrip));
+            // refresh timeline
+            createEnhancedTimeline();
         }
 
         function getSeason(date) {

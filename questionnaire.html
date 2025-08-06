@@ -542,9 +542,7 @@
                 crowds: document.getElementById('crowds').value,
                 completed: new Date().toISOString()};
         }
-
-        // Replace submitQuestionnaire with this corrected version that keeps all your working logic:
-
+        
         async function submitQuestionnaire() {
             if (!document.getElementById('crowds').value) {
                 alert('Please select your crowd preference.');
