@@ -836,7 +836,7 @@
         }
 
         function showScreen(screenNumber) {
-            document.querySelectorAll('.screen').forEach(screen => { screen.classList.remove('active'); });
+            document.querySelectorAll('.screen').forEach(screen => {screen.classList.remove('active');});
             document.getElementById('screen' + screenNumber).classList.add('active');
             currentScreen = screenNumber;
             updateProgressBar();
@@ -848,11 +848,11 @@
 
         function goToScreen2() {
             if (validateDatesOnly() && document.getElementById('startDate').value &&
-                document.getElementById('endDate').value) { showScreen(2); }
+                document.getElementById('endDate').value) {showScreen(2);}
         }
 
         function goToScreen3() {
-            if (selectedActivitiesList.length > 0) { showScreen(3); }
+            if (selectedActivitiesList.length > 0) {showScreen(3);}
         }
 
         function goToScreen4() {
@@ -860,7 +860,7 @@
         }
 
         function goToScreen5() {
-            if (document.getElementById('climate').value) { showScreen(5); }
+            if (document.getElementById('climate').value) {showScreen(5);}
         }
 
         function handleHowItWorksClick(event) {
@@ -870,7 +870,7 @@
                 window.location.pathname.includes('itinerary.html');
             if (isInProgress) {
                 const confirmed = confirm('You are currently planning a trip. If you leave this page without completing your trip, your progress may be lost. Do you want to continue to How It Works?');
-                if (!confirmed) { return false; }
+                if (!confirmed) {return false;}
             }
             // nav to homepage How It Works section
             window.location.href = 'index.html#how-it-works';
