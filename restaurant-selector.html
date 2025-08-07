@@ -467,6 +467,7 @@
             <div class="filter-group">
                 <label>Search Radius</label>
                 <select id="radiusSelect">
+                    <option value="5000">5 km</option>
                     <option value="10000">10 km</option>
                     <option value="25000" selected>25 km (Recommended)</option>
                     <option value="50000">50 km</option>
@@ -474,7 +475,7 @@
                     <option value="100000">100 km</option>
                 </select>
             </div>
-            <div class="filter-group" style="display: none">
+            <div class="filter-group">
                 <label>Minimum Rating</label>
                 <select id="ratingSelect">
                     <option value="0">Any Rating</option>
@@ -484,7 +485,7 @@
                     <option value="4.5">4.5+ Stars</option>
                 </select>
             </div>
-            <div class="filter-group" style="display: none">
+            <div class="filter-group">
                 <label>Price Range</label>
                 <div class="price-range">
                     <div class="price-btn selected" data-price="1">$</div>
@@ -710,14 +711,13 @@
             console.log('=== RESTAURANT SEARCH DEBUG START ===');
             const filters = collectFilters();
             console.log('Collected filters:', filters);
-            console.log('Trip coordinates:', { lat: tripData.lat, lng: tripData.lng });
+            console.log('Trip coordinates:', {lat: tripData.lat, lng: tripData.lng});
 
             // ipdate map zoom
             if (map) {
                 const newZoom = calculateZoomForRadius(filters.radius);
                 console.log('Updating map zoom to:', newZoom);
-                map.setZoom(newZoom);
-            }
+                map.setZoom(newZoom);}
 
             // clear existing markers + show loading . . . .
             clearMapMarkers();
@@ -730,10 +730,10 @@
                     latitude: tripData.lat,
                     longitude: tripData.lng,
                     radius: filters.radius,
+                    prices: filters.prices, // KM added back in prices, rating 
+                    rating: filters.rating
                     //Abby edited here
                     //cuisines: filters.cuisines,
-                    //prices: filters.prices,
-                    //rating: filters.rating
                 };
 
                 console.log('Sending request to backend:', requestBody);
@@ -771,12 +771,10 @@
         function collectFilters() {
             const radius = parseInt(document.getElementById('radiusSelect').value);
             const rating = parseFloat(document.getElementById('ratingSelect').value);
-            const cuisines = [];
-            document.querySelectorAll('.cuisine-grid input:checked').forEach(cb => { cuisines.push(cb.value); });
             const prices = [];
-            document.querySelectorAll('.price-btn.selected').forEach(btn => { prices.push(parseInt(btn.dataset.price)); });
+            document.querySelectorAll('.price-btn.selected').forEach(btn => {prices.push(parseInt(btn.dataset.price));});
 
-            return { radius, rating, cuisines, prices };
+            return {radius, rating, prices};
         }
 
         function displayResults(data) {
