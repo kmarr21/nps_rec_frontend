@@ -574,19 +574,19 @@
                 <select id="radiusSelect">
                     <option value="5000">5 km</option>
                     <option value="10000">10 km</option>
-                    <option value="25000" selected>25 km (Recommended)</option>
-                    <option value="50000">50 km</option>
-                    <option value="75000">75 km</option>
-                    <option value="100000">100 km</option>
+                    <option value="15000">15 km</option>
+                    <option value="20000">20 km</option>
+                    <option value="25000" selected>25 km</option>
+                    <option value="30000" selected>30 km (Recommended)</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label>Minimum Rating</label>
                 <select id="ratingSelect">
-                    <option value="0">Any Rating</option>
+                    <option value="0" selected>Any Rating</option>
                     <option value="3">3+ Stars</option>
                     <option value="3.5">3.5+ Stars</option>
-                    <option value="4" selected>4+ Stars</option>
+                    <option value="4">4+ Stars</option>
                     <option value="4.5">4.5+ Stars</option>
                 </select>
             </div>
@@ -808,10 +808,11 @@
         function calculateZoomForRadius(radius) {
             if (radius <= 5000) return 12;
             else if (radius <= 10000) return 11;
-            else if (radius <= 25000) return 10;
-            else if (radius <= 50000) return 9;
-            else if (radius <= 75000) return 8;
-            else return 7;
+            else if (radius <= 15000) return 10;
+            else if (radius <= 20000) return 10;
+            else if (radius <= 25000) return 9;
+            else if (radius <= 30000) return 9;
+            else return 8;
         }
 
         async function searchRestaurants() {
