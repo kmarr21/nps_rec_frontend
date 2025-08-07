@@ -633,7 +633,7 @@
 
         function loadQuestionnaireData() {
             const stored = localStorage.getItem('nps_questionnaire_data');
-            if (stored) { questionnaireData = JSON.parse(stored); }
+            if (stored) {questionnaireData = JSON.parse(stored);}
             else {
                 questionnaireData = {
                     startDate: '2025-08-01', endDate: '2025-08-07', duration: '4-7 days',
@@ -653,13 +653,13 @@
             if (questionnaireData.activities && questionnaireData.activities.length > 0) {
                 activitiesTags.innerHTML = questionnaireData.activities.map(activity => `<span class="preference-tag">${activity}</span>`).join('');
             }
-            else { activitiesTags.innerHTML = '<span class="preference-value">None selected</span>'; }
+            else {activitiesTags.innerHTML = '<span class="preference-value">None selected</span>';}
 
             const topicsTags = document.getElementById('topicsTags');
             if (questionnaireData.topics && questionnaireData.topics.length > 0) {
                 topicsTags.innerHTML = questionnaireData.topics.map(topic => `<span class="preference-tag">${topic}</span>`).join('');
             }
-            else { topicsTags.innerHTML = '<span class="preference-value">None selected</span>'; }
+            else {topicsTags.innerHTML = '<span class="preference-value">None selected</span>';}
 
             document.getElementById('climateValue').textContent = questionnaireData.climate || 'Not specified';
             document.getElementById('crowdsValue').textContent = questionnaireData.crowds || 'Not specified';
@@ -675,9 +675,9 @@
                 document.getElementById('parksTitle').textContent = 'Select Your Park (Choose 1)';
                 selectedParks = [];
             }
-            else { document.getElementById('parksTitle').textContent = 'Select Your Parks (Choose up to 2)'; }
+            else {document.getElementById('parksTitle').textContent = 'Select Your Parks (Choose up to 2)';}
 
-            document.querySelectorAll('.park-card').forEach(card => { card.classList.remove('selected'); });
+            document.querySelectorAll('.park-card').forEach(card => {card.classList.remove('selected');});
             updateSelectionDisplay();
             updateContinueButton();
         }
@@ -730,7 +730,7 @@
                 } else {
                     imageCarousel = `
                         <div class="park-image-container">
-                            <div class="park-image-placeholder">📷 ${park.fullName}</div>
+                            <div class="park-image-placeholder">${park.fullName}</div>
                         </div>`;
                 }
 
@@ -819,7 +819,7 @@
                 window.location.pathname.includes('itinerary.html');
             if (isInProgress) {
                 const confirmed = confirm('You are currently planning a trip. If you leave this page without completing your trip, your progress may be lost. Do you want to continue to How It Works?');
-                if (!confirmed) { return false; }
+                if (!confirmed) {return false;}
             }
             // nav to homepage How It Works section
             window.location.href = 'index.html#how-it-works';
@@ -829,8 +829,8 @@
         function updateParkDisplay() {
             document.querySelectorAll('.park-card').forEach((card, index) => {
                 const parkCode = PARKS_DATA[index]?.parkCode;
-                if (parkCode && selectedParks.includes(parkCode)) { card.classList.add('selected'); }
-                else { card.classList.remove('selected'); }
+                if (parkCode && selectedParks.includes(parkCode)) {card.classList.add('selected');}
+                else {card.classList.remove('selected');}
             });
         }
 
