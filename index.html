@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPS Trip Planner: Plan A National Park Adventure</title>
+    <title>ParkMatch: Plan A National Park Adventure</title>
+    <link rel="icon" type="image/png" href="logos/logo_symbol.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
@@ -19,6 +19,9 @@
             line-height: 1.6;
             color: #333;
         }
+
+        /* logo */
+        .logo img {height: 32px;max-height: 32px;width: auto;}
 
         /* nav */
         .navbar {
@@ -535,7 +538,9 @@
     <!-- nav -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="logo">US National Park Trip Planner</div>
+            <div class="logo">
+                <img src="logos/logo_horizontal.png" alt="ParkMatch" style="height: 32px;">
+            </div>
             <ul class="nav-links">
                 <li><a href="#" class="active">Home</a></li>
                 <li><a href="#" id="myTripLink">My Current Trip</a></li>
@@ -560,7 +565,7 @@
     <!-- features -->
     <section class="features">
         <div class="container">
-            <h2>Why Choose NPS Trip Planner?</h2>
+            <h2>Why Choose ParkMatch?</h2>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -676,7 +681,7 @@
     <!-- footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 NPS Trip Planner. Plan smarter, travel better.</p>
+            <p>&copy; 2025 ParkMatch. Plan smarter, travel better.</p>
         </div>
     </footer>
     <script>

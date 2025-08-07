@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Itinerary: NPS Trip Planner</title>
+    <title>Your Itinerary: ParkMatch</title>
+    <link rel="icon" type="image/png" href="logos/logo_symbol.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {margin: 0; padding: 0; box-sizing: border-box;}
@@ -21,6 +22,9 @@
 
         /* main content */
         .main-content {padding: 100px 0 50px; max-width: 1000px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem;}
+
+        /* logo */
+        .logo img {height: 32px;max-height: 32px;width: auto;}
         
         /* screens */
         .screen {display: none;}
@@ -164,7 +168,9 @@
     <!-- nav -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">US National Park Trip Planner</div>
+            <div class="logo">
+                <img src="logos/logo_horizontal.png" alt="ParkMatch" style="height: 32px;">
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="#" class="active" id="myTripLink">My Current Trip</a></li>

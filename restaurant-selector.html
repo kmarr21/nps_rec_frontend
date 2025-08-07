@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Restaurants: NPS Trip Planner</title>
+    <title>Select Restaurants: ParkMatch</title>
+    <link rel="icon" type="image/png" href="logos/logo_symbol.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -19,6 +20,9 @@
             color: #333;
             background: #f8f8f8;
         }
+
+        /* logo */
+        .logo img {height: 32px;max-height: 32px;width: auto;}
 
         /* header */
         .header {
@@ -559,7 +563,10 @@
     <div class="header">
         <div class="header-container">
             <div>
-                <h1>Select Restaurants</h1>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="logos/logo_symbol.png" alt="ParkMatch" style="height: 24px;">
+                    <h1>Select Restaurants</h1>
+                </div>
                 <div class="header-info" id="headerInfo">Loading...</div>
             </div>
             <button class="back-btn" onclick="goBack()">← Back to Itinerary</button>
