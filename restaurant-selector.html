@@ -1,98 +1,455 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Restaurants: NPS Trip Planner</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {margin: 0; padding: 0; box-sizing: border-box;}
-        body {font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; background: #f8f8f8;}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f8f8;
+        }
+
         /* header */
-        .header {background: #2F4F2F; color: white; padding: 20px 0; position: sticky; top: 0; z-index: 100;}
-        .header-container {max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;}
-        .header h1 {font-size: 1.5rem; font-weight: 600;}
-        .header-info {font-size: 0.9rem; opacity: 0.9;}
-        .back-btn {background: #8B4513; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 500;}
-        .back-btn:hover {background: #5d2d0a;}
-        
+        .header {
+            background: #2F4F2F;
+            color: white;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header-info {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: #5d2d0a;
+        }
+
         /* main layout */
-        .main-container {max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 350px 1fr; gap: 20px; height: calc(100vh - 100px);}
-        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            height: calc(100vh - 100px);
+        }
+
         /* filters sidebar */
-        .filters-sidebar {background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-y: auto;}
-        .filters-sidebar h3 {color: #2F4F2F; margin-bottom: 20px; font-size: 1.2rem;}
-        .filter-group {margin-bottom: 25px;}
-        .filter-group label {display: block; margin-bottom: 8px; font-weight: 600; color: #333;}
-        .filter-group select, .filter-group input {width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 4px; font-size: 14px;}
-        .filter-group select:focus, .filter-group input:focus {outline: none; border-color: #2F4F2F;}
-        
-        .cuisine-grid {display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;}
-        .cuisine-item {display: flex; align-items: center; gap: 8px;}
-        .cuisine-item input[type="checkbox"] {width: 16px; height: 16px;}
-        .cuisine-item label {margin: 0; font-weight: normal; cursor: pointer; font-size: 0.9rem;}
-        
-        .price-range {display: flex; gap: 10px; margin-top: 10px;}
-        .price-btn {padding: 8px 12px; border: 2px solid #ddd; background: white; cursor: pointer; border-radius: 4px; font-size: 0.9rem; transition: all 0.3s ease;}
-        .price-btn.selected {background: #2F4F2F; color: white; border-color: #2F4F2F;}
-        .price-btn:hover {border-color: #2F4F2F;}
-        
-        .filter-actions {margin-top: 20px;}
-        .apply-filters-btn {width: 100%; background: #2F4F2F; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: 600;}
-        .apply-filters-btn:hover {background: #1a3a1a;}
-        .clear-filters-btn {width: 100%; background: transparent; color: #666; border: 1px solid #ddd; padding: 8px; border-radius: 4px; cursor: pointer; margin-top: 8px;}
-        .clear-filters-btn:hover {border-color: #999;}
-        
+        .filters-sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .filters-sidebar h3 {
+            color: #2F4F2F;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .filter-group {
+            margin-bottom: 25px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #2F4F2F;
+        }
+
+        .cuisine-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .cuisine-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cuisine-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .cuisine-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .price-range {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .price-btn {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .price-btn.selected {
+            background: #2F4F2F;
+            color: white;
+            border-color: #2F4F2F;
+        }
+
+        .price-btn:hover {
+            border-color: #2F4F2F;
+        }
+
+        .filter-actions {
+            margin-top: 20px;
+        }
+
+        .apply-filters-btn {
+            width: 100%;
+            background: #2F4F2F;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .apply-filters-btn:hover {
+            background: #1a3a1a;
+        }
+
+        .clear-filters-btn {
+            width: 100%;
+            background: transparent;
+            color: #666;
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .clear-filters-btn:hover {
+            border-color: #999;
+        }
+
         /* map and results area */
-        .map-results-container {display: grid; grid-template-rows: 350px 1fr; gap: 20px;}
-        .map-container {background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: relative; overflow: hidden;}
-        .map-overlay {position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.95); padding: 8px 12px; border-radius: 4px; font-size: 0.8rem; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
-        
-        .results-container {background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;}
-        .results-header {padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;}
-        .results-header h3 {color: #2F4F2F; font-size: 1.2rem;}
-        .results-count {color: #666; font-size: 0.9rem;}
-        
-        .results-list {max-height: 400px; overflow-y: auto;}
-        .restaurant-card {padding: 20px; border-bottom: 1px solid #eee; cursor: pointer; transition: all 0.3s ease; position: relative;}
-        .restaurant-card:hover {background: #f9f9f9;}
-        .restaurant-card:last-child {border-bottom: none;}
-        .restaurant-card.selected {background: #e8f5e8; border-left: 4px solid #2F4F2F;}
-        
-        .restaurant-header {display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;}
-        .restaurant-name {font-weight: 600; color: #333; font-size: 1.1rem;}
-        .restaurant-rating {color: #ff9500; font-weight: 500;}
-        .restaurant-info {display: flex; gap: 15px; margin-bottom: 8px; color: #666; font-size: 0.9rem;}
-        .restaurant-address {color: #888; font-size: 0.9rem;}
-        
-        .loading {text-align: center; padding: 40px; color: #666;}
-        .no-results {text-align: center; padding: 40px; color: #666;}
-        .error {text-align: center; padding: 40px; color: #e74c3c; background: #fdf2f2; border-radius: 6px; margin: 20px;}
-        
+        .map-results-container {
+            display: grid;
+            grid-template-rows: 350px 1fr;
+            gap: 20px;
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .results-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-header h3 {
+            color: #2F4F2F;
+            font-size: 1.2rem;
+        }
+
+        .results-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .results-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .restaurant-card {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .restaurant-card:hover {
+            background: #f9f9f9;
+        }
+
+        .restaurant-card:last-child {
+            border-bottom: none;
+        }
+
+        .restaurant-card.selected {
+            background: #e8f5e8;
+            border-left: 4px solid #2F4F2F;
+        }
+
+        .restaurant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .restaurant-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .restaurant-rating {
+            color: #ff9500;
+            font-weight: 500;
+        }
+
+        .restaurant-info {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .restaurant-address {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #e74c3c;
+            background: #fdf2f2;
+            border-radius: 6px;
+            margin: 20px;
+        }
+
         /* meal selection modal */
-        .modal-overlay {position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center;}
-        .modal-overlay.show {display: flex;}
-        .modal {background: white; padding: 30px; border-radius: 8px; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
-        .modal h3 {color: #2F4F2F; margin-bottom: 20px;}
-        .meal-options {display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;}
-        .meal-btn {padding: 15px; border: 2px solid #ddd; background: white; cursor: pointer; border-radius: 4px; text-align: center; font-weight: 500; transition: all 0.3s ease;}
-        .meal-btn:hover {border-color: #2F4F2F; background: #f9f9f9;}
-        .meal-btn.selected {background: #2F4F2F; color: white; border-color: #2F4F2F;}
-        .modal-actions {display: flex; gap: 10px; justify-content: flex-end;}
-        .modal-btn {padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;}
-        .modal-btn-primary {background: #2F4F2F; color: white;}
-        .modal-btn-primary:hover {background: #1a3a1a;}
-        .modal-btn-primary:disabled {background: #ccc; cursor: not-allowed;}
-        .modal-btn-secondary {background: #ddd; color: #333;}
-        .modal-btn-secondary:hover {background: #ccc;}
-        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal h3 {
+            color: #2F4F2F;
+            margin-bottom: 20px;
+        }
+
+        .meal-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .meal-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .meal-btn:hover {
+            border-color: #2F4F2F;
+            background: #f9f9f9;
+        }
+
+        .meal-btn.selected {
+            background: #2F4F2F;
+            color: white;
+            border-color: #2F4F2F;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .modal-btn-primary {
+            background: #2F4F2F;
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: #1a3a1a;
+        }
+
+        .modal-btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .modal-btn-secondary {
+            background: #ddd;
+            color: #333;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #ccc;
+        }
+
         @media (max-width: 768px) {
-            .main-container {grid-template-columns: 1fr; grid-template-rows: auto auto 1fr; height: auto;}
-            .map-results-container {grid-template-rows: 250px 1fr;}
-            .cuisine-grid {grid-template-columns: 1fr;}
-            .price-range {flex-wrap: wrap;}}
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr;
+                height: auto;
+            }
+
+            .map-results-container {
+                grid-template-rows: 250px 1fr;
+            }
+
+            .cuisine-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .price-range {
+                flex-wrap: wrap;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="header-container">
@@ -139,20 +496,34 @@
             <div class="filter-group">
                 <label>Cuisine Type</label>
                 <div class="cuisine-grid">
-                    <div class="cuisine-item"><input type="checkbox" id="italian" value="italian"><label for="italian">Italian</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="mexican" value="mexican"><label for="mexican">Mexican</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="american" value="american"><label for="american">American</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="asian" value="asian"><label for="asian">Asian</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="chinese" value="chinese"><label for="chinese">Chinese</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="japanese" value="japanese"><label for="japanese">Japanese</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="thai" value="thai"><label for="thai">Thai</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="indian" value="indian"><label for="indian">Indian</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="seafood" value="seafood"><label for="seafood">Seafood</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="pizza" value="pizza"><label for="pizza">Pizza</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="french" value="french"><label for="french">French</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="greek" value="greek"><label for="greek">Greek</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="steakhouse" value="steakhouse"><label for="steakhouse">Steakhouse</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="vegetarian" value="vegetarian"><label for="vegetarian">Vegetarian</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="italian" value="italian"><label
+                            for="italian">Italian</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="mexican" value="mexican"><label
+                            for="mexican">Mexican</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="american" value="american"><label
+                            for="american">American</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="asian" value="asian"><label
+                            for="asian">Asian</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="chinese" value="chinese"><label
+                            for="chinese">Chinese</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="japanese" value="japanese"><label
+                            for="japanese">Japanese</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="thai" value="thai"><label
+                            for="thai">Thai</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="indian" value="indian"><label
+                            for="indian">Indian</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="seafood" value="seafood"><label
+                            for="seafood">Seafood</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="pizza" value="pizza"><label
+                            for="pizza">Pizza</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="french" value="french"><label
+                            for="french">French</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="greek" value="greek"><label
+                            for="greek">Greek</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="steakhouse" value="steakhouse"><label
+                            for="steakhouse">Steakhouse</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="vegetarian" value="vegetarian"><label
+                            for="vegetarian">Vegetarian</label></div>
                 </div>
             </div>
             <div class="filter-actions">
@@ -190,7 +561,8 @@
             </div>
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-secondary" onclick="closeMealModal()">Cancel</button>
-                <button class="modal-btn modal-btn-primary" onclick="addRestaurantToTrip()" disabled id="addRestaurantBtn">Add to Trip</button>
+                <button class="modal-btn modal-btn-primary" onclick="addRestaurantToTrip()" disabled
+                    id="addRestaurantBtn">Add to Trip</button>
             </div>
         </div>
     </div>
@@ -203,14 +575,15 @@
         let map = null;
         let mapMarkers = [];
         let parkMarker = null;
-        
+
         // initialize page w/ debugging more
-        document.addEventListener('DOMContentLoaded', function(){
+        document.addEventListener('DOMContentLoaded', function () {
             console.log('=== RESTAURANT SELECTOR DEBUG START ===');
             console.log('Page loaded, initializing...');
             loadTripData();
             setupEventListeners();
-            loadGoogleMapsAPI();});
+            loadGoogleMapsAPI();
+        });
 
         // load trip data from URL parameters
         function loadTripData() {
@@ -222,15 +595,17 @@
                 parkName: urlParams.get('parkName'),
                 lat: parseFloat(urlParams.get('lat')),
                 lng: parseFloat(urlParams.get('lng')),
-                tripId: urlParams.get('tripId')};
-            
+                tripId: urlParams.get('tripId')
+            };
+
             console.log('Loaded trip data:', tripData);
-            
+
             //essential data check
             if (!tripData.lat || !tripData.lng || !tripData.parkName) {
                 console.error('Missing essential trip data!', tripData);
                 document.getElementById('mapOverlay').textContent = 'Error: Missing location data';
-                return;}
+                return;
+            }
 
             // update header
             document.getElementById('headerInfo').textContent = `${tripData.parkName} • Day ${tripData.day + 1}`;
@@ -241,18 +616,19 @@
             console.log('Loading Google Maps API...');
             try {
                 document.getElementById('mapOverlay').textContent = 'Loading Maps API...';
-                
+
                 const response = await fetch(`${BACKEND_URL}/api/config/maps-key`);
-                if (!response.ok) {throw new Error(`Failed to get API key: ${response.status}`);}
+                if (!response.ok) { throw new Error(`Failed to get API key: ${response.status}`); }
                 const config = await response.json();
                 console.log('Got API key config, loading Maps...');
                 const script = document.createElement('script');
                 script.src = `https://maps.googleapis.com/maps/api/js?key=${config.apiKey}&libraries=places&callback=initMap`;
                 script.async = true;
                 script.defer = true;
-                script.onerror = function() {
+                script.onerror = function () {
                     console.error('Failed to load Google Maps script');
-                    document.getElementById('mapOverlay').textContent = 'Error loading Google Maps';};
+                    document.getElementById('mapOverlay').textContent = 'Error loading Google Maps';
+                };
                 document.head.appendChild(script);
                 console.log('Google Maps script added to page');
             } catch (error) {
@@ -263,21 +639,24 @@
 
         function setupEventListeners() {
             console.log('Setting up event listeners...');
-            
+
             // price range buttons...
             document.querySelectorAll('.price-btn').forEach(btn => {
-                btn.addEventListener('click', function() {this.classList.toggle('selected');
-                    console.log('Price filter changed:', this.dataset.price, this.classList.contains('selected'));});
+                btn.addEventListener('click', function () {
+                    this.classList.toggle('selected');
+                    console.log('Price filter changed:', this.dataset.price, this.classList.contains('selected'));
+                });
             });
 
             // meal type select
             document.querySelectorAll('.meal-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     document.querySelectorAll('.meal-btn').forEach(b => b.classList.remove('selected'));
                     this.classList.add('selected');
                     selectedMealType = this.dataset.meal;
                     document.getElementById('addRestaurantBtn').disabled = false;
-                    console.log('Selected meal type:', selectedMealType);});
+                    console.log('Selected meal type:', selectedMealType);
+                });
             });
         }
 
@@ -287,32 +666,36 @@
             if (!tripData.lat || !tripData.lng) {
                 console.error('No coordinates available for map');
                 setTimeout(initMap, 100);
-                return;}
+                return;
+            }
 
-            console.log('Creating map with center:', {lat: tripData.lat, lng: tripData.lng});
+            console.log('Creating map with center:', { lat: tripData.lat, lng: tripData.lng });
 
             try {
                 map = new google.maps.Map(document.getElementById('mapElement'), {
                     center: { lat: tripData.lat, lng: tripData.lng },
                     zoom: calculateZoomForRadius(parseInt(document.getElementById('radiusSelect').value)),
                     mapTypeId: 'roadmap',
-                    styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'off'}]}]});
+                    styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
+                });
 
                 // add park marker
                 parkMarker = new google.maps.Marker({
-                    position: {lat: tripData.lat, lng: tripData.lng},
+                    position: { lat: tripData.lat, lng: tripData.lng },
                     map: map,
                     title: tripData.parkName,
-                    icon: {url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png', scaledSize: new google.maps.Size(32, 32)}});
+                    icon: { url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png', scaledSize: new google.maps.Size(32, 32) }
+                });
 
                 console.log('Map and park marker created successfully');
                 document.getElementById('mapOverlay').textContent = 'Map loaded, searching...';
                 // start initial restaurant search!!
                 searchRestaurants();
-                
+
             } catch (error) {
                 console.error('Error creating map:', error);
-                document.getElementById('mapOverlay').textContent = 'Error creating map';}
+                document.getElementById('mapOverlay').textContent = 'Error creating map';
+            }
         }
 
         function calculateZoomForRadius(radius) {
@@ -333,7 +716,8 @@
             if (map) {
                 const newZoom = calculateZoomForRadius(filters.radius);
                 console.log('Updating map zoom to:', newZoom);
-                map.setZoom(newZoom);}
+                map.setZoom(newZoom);
+            }
 
             // clear existing markers + show loading . . . .
             clearMapMarkers();
@@ -346,22 +730,26 @@
                     latitude: tripData.lat,
                     longitude: tripData.lng,
                     radius: filters.radius,
-                    cuisines: filters.cuisines,
+                    //Abby edited here
+                    //cuisines: filters.cuisines,
                     prices: filters.prices,
-                    rating: filters.rating};
-                
+                    rating: filters.rating
+                };
+
                 console.log('Sending request to backend:', requestBody);
                 console.log('Request URL:', `${BACKEND_URL}/api/restaurants/search-restaurants-near-park`);
                 const response = await fetch(`${BACKEND_URL}/api/restaurants/search-restaurants-near-park`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(requestBody)});
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
                 console.log('Backend response status:', response.status);
 
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('Backend error response:', errorText);
-                    throw new Error(`HTTP ${response.status}: ${errorText}`);}
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
 
                 const data = await response.json();
                 console.log('Backend response data:', data);
@@ -376,30 +764,32 @@
                 console.error('Restaurant search error:', error);
                 document.getElementById('resultsList').innerHTML = `<div class="error">Error: ${error.message}</div>`;
                 document.getElementById('resultsCount').textContent = 'Error';
-                document.getElementById('mapOverlay').textContent = 'Search error';}
+                document.getElementById('mapOverlay').textContent = 'Search error';
+            }
         }
 
         function collectFilters() {
             const radius = parseInt(document.getElementById('radiusSelect').value);
             const rating = parseFloat(document.getElementById('ratingSelect').value);
             const cuisines = [];
-            document.querySelectorAll('.cuisine-grid input:checked').forEach(cb => {cuisines.push(cb.value);});
+            document.querySelectorAll('.cuisine-grid input:checked').forEach(cb => { cuisines.push(cb.value); });
             const prices = [];
-            document.querySelectorAll('.price-btn.selected').forEach(btn => {prices.push(parseInt(btn.dataset.price));});
-            
-            return {radius, rating, cuisines, prices};
+            document.querySelectorAll('.price-btn.selected').forEach(btn => { prices.push(parseInt(btn.dataset.price)); });
+
+            return { radius, rating, cuisines, prices };
         }
 
         function displayResults(data) {
             console.log('Displaying results:', data.restaurants?.length || 0, 'restaurants');
-            
+
             const resultsList = document.getElementById('resultsList');
             const resultsCount = document.getElementById('resultsCount');
 
             if (!data.restaurants || data.restaurants.length === 0) {
                 resultsList.innerHTML = '<div class="no-results">No restaurants found. Try adjusting your filters or increasing the search radius.</div>';
                 resultsCount.textContent = 'No restaurants found';
-                return;}
+                return;
+            }
 
             resultsCount.textContent = `${data.restaurants.length} restaurants found`;
 
@@ -417,7 +807,8 @@
                             ${restaurant.business_status !== 'OPERATIONAL' ? '<span style="color: #ff3b30;">Temporarily Closed</span>' : ''}
                         </div>
                         <div class="restaurant-address">${restaurant.address}</div>
-                    </div>`;}).join('');
+                    </div>`;
+            }).join('');
             resultsList.innerHTML = html;
         }
 
@@ -429,13 +820,15 @@
 
         function updateMapMarkers(data) {
             console.log('Updating map markers for', data.restaurants?.length || 0, 'restaurants');
-            
-            if (!map) {console.log('No map available for markers');
-                return;}
+
+            if (!map) {
+                console.log('No map available for markers');
+                return;
+            }
 
             const radius = parseInt(document.getElementById('radiusSelect').value);
-            document.getElementById('mapOverlay').textContent = 
-                `${data.restaurants?.length || 0} restaurants within ${radius/1000}km`;
+            document.getElementById('mapOverlay').textContent =
+                `${data.restaurants?.length || 0} restaurants within ${radius / 1000}km`;
             //add restaurant markers
             if (data.restaurants && data.restaurants.length > 0) {
                 data.restaurants.forEach((restaurant, index) => {
@@ -445,14 +838,16 @@
                             position: { lat: restaurant.location.lat, lng: restaurant.location.lng },
                             map: map,
                             title: restaurant.name,
-                            icon: {url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png', scaledSize: new google.maps.Size(24, 24)}});
+                            icon: { url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png', scaledSize: new google.maps.Size(24, 24) }
+                        });
 
                         // CLICDK marker to select restaurant
                         marker.addListener('click', () => {
                             console.log('Marker clicked for:', restaurant.name);
-                            selectRestaurant(restaurant.place_id);});
+                            selectRestaurant(restaurant.place_id);
+                        });
                         mapMarkers.push(marker);
-                    } else {console.warn('Restaurant missing location data:', restaurant.name);}
+                    } else { console.warn('Restaurant missing location data:', restaurant.name); }
                 });
 
                 // Adjust map bounds if we have bounds data
@@ -468,18 +863,20 @@
 
         function highlightRestaurant(placeId) {
             console.log('Highlighting restaurant with place_id:', placeId);
-            
+
             // remove old highlights
-            document.querySelectorAll('.restaurant-card').forEach(card => {card.classList.remove('selected');});
+            document.querySelectorAll('.restaurant-card').forEach(card => { card.classList.remove('selected'); });
             //highlight selected card
             const selectedCard = document.querySelector(`[data-place-id="${placeId}"]`);
-            if (selectedCard) {selectedCard.classList.add('selected');
-                selectRestaurant(placeId);}
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                selectRestaurant(placeId);
+            }
         }
 
         function selectRestaurant(placeId) {
             console.log('Selecting restaurant with place_id:', placeId);
-            
+
             selectedRestaurant = currentRestaurants.find(r => r.place_id === placeId);
             if (selectedRestaurant) {
                 console.log('Found restaurant:', selectedRestaurant.name);
@@ -488,7 +885,7 @@
                 selectedMealType = null;
                 document.getElementById('addRestaurantBtn').disabled = true;
                 document.querySelectorAll('.meal-btn').forEach(btn => btn.classList.remove('selected'));
-            } else {console.error('Restaurant not found with place_id:', placeId);}
+            } else { console.error('Restaurant not found with place_id:', placeId); }
         }
 
         function closeMealModal() {
@@ -497,20 +894,22 @@
             selectedRestaurant = null;
             selectedMealType = null;
             // remove card highlight
-            document.querySelectorAll('.restaurant-card').forEach(card => {card.classList.remove('selected');});
+            document.querySelectorAll('.restaurant-card').forEach(card => { card.classList.remove('selected'); });
         }
 
         function addRestaurantToTrip() {
             console.log('Adding restaurant to trip:', selectedRestaurant?.name, 'as', selectedMealType);
             if (!selectedRestaurant || !selectedMealType) {
                 console.error('Missing restaurant or meal type');
-                return;}
+                return;
+            }
 
             // get current trip data
             const currentTrip = JSON.parse(localStorage.getItem('nps_current_trip'));
             if (!currentTrip) {
                 alert('Trip data not found. Please go back and try again.');
-                return;}
+                return;
+            }
 
             // initialize restaurants
             if (!currentTrip.restaurants) { currentTrip.restaurants = {}; }
@@ -519,12 +918,14 @@
             // check limits
             if (currentTrip.restaurants[dayKey].length >= 4) {
                 alert('You can only add up to 4 restaurants per day.');
-                return;}
+                return;
+            }
             // check doubling
             const alreadyAdded = currentTrip.restaurants[dayKey].find(r => r.place_id === selectedRestaurant.place_id);
             if (alreadyAdded) {
                 alert('This restaurant is already added to this day.');
-                return;}
+                return;
+            }
 
             // add restaurant to trip!!
             const restaurantToAdd = {
@@ -535,8 +936,9 @@
                 address: selectedRestaurant.address,
                 meal_type: selectedMealType,
                 cuisine_types: selectedRestaurant.cuisine_types,
-                added: new Date().toISOString()};
-            
+                added: new Date().toISOString()
+            };
+
             currentTrip.restaurants[dayKey].push(restaurantToAdd);
             console.log('Added restaurant to trip:', restaurantToAdd);
 
@@ -562,4 +964,5 @@
         }
     </script>
 </body>
+
 </html>
