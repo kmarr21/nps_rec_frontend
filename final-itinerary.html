@@ -470,17 +470,21 @@
         }
 
         function goHome() {
+            //set flag that we're in final itinerary mode!!
+            localStorage.setItem('nps_in_final_mode', 'true');
             window.location.href = 'index.html';
         }
 
         function deleteTrip() {
-            if (confirm('Are you sure you want to delete your trip? This cannot be undone.')) {
-                localStorage.removeItem('nps_current_trip');
-                localStorage.removeItem('nps_questionnaire_data');
-                localStorage.removeItem('nps_park_selection');
-                alert('Trip deleted successfully! Redirecting to homepage...');
-                window.location.href = 'index.html';}
+        if (confirm('Are you sure you want to delete your trip? This cannot be undone.')) {
+            localStorage.removeItem('nps_current_trip');
+            localStorage.removeItem('nps_questionnaire_data');
+            localStorage.removeItem('nps_park_selection');
+            localStorage.removeItem('nps_in_final_mode'); //clear final mode flag..
+            alert('Trip deleted successfully! Redirecting to homepage...');
+            window.location.href = 'index.html';
         }
+    }
 
         function handleHowItWorksClick(event) {
             event.preventDefault();

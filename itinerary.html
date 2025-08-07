@@ -720,6 +720,7 @@
         }
 
         function reviewFinalItinerary() {
+            localStorage.setItem('nps_in_final_mode', 'true');
             window.location.href = 'final-itinerary.html';
         }
 
@@ -801,6 +802,7 @@
 
         function editTrip() {
             if (confirm('Do you want to modify your park selections and preferences? This will take you back to the park selection page.')) {
+                localStorage.removeItem('nps_in_final_mode');
                 localStorage.setItem('nps_questionnaire_data', JSON.stringify(currentTrip.questionnaire));
                 localStorage.setItem('nps_park_selection', JSON.stringify({
                     parks: currentTrip.parks,
@@ -809,6 +811,7 @@
                 localStorage.removeItem('nps_current_trip');
                 window.location.href = 'park-selection.html';}
             else {
+                localStorage.removeItem('nps_in_final_mode');
                 document.getElementById('tripOverviewScreen').classList.remove('active');
                 document.getElementById('createTripScreen').classList.add('active');
                 if (currentTrip) {
@@ -846,6 +849,7 @@
                 localStorage.removeItem('nps_current_trip');
                 localStorage.removeItem('nps_questionnaire_data');
                 localStorage.removeItem('nps_park_selection');
+                localStorage.removeItem('nps_in_final_mode');
                 alert('Trip deleted successfully! Redirecting to homepage...');
                 window.location.href = 'index.html';}
         }

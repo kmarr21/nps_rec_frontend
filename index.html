@@ -714,9 +714,15 @@
                 viewTripBtn.style.display = 'inline-block';
                 deleteBtn.style.display = 'inline-block';
 
-                // update navigation - only underline if on itinerary page
-                myTripLink.textContent = 'My Current Trip';
-                myTripLink.href = 'itinerary.html';
+                // update navigation (only underline if on itinerary page)
+                //check if we're in final itinerary mode..!~
+                const inFinalMode = localStorage.getItem('nps_in_final_mode');
+                if (inFinalMode) {
+                    myTripLink.textContent = 'Final Itinerary';
+                    myTripLink.href = 'final-itinerary.html';}
+                else {
+                    myTripLink.textContent = 'My Current Trip';
+                    myTripLink.href = 'itinerary.html';}
                 myTripLink.classList.remove('disabled');
 
                 // disable start new trip options and show warning
