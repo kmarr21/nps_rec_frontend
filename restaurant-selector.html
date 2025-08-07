@@ -474,6 +474,58 @@
                     <option value="100000">100 km</option>
                 </select>
             </div>
+            <div class="filter-group">
+                <label>Minimum Rating</label>
+                <select id="ratingSelect">
+                    <option value="0">Any Rating</option>
+                    <option value="3">3+ Stars</option>
+                    <option value="3.5">3.5+ Stars</option>
+                    <option value="4" selected>4+ Stars</option>
+                    <option value="4.5">4.5+ Stars</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Price Range</label>
+                <div class="price-range">
+                    <div class="price-btn selected" data-price="1">$</div>
+                    <div class="price-btn selected" data-price="2">$$</div>
+                    <div class="price-btn selected" data-price="3">$$$</div>
+                    <div class="price-btn selected" data-price="4">$$$$</div>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label>Cuisine Type</label>
+                <div class="cuisine-grid">
+                    <div class="cuisine-item"><input type="checkbox" id="italian" value="italian"><label
+                            for="italian">Italian</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="mexican" value="mexican"><label
+                            for="mexican">Mexican</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="american" value="american"><label
+                            for="american">American</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="asian" value="asian"><label
+                            for="asian">Asian</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="chinese" value="chinese"><label
+                            for="chinese">Chinese</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="japanese" value="japanese"><label
+                            for="japanese">Japanese</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="thai" value="thai"><label
+                            for="thai">Thai</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="indian" value="indian"><label
+                            for="indian">Indian</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="seafood" value="seafood"><label
+                            for="seafood">Seafood</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="pizza" value="pizza"><label
+                            for="pizza">Pizza</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="french" value="french"><label
+                            for="french">French</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="greek" value="greek"><label
+                            for="greek">Greek</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="steakhouse" value="steakhouse"><label
+                            for="steakhouse">Steakhouse</label></div>
+                    <div class="cuisine-item"><input type="checkbox" id="vegetarian" value="vegetarian"><label
+                            for="vegetarian">Vegetarian</label></div>
+                </div>
+            </div>
             <div class="filter-actions">
                 <button class="apply-filters-btn" onclick="searchRestaurants()">Apply Filters</button>
                 <button class="clear-filters-btn" onclick="clearFilters()">Clear All</button>
