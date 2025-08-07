@@ -428,6 +428,111 @@
             background: #ccc;
         }
 
+        /* restaurant info popup */
+        .restaurant-info-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            z-index: 2000;
+            display: none;
+        }
+
+        .restaurant-info-popup.show {
+            display: block;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .popup-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-close:hover {
+            color: #333;
+        }
+
+        .popup-restaurant-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2F4F2F;
+            margin: 0;
+            flex: 1;
+        }
+
+        .popup-rating {
+            color: #ff9500;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .popup-info {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .popup-address {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .popup-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .popup-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .popup-btn-primary {
+            background: #2F4F2F;
+            color: white;
+        }
+
+        .popup-btn-primary:hover {
+            background: #1a3a1a;
+        }
+
+        .popup-btn-secondary {
+            background: #ddd;
+            color: #333;
+        }
+
+        .popup-btn-secondary:hover {
+            background: #ccc;
+        }
+
         @media (max-width: 768px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -449,6 +554,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="header-container">
@@ -491,39 +597,6 @@
                     <div class="price-btn selected" data-price="2">$$</div>
                     <div class="price-btn selected" data-price="3">$$$</div>
                     <div class="price-btn selected" data-price="4">$$$$</div>
-                </div>
-            </div>
-            <div class="filter-group" style="display: none">
-                <label>Cuisine Type</label>
-                <div class="cuisine-grid">
-                    <div class="cuisine-item"><input type="checkbox" id="italian" value="italian"><label
-                            for="italian">Italian</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="mexican" value="mexican"><label
-                            for="mexican">Mexican</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="american" value="american"><label
-                            for="american">American</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="asian" value="asian"><label
-                            for="asian">Asian</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="chinese" value="chinese"><label
-                            for="chinese">Chinese</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="japanese" value="japanese"><label
-                            for="japanese">Japanese</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="thai" value="thai"><label
-                            for="thai">Thai</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="indian" value="indian"><label
-                            for="indian">Indian</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="seafood" value="seafood"><label
-                            for="seafood">Seafood</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="pizza" value="pizza"><label
-                            for="pizza">Pizza</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="french" value="french"><label
-                            for="french">French</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="greek" value="greek"><label
-                            for="greek">Greek</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="steakhouse" value="steakhouse"><label
-                            for="steakhouse">Steakhouse</label></div>
-                    <div class="cuisine-item"><input type="checkbox" id="vegetarian" value="vegetarian"><label
-                            for="vegetarian">Vegetarian</label></div>
                 </div>
             </div>
             <div class="filter-actions">
@@ -575,14 +648,28 @@
             </div>
         </div>
     </div>
+    <!-- restaurant info popup -->
+    <div class="restaurant-info-popup" id="restaurantInfoPopup">
+        <div class="popup-header">
+            <h3 class="popup-restaurant-name" id="popupRestaurantName"></h3>
+            <button class="popup-close" onclick="closeRestaurantInfoPopup()">×</button>
+        </div>
+        <div class="popup-rating" id="popupRestaurantRating"></div>
+        <div class="popup-info" id="popupRestaurantInfo"></div>
+        <div class="popup-address" id="popupRestaurantAddress"></div>
+        <div class="popup-actions">
+            <button class="popup-btn popup-btn-secondary" onclick="closeRestaurantInfoPopup()">Close</button>
+            <button class="popup-btn popup-btn-primary" onclick="proceedToMealSelection()">Add to Itinerary</button>
+        </div>
+    </div>
     <script>
         const BACKEND_URL = 'https://nps-rec-backend-apu6.onrender.com';
         let tripData = {};
         let selectedRestaurant = null;
         let selectedMealType = null;
         let currentRestaurants = [];
-        let allRestaurants = []; //store all restaurants from API
-        let filteredRestaurants = []; //store currently filtered restaurants
+        let allRestaurants = [];
+        let filteredRestaurants = [];
         let map = null;
         let mapMarkers = [];
         let parkMarker = null;
@@ -596,7 +683,7 @@
             loadGoogleMapsAPI();
         });
 
-        //load trip data from URL parameters
+        // load trip data from URL parameters
         function loadTripData() {
             console.log('Loading trip data from URL...');
             const urlParams = new URLSearchParams(window.location.search);
@@ -606,7 +693,8 @@
                 parkName: urlParams.get('parkName'),
                 lat: parseFloat(urlParams.get('lat')),
                 lng: parseFloat(urlParams.get('lng')),
-                tripId: urlParams.get('tripId')};
+                tripId: urlParams.get('tripId')
+            };
 
             console.log('Loaded trip data:', tripData);
 
@@ -628,7 +716,7 @@
                 document.getElementById('mapOverlay').textContent = 'Loading Maps API...';
 
                 const response = await fetch(`${BACKEND_URL}/api/config/maps-key`);
-                if (!response.ok) {throw new Error(`Failed to get API key: ${response.status}`);}
+                if (!response.ok) { throw new Error(`Failed to get API key: ${response.status}`); }
                 const config = await response.json();
                 console.log('Got API key config, loading Maps...');
                 const script = document.createElement('script');
@@ -637,7 +725,8 @@
                 script.defer = true;
                 script.onerror = function () {
                     console.error('Failed to load Google Maps script');
-                    document.getElementById('mapOverlay').textContent = 'Error loading Google Maps';};
+                    document.getElementById('mapOverlay').textContent = 'Error loading Google Maps';
+                };
                 document.head.appendChild(script);
                 console.log('Google Maps script added to page');
             } catch (error) {
@@ -653,7 +742,8 @@
             document.querySelectorAll('.price-btn').forEach(btn => {
                 btn.addEventListener('click', function () {
                     this.classList.toggle('selected');
-                    console.log('Price filter changed:', this.dataset.price, this.classList.contains('selected'));});
+                    console.log('Price filter changed:', this.dataset.price, this.classList.contains('selected'));
+                });
             });
 
             // meal type select
@@ -663,7 +753,8 @@
                     this.classList.add('selected');
                     selectedMealType = this.dataset.meal;
                     document.getElementById('addRestaurantBtn').disabled = false;
-                    console.log('Selected meal type:', selectedMealType);});
+                    console.log('Selected meal type:', selectedMealType);
+                });
             });
 
             // sort dropdown
@@ -671,7 +762,8 @@
                 if (filteredRestaurants.length > 0) {
                     applySorting(this.value);
                     displayFilteredResults();
-                    updateFilteredMapMarkers();}
+                    updateFilteredMapMarkers();
+                }
             });
         }
 
@@ -688,15 +780,15 @@
 
             try {
                 map = new google.maps.Map(document.getElementById('mapElement'), {
-                    center: { lat: tripData.lat, lng: tripData.lng },
+                    center: {lat: tripData.lat, lng: tripData.lng},
                     zoom: calculateZoomForRadius(parseInt(document.getElementById('radiusSelect').value)),
                     mapTypeId: 'roadmap',
-                    styles: [{featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }]}]
+                    styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'off'}]}]
                 });
 
                 // add park marker
                 parkMarker = new google.maps.Marker({
-                    position: { lat: tripData.lat, lng: tripData.lng },
+                    position: {lat: tripData.lat, lng: tripData.lng},
                     map: map,
                     title: tripData.parkName,
                     icon: {url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png', scaledSize: new google.maps.Size(32, 32)}
@@ -732,7 +824,8 @@
             if (map) {
                 const newZoom = calculateZoomForRadius(radius);
                 console.log('Updating map zoom to:', newZoom);
-                map.setZoom(newZoom);}
+                map.setZoom(newZoom);
+            }
 
             // clear existing markers + show loading
             clearMapMarkers();
@@ -744,14 +837,16 @@
                 const requestBody = {
                     latitude: tripData.lat,
                     longitude: tripData.lng,
-                    radius: radius};
+                    radius: radius
+                };
 
                 console.log('Sending request to backend:', requestBody);
                 console.log('Request URL:', `${BACKEND_URL}/api/restaurants/search-restaurants-near-park`);
                 const response = await fetch(`${BACKEND_URL}/api/restaurants/search-restaurants-near-park`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(requestBody)});
+                    body: JSON.stringify(requestBody)
+                });
                 console.log('Backend response status:', response.status);
 
                 if (!response.ok) {
@@ -780,10 +875,13 @@
         function collectFilters() {
             const radius = parseInt(document.getElementById('radiusSelect').value);
             const rating = parseFloat(document.getElementById('ratingSelect').value);
+            
             const prices = [];
-            document.querySelectorAll('.price-btn.selected').forEach(btn => {prices.push(parseInt(btn.dataset.price));});
+            document.querySelectorAll('.price-btn.selected').forEach(btn => {
+                prices.push(parseInt(btn.dataset.price));
+            });
 
-            return { radius, rating, prices };
+            return {radius, rating, prices};
         }
 
         function applyFilters() {
@@ -791,13 +889,26 @@
             const filters = collectFilters();
             console.log('Filters:', filters);
 
+            // update map zoom if radius changed
+            if (map) {
+                const newZoom = calculateZoomForRadius(filters.radius);
+                console.log('Updating map zoom to:', newZoom, 'for radius:', filters.radius);
+                map.setZoom(newZoom);
+            }
+
             // start with all restaurants
             filteredRestaurants = allRestaurants.filter(restaurant => {
                 // rating filter
-                if (filters.rating > 0 && restaurant.rating < filters.rating) {return false;}
+                if (filters.rating > 0 && restaurant.rating < filters.rating) {
+                    return false;
+                }
+
                 // price filter
                 if (filters.prices.length > 0 && filters.prices.length < 4) {
-                    if (!filters.prices.includes(restaurant.price_level)) {return false;}}
+                    if (!filters.prices.includes(restaurant.price_level)) {
+                        return false;
+                    }
+                }
 
                 return true;
             });
@@ -807,6 +918,7 @@
             // apply sorting
             const sortType = document.getElementById('sortSelect').value;
             applySorting(sortType);
+
             // update display
             displayFilteredResults();
             updateFilteredMapMarkers();
@@ -814,15 +926,20 @@
 
         function applySorting(sortType) {
             console.log('Applying sort:', sortType);
-            if (sortType === 'rating_desc') {filteredRestaurants.sort((a, b) => b.rating - a.rating);}
-            // 'default' here just keeps google's original ranking (no sorting needed)
+            
+            if (sortType === 'rating_desc') {
+                filteredRestaurants.sort((a, b) => b.rating - a.rating);
+            }
+            // 'default' keeps Google's original ranking (no sorting needed)
         }
 
         function displayResults(data) {
             console.log('Initial display of', data.restaurants?.length || 0, 'restaurants');
+
             // store all restaurants
             allRestaurants = data.restaurants || [];
-            filteredRestaurants = [...allRestaurants]; //start with all restaurants shown!
+            filteredRestaurants = [...allRestaurants]; // start with all restaurants shown
+
             displayFilteredResults();
         }
 
@@ -838,7 +955,7 @@
                 return;
             }
 
-            resultsCount.textContent = `${filteredRestaurants.length} restaurants found`;
+            resultsCount.textContent = `Showing ${filteredRestaurants.length} restaurants`;
 
             const html = filteredRestaurants.map(restaurant => {
                 return `
@@ -853,7 +970,8 @@
                             ${restaurant.business_status !== 'OPERATIONAL' ? '<span style="color: #ff3b30;">Temporarily Closed</span>' : ''}
                         </div>
                         <div class="restaurant-address">${restaurant.address}</div>
-                    </div>`;}).join('');
+                    </div>`;
+            }).join('');
             resultsList.innerHTML = html;
         }
 
@@ -868,7 +986,8 @@
 
             if (!map) {
                 console.log('No map available for markers');
-                return;}
+                return;
+            }
 
             const radius = parseInt(document.getElementById('radiusSelect').value);
             document.getElementById('mapOverlay').textContent =
@@ -879,7 +998,7 @@
                     if (restaurant.location && restaurant.location.lat && restaurant.location.lng) {
                         console.log(`Adding marker ${index + 1}:`, restaurant.name, restaurant.location);
                         const marker = new google.maps.Marker({
-                            position: { lat: restaurant.location.lat, lng: restaurant.location.lng },
+                            position: {lat: restaurant.location.lat, lng: restaurant.location.lng},
                             map: map,
                             title: restaurant.name,
                             icon: {url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png', scaledSize: new google.maps.Size(24, 24)}
@@ -888,9 +1007,10 @@
                         // CLICDK marker to select restaurant
                         marker.addListener('click', () => {
                             console.log('Marker clicked for:', restaurant.name);
-                            selectRestaurant(restaurant.place_id);});
+                            selectRestaurant(restaurant.place_id);
+                        });
                         mapMarkers.push(marker);
-                    } else {console.warn('Restaurant missing location data:', restaurant.name);}
+                    } else { console.warn('Restaurant missing location data:', restaurant.name); }
                 });
 
                 // Adjust map bounds if we have bounds data
@@ -899,15 +1019,18 @@
                     const bounds = new google.maps.LatLngBounds(
                         new google.maps.LatLng(data.map_bounds.southwest.lat, data.map_bounds.southwest.lng),
                         new google.maps.LatLng(data.map_bounds.northeast.lat, data.map_bounds.northeast.lng));
-                    map.fitBounds(bounds);}
+                    map.fitBounds(bounds);
+                }
             }
         }
 
         function updateFilteredMapMarkers() {
             console.log('Updating map markers for', filteredRestaurants.length, 'filtered restaurants');
+
             if (!map) {
                 console.log('No map available for markers');
-                return;}
+                return;
+            }
 
             const radius = parseInt(document.getElementById('radiusSelect').value);
             document.getElementById('mapOverlay').textContent =
@@ -926,7 +1049,9 @@
                         icon: {url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png', scaledSize: new google.maps.Size(24, 24)}
                     });
 
-                    marker.addListener('click', () => {selectRestaurant(restaurant.place_id);});
+                    marker.addListener('click', () => {
+                        selectRestaurant(restaurant.place_id);
+                    });
                     mapMarkers.push(marker);
                 }
             });
@@ -951,12 +1076,54 @@
             selectedRestaurant = filteredRestaurants.find(r => r.place_id === placeId);
             if (selectedRestaurant) {
                 console.log('Found restaurant:', selectedRestaurant.name);
-                document.getElementById('selectedRestaurantName').textContent = selectedRestaurant.name;
-                document.getElementById('mealModal').classList.add('show');
-                selectedMealType = null;
-                document.getElementById('addRestaurantBtn').disabled = true;
-                document.querySelectorAll('.meal-btn').forEach(btn => btn.classList.remove('selected'));
-            } else { console.error('Restaurant not found with place_id:', placeId); }
+                showRestaurantInfoPopup(selectedRestaurant);
+            } else { 
+                console.error('Restaurant not found with place_id:', placeId); 
+            }
+        }
+
+        function showRestaurantInfoPopup(restaurant) {
+            console.log('Showing info popup for:', restaurant.name);
+            
+            document.getElementById('popupRestaurantName').textContent = restaurant.name;
+            document.getElementById('popupRestaurantRating').textContent = `★ ${restaurant.rating}`;
+            
+            const infoHtml = `
+                <span>${'$'.repeat(restaurant.price_level)}</span>
+                <span>${restaurant.cuisine_types.slice(0, 2).join(', ') || 'Restaurant'}</span>
+                ${restaurant.business_status !== 'OPERATIONAL' ? '<span style="color: #ff3b30;">Temporarily Closed</span>' : ''}
+            `;
+            document.getElementById('popupRestaurantInfo').innerHTML = infoHtml;
+            document.getElementById('popupRestaurantAddress').textContent = restaurant.address;
+            
+            document.getElementById('restaurantInfoPopup').classList.add('show');
+            
+            // highlight the restaurant in the list
+            document.querySelectorAll('.restaurant-card').forEach(card => card.classList.remove('selected'));
+            const selectedCard = document.querySelector(`[data-place-id="${restaurant.place_id}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                selectedCard.scrollIntoView({behavior: 'smooth', block: 'center'});
+            }
+        }
+
+        function closeRestaurantInfoPopup() {
+            console.log('Closing restaurant info popup');
+            document.getElementById('restaurantInfoPopup').classList.remove('show');
+            // remove highlight from restaurant list
+            document.querySelectorAll('.restaurant-card').forEach(card => {card.classList.remove('selected');});
+        }
+
+        function proceedToMealSelection() {
+            console.log('Proceeding to meal selection for:', selectedRestaurant.name);
+            closeRestaurantInfoPopup();
+            
+            // now show the meal selection modal
+            document.getElementById('selectedRestaurantName').textContent = selectedRestaurant.name;
+            document.getElementById('mealModal').classList.add('show');
+            selectedMealType = null;
+            document.getElementById('addRestaurantBtn').disabled = true;
+            document.querySelectorAll('.meal-btn').forEach(btn => btn.classList.remove('selected'));
         }
 
         function closeMealModal() {
@@ -972,27 +1139,31 @@
             console.log('Adding restaurant to trip:', selectedRestaurant?.name, 'as', selectedMealType);
             if (!selectedRestaurant || !selectedMealType) {
                 console.error('Missing restaurant or meal type');
-                return;}
+                return;
+            }
 
             // get current trip data
             const currentTrip = JSON.parse(localStorage.getItem('nps_current_trip'));
             if (!currentTrip) {
                 alert('Trip data not found. Please go back and try again.');
-                return;}
+                return;
+            }
 
             // initialize restaurants
-            if (!currentTrip.restaurants) { currentTrip.restaurants = {}; }
+            if (!currentTrip.restaurants) {currentTrip.restaurants = {};}
             const dayKey = tripData.day.toString();
-            if (!currentTrip.restaurants[dayKey]) { currentTrip.restaurants[dayKey] = []; }
+            if (!currentTrip.restaurants[dayKey]) {currentTrip.restaurants[dayKey] = [];}
             // check limits
             if (currentTrip.restaurants[dayKey].length >= 4) {
                 alert('You can only add up to 4 restaurants per day.');
-                return;}
+                return;
+            }
             // check doubling
             const alreadyAdded = currentTrip.restaurants[dayKey].find(r => r.place_id === selectedRestaurant.place_id);
             if (alreadyAdded) {
                 alert('This restaurant is already added to this day.');
-                return;}
+                return;
+            }
 
             // add restaurant to trip!!
             const restaurantToAdd = {
