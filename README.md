@@ -2,7 +2,7 @@
 
 A web application that helps users plan personalized national park trips with restaurant recommendations and itinerary building.
 
-## What it does
+## Overview
 - Takes user preferences through a questionnaire (dates, activities, climate, crowds)
 - Shows personalized national park recommendations with real weather data from API
 - Helps build complete itineraries with accommodation and dining options
