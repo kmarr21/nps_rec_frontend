@@ -263,14 +263,13 @@
             </div>
             <div class="next-steps">
                 <h3>Ready for the Next Step?</h3>
-                <p>Your basic itinerary is complete! Next, you can find places to stay near your selected parks.</p>
                 <div class="disclaimer">
                     <strong>Planning Disclaimer:</strong> This tool helps you organize your trip planning but cannot make actual reservations. 
                     You'll need to book accommodations, campsites, and make park reservations directly through official websites and services.
                 </div>
                 <div class="action-section">
                     <div class="button-row">
-                        <button class="btn" onclick="continueToAccommodations()" disabled>Find Places to Stay (Coming Soon)</button>
+                        <button class="btn" onclick="reviewFinalItinerary()">Review Final Itinerary →</button>
                     </div>
                     <div class="button-row">
                         <button class="btn btn-secondary" onclick="goHome()">← Back to Home</button>
@@ -720,6 +719,10 @@
             console.log('Enhanced timeline created with', parkSegments.length, 'segments');
         }
 
+        function reviewFinalItinerary() {
+            window.location.href = 'final-itinerary.html';
+        }
+
         // ADDING IN RESTAURANT FUNCTIONS
         function selectAccommodation(dayIndex) {
             const accommodationTypes = ['Hotel', 'Camping', 'RV', 'Skip'];
@@ -777,10 +780,6 @@
 
         function goBack() {
             window.location.href = 'park-selection.html';
-        }
-
-        function continueToAccommodations() {
-            alert('Accommodation finder coming soon! This will help you find hotels and campsites near your parks.');
         }
 
         function goHome() {
